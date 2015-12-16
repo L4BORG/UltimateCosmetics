@@ -16,7 +16,6 @@ import org.bukkit.event.player.*;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 
 public final class PetsListener implements Listener {
     private final Main plugin;
@@ -112,7 +111,7 @@ public final class PetsListener implements Listener {
     public void onPlayerTeleport(PlayerTeleportEvent e) {
         CosmeticsAPI api = this.plugin.getApi();
         Player p = e.getPlayer();
-        if (api.hasPet(p)) api.getPet(p).getEntity().teleport(p);
+        if (api.hasPet(p)) api.getPet(p).remove();
     }
 
     @EventHandler

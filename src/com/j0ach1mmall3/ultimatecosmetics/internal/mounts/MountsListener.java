@@ -102,7 +102,7 @@ public final class MountsListener implements Listener {
     public void onPlayerTeleport(PlayerTeleportEvent e) {
         CosmeticsAPI api = this.plugin.getApi();
         Player p = e.getPlayer();
-        if (api.hasMount(p)) api.getMount(p).getEntity().teleport(p);
+        if (api.hasMount(p)) api.getMount(p).remove();
     }
 
     @EventHandler
