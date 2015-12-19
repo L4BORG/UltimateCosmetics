@@ -117,8 +117,9 @@ public final class MongoDBDataLoader extends MongoDBLoader implements DataLoader
             if (dbObject != null) {
                 DBObject cosmetics = (DBObject) dbObject.get("cosmetics");
                 List<String> values = cosmetics.keySet().stream().map(s -> (String) cosmetics.get(s)).collect(Collectors.toList());
+                CosmeticsQueue queue =  new CosmeticsQueue((Main) this.plugin, values);
                 Bukkit.getScheduler().callSyncMethod(this.plugin, (Callable<Void>) () -> {
-                    new CosmeticsQueue((Main) this.plugin, values).give(p);
+                    queue.give(p);
                     return null;
                 });
             }

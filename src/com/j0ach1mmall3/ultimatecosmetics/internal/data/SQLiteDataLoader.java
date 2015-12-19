@@ -128,8 +128,9 @@ public final class SQLiteDataLoader extends SQLiteLoader implements DataLoader {
             this.sqLite.executeQuerry(preparedStatement, resultSet ->  {
                 try {
                     if(resultSet.next()) {
+                        CosmeticsQueue queue = new CosmeticsQueue((Main) this.plugin, Arrays.asList(resultSet.getString("Balloon"), resultSet.getString("Banner"), resultSet.getString("Bowtrail"), resultSet.getString("Gadget"), resultSet.getString("Hat"), resultSet.getString("Hearts"), resultSet.getString("Morph"), resultSet.getString("Mount"), resultSet.getString("Music"), resultSet.getString("Particles"), resultSet.getString("Pet"), resultSet.getString("Trail"), resultSet.getString("Outfit")));
                         Bukkit.getScheduler().callSyncMethod(this.plugin, (Callable<Void>) () -> {
-                            new CosmeticsQueue((Main) this.plugin, Arrays.asList(resultSet.getString("Balloon"), resultSet.getString("Banner"), resultSet.getString("Bowtrail"), resultSet.getString("Gadget"), resultSet.getString("Hat"), resultSet.getString("Hearts"), resultSet.getString("Morph"), resultSet.getString("Mount"), resultSet.getString("Music"), resultSet.getString("Particles"), resultSet.getString("Pet"), resultSet.getString("Trail"), resultSet.getString("Outfit"))).give(p);
+                            queue.give(p);
                             return null;
                         });
                     }
