@@ -17,8 +17,6 @@ public final class EntityListener implements Listener {
 
     @EventHandler(priority = EventPriority.MONITOR)
     public void onEntitySpawn(CreatureSpawnEvent e) {
-        if (e.getSpawnReason() == CreatureSpawnEvent.SpawnReason.CUSTOM) {
-            e.setCancelled(false);
-        }
+        if (e.getSpawnReason() == CreatureSpawnEvent.SpawnReason.CUSTOM) e.setCancelled(false);
     }
 }

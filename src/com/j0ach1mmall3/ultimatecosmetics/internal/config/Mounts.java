@@ -2,6 +2,7 @@ package com.j0ach1mmall3.ultimatecosmetics.internal.config;
 
 import com.j0ach1mmall3.jlib.integration.Placeholders;
 import com.j0ach1mmall3.jlib.inventory.CustomItem;
+import com.j0ach1mmall3.jlib.inventory.GuiItem;
 import com.j0ach1mmall3.jlib.methods.General;
 import com.j0ach1mmall3.jlib.methods.Parsing;
 import com.j0ach1mmall3.jlib.storage.file.yaml.ConfigLoader;
@@ -21,6 +22,7 @@ import java.util.stream.Collectors;
 public final class Mounts extends ConfigLoader {
     private final Main plugin;
     private final boolean enabled;
+    private final List<String> worldsBlacklist;
     private final String command;
     private final String noPermissionMessage;
     private final Sound giveSound;
@@ -30,8 +32,10 @@ public final class Mounts extends ConfigLoader {
     private final int guiSize;
     private final CustomItem noPermissionItem;
     private final boolean noPermissionItem_Enabled;
-    private final CustomItem removeItem;
-    private final int removeItem_Position;
+    private final GuiItem removeItem;
+    private final GuiItem homeItem;
+    private final GuiItem previousItem;
+    private final GuiItem nextItem;
     private final List<MountStorage> mounts;
 
     private final int maxPage;
@@ -41,6 +45,7 @@ public final class Mounts extends ConfigLoader {
         this.plugin = plugin;
         Config pluginConfig = plugin.getBabies();
         this.enabled = this.config.getBoolean("Enabled");
+        this.worldsBlacklist = this.config.getStringList("WorldsBlacklist");
         this.command = this.config.getString("Command");
         this.noPermissionMessage = this.config.getString("NoPermissionMessage");
         this.giveSound = Sound.valueOf(this.config.getString("GiveSound"));
@@ -48,10 +53,12 @@ public final class Mounts extends ConfigLoader {
         this.mountSpeed = this.config.getDouble("MountSpeed");
         this.guiName = this.config.getString("GUIName");
         this.guiSize = Parsing.parseInt(this.config.getString("GUISize"));
-        this.removeItem = Methods.getRemoveItem(this.config);
-        this.removeItem_Position = Parsing.parseInt(this.config.getString("RemoveItem.Position"));
         this.noPermissionItem = Methods.getNoPermissionItem(this.config);
         this.noPermissionItem_Enabled = this.config.getBoolean("NoPermissionItem.Enabled");
+        this.removeItem = Methods.getGuiItem(this.config, "RemoveItem");
+        this.homeItem = Methods.getGuiItem(this.config, "HomeItem");
+        this.previousItem = Methods.getGuiItem(this.config, "PreviousItem");
+        this.nextItem = Methods.getGuiItem(this.config, "NextItem");
         this.mounts = getMountsInternal();
         this.maxPage = getMaxPageInternal();
         if (pluginConfig.getLoggingLevel() >= 2)
@@ -77,7 +84,7 @@ public final class Mounts extends ConfigLoader {
                 this.plugin,
                 identifier,
                 new CustomItem(Parsing.parseMaterial(item), 1, Parsing.parseData(item), Placeholders.parse(this.config.getString(path + "Name")), Placeholders.parse(this.config.getString(path + "Description"))),
-                Parsing.parseInt(this.config.getString(path + "Position")),
+                this.config.getInt(path + "Position"),
                 this.config.getString(path + "Permission"),
                 this.config.getString(path + "MountType"),
                 this.config.getStringList(path + "MountData")
@@ -86,10 +93,6 @@ public final class Mounts extends ConfigLoader {
 
     public Iterable<MountStorage> getMounts() {
         return Collections.unmodifiableList(this.mounts);
-    }
-
-    public CustomItem getRemoveItem() {
-        return this.removeItem;
     }
 
     public String getGuiName() {
@@ -120,8 +123,24 @@ public final class Mounts extends ConfigLoader {
         return this.enabled;
     }
 
-    public int getRemoveItemPosition() {
-        return this.removeItem_Position;
+    public List<String> getWorldsBlacklist() {
+        return Collections.unmodifiableList(this.worldsBlacklist);
+    }
+
+    public GuiItem getRemoveItem() {
+        return this.removeItem;
+    }
+
+    public GuiItem getHomeItem() {
+        return this.homeItem;
+    }
+
+    public GuiItem getPreviousItem() {
+        return this.previousItem;
+    }
+
+    public GuiItem getNextItem() {
+        return this.nextItem;
     }
 
     public int getGuiSize() {

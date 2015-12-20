@@ -2,9 +2,9 @@ package com.j0ach1mmall3.ultimatecosmetics.internal.gui;
 
 import com.j0ach1mmall3.jlib.inventory.CustomEnchantment;
 import com.j0ach1mmall3.jlib.inventory.GUI;
+import com.j0ach1mmall3.jlib.inventory.GuiItem;
 import com.j0ach1mmall3.ultimatecosmetics.Main;
 import com.j0ach1mmall3.ultimatecosmetics.api.events.PlayerClickInGuiEvent;
-import com.j0ach1mmall3.ultimatecosmetics.internal.config.Pagination;
 import org.bukkit.Bukkit;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
@@ -64,8 +64,6 @@ abstract class GuiHandler implements Listener {
                 ItemStack item = e.getCurrentItem();
                 if (item.getItemMeta().getDisplayName().isEmpty()) return;
                 Player p = (Player) e.getWhoClicked();
-                Pagination pagination = plugin.getPagination();
-                if (pagination.getHomeItem().getItem().isSimilar(item)) return;
                 if (item.containsEnchantment(glow)) return;
                 PlayerClickInGuiEvent event = new PlayerClickInGuiEvent(p, gui, item);
                 Bukkit.getPluginManager().callEvent(event);
@@ -90,12 +88,11 @@ abstract class GuiHandler implements Listener {
 
     protected abstract void handleClick(GUI gui, Player p, ItemStack item);
 
-    static GUI buildGui(String name, int size) {
+    static GUI buildGui(String name, int size, GuiItem homeItem, GuiItem previousItem, GuiItem nextItem) {
         GUI gui = new GUI(name, size);
-        Pagination pagination = plugin.getPagination();
-        gui.setItem(pagination.getHomeItem().getPosition(), pagination.getHomeItem().getItem());
-        gui.setItem(pagination.getPreviousItem().getPosition(), pagination.getPreviousItem().getItem());
-        gui.setItem(pagination.getNextItem().getPosition(), pagination.getNextItem().getItem());
+        gui.setItem(homeItem.getPosition(), homeItem.getItem());
+        gui.setItem(previousItem.getPosition(), previousItem.getItem());
+        gui.setItem(nextItem.getPosition(), nextItem.getItem());
         return gui;
     }
 

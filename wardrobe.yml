@@ -7,6 +7,11 @@
 
 # Should Wardrobe be enabled?
 Enabled: true
+# The worlds in which Wardrobe will not work
+# Make sure RemoveCosmeticsOnWorldChange is set to true for this to work correctly
+WorldsBlacklist:
+- someworld
+- someotherworld
 # The command to open the GUI
 Command: /wardrobe
 # The message to show when a player doesn't have permission to use an Outfit
@@ -41,6 +46,33 @@ RemoveItem:
     Description: '&c&oClick here to remove your current Outfit'
     # The position in the GUI of this item (starts at 0)
     Position: 4
+HomeItem:
+    # The item ID and optionally data of the 'Home' item
+    Item: 355
+    # The name in the GUI of the 'Home' item
+    Name: '&c&lMain menu'
+    # The description, or 'lore' of the item (use | to start a new line)
+    Description: '&8&oClick to go back to the main menu!'
+    # The position in the GUI of this item (starts at 0)
+    Position: 40
+PreviousItem:
+    # The item ID and optionally data of the 'Previous' item
+    Item: 262
+    # The name in the GUI of the 'Previous' item
+    Name: '&6< Previous'
+    # The description, or 'lore' of the item (use | to start a new line)
+    Description: '&8&oClick to go to the previous page!'
+    # The position in the GUI of this item (starts at 0)
+    Position: 39
+NextItem:
+    # The item ID and optionally data of the 'Next' item
+    Item: 262
+    # The name in the GUI of the 'Next' item
+    Name: '&6Next >'
+    # The description, or 'lore' of the item (use | to start a new line)
+    Description: '&8&oClick to go to the next page!'
+    # The position in the GUI of this item (starts at 0)
+    Position: 41
 Outfits:
     American:
         # The name in the GUI of the item
@@ -178,4 +210,4 @@ Outfits:
         Boots:
             Item: '313'
             Color: '0,0,0'
-DoNotChange: 3.3.1
+DoNotChange: 3.7.0

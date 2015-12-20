@@ -2,6 +2,7 @@ package com.j0ach1mmall3.ultimatecosmetics.internal.listeners;
 
 import com.j0ach1mmall3.jlib.methods.Sounds;
 import com.j0ach1mmall3.ultimatecosmetics.Main;
+import com.j0ach1mmall3.ultimatecosmetics.internal.config.*;
 import com.j0ach1mmall3.ultimatecosmetics.internal.gui.*;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
@@ -42,137 +43,110 @@ public final class CommandsListener implements Listener {
             e.setCancelled(true);
             return;
         }
-        if (message.equalsIgnoreCase(this.plugin.getBabies().getCosmeticsCommand())) {
+        Config config = this.plugin.getBabies();
+        if (message.equalsIgnoreCase(config.getCosmeticsCommand())) {
             e.setCancelled(true);
-            if (this.plugin.getBabies().getGuiOpenSound() != null)
-                Sounds.playSound(p, this.plugin.getBabies().getGuiOpenSound());
+            if (config.getGuiOpenSound() != null)
+                Sounds.playSound(p, config.getGuiOpenSound());
             CosmeticsGuiHandler.open(p);
             return;
         }
-        if (message.equalsIgnoreCase(this.plugin.getBalloons().getCommand())) {
+        Balloons balloons = this.plugin.getBalloons();
+        if (message.equalsIgnoreCase(balloons.getCommand())) {
             e.setCancelled(true);
-            if (this.plugin.getBalloons().isEnabled() && !this.plugin.getBabies().getWorldsBlacklist().contains(p.getWorld().getName())) {
-                BalloonsGuiHandler.open(p, 0);
-            } else {
-                this.plugin.informPlayerNotEnabled(p);
-            }
+            if (balloons.isEnabled() && !config.getWorldsBlacklist().contains(p.getWorld().getName()) && !balloons.getWorldsBlacklist().contains(p.getWorld().getName())) BalloonsGuiHandler.open(p, 0);
+            else this.plugin.informPlayerNotEnabled(p);
             return;
         }
-        if (message.equalsIgnoreCase(this.plugin.getBanners().getCommand())) {
+        Banners banners = this.plugin.getBanners();
+        if (message.equalsIgnoreCase(banners.getCommand())) {
             e.setCancelled(true);
-            if (this.plugin.getBanners().isEnabled() && !this.plugin.getBabies().getWorldsBlacklist().contains(p.getWorld().getName())) {
-                BannersGuiHandler.open(p, 0);
-            } else {
-                this.plugin.informPlayerNotEnabled(p);
-            }
+            if (banners.isEnabled() && !config.getWorldsBlacklist().contains(p.getWorld().getName()) && !banners.getWorldsBlacklist().contains(p.getWorld().getName())) BannersGuiHandler.open(p, 0);
+            else this.plugin.informPlayerNotEnabled(p);
             return;
         }
-        if (message.equalsIgnoreCase(this.plugin.getBowtrails().getCommand())) {
+        Bowtrails bowtrails = this.plugin.getBowtrails();
+        if (message.equalsIgnoreCase(bowtrails.getCommand())) {
             e.setCancelled(true);
-            if (this.plugin.getBowtrails().isEnabled() && !this.plugin.getBabies().getWorldsBlacklist().contains(p.getWorld().getName())) {
-                BowtrailsGuiHandler.open(p, 0);
-            } else {
-                this.plugin.informPlayerNotEnabled(p);
-            }
+            if (bowtrails.isEnabled() && !config.getWorldsBlacklist().contains(p.getWorld().getName()) && !bowtrails.getWorldsBlacklist().contains(p.getWorld().getName())) BowtrailsGuiHandler.open(p, 0);
+            else this.plugin.informPlayerNotEnabled(p);
             return;
         }
-        if (message.equalsIgnoreCase(this.plugin.getMorphs().getCommand())) {
+        Fireworks fireworks = this.plugin.getFireworks();
+        if (message.equalsIgnoreCase(fireworks.getCommand())) {
             e.setCancelled(true);
-            if (this.plugin.getMorphs().isEnabled() && !this.plugin.getBabies().getWorldsBlacklist().contains(p.getWorld().getName())) {
-                MorphsGuiHandler.open(p, 0);
-            } else {
-                this.plugin.informPlayerNotEnabled(p);
-            }
+            if (fireworks.isEnabled() && !config.getWorldsBlacklist().contains(p.getWorld().getName()) && !fireworks.getWorldsBlacklist().contains(p.getWorld().getName())) FireworksGuiHandler.open(p, 0);
+            else this.plugin.informPlayerNotEnabled(p);
             return;
         }
-        if (message.equalsIgnoreCase(this.plugin.getFireworks().getCommand())) {
+        Gadgets gadgets = this.plugin.getGadgets();
+        if (message.equalsIgnoreCase(gadgets.getCommand())) {
             e.setCancelled(true);
-            if (this.plugin.getFireworks().isEnabled() && !this.plugin.getBabies().getWorldsBlacklist().contains(p.getWorld().getName())) {
-                FireworksGuiHandler.open(p, 0);
-            } else {
-                this.plugin.informPlayerNotEnabled(p);
-            }
+            if (gadgets.isEnabled() && !config.getWorldsBlacklist().contains(p.getWorld().getName()) && !gadgets.getWorldsBlacklist().contains(p.getWorld().getName())) GadgetsGuiHandler.open(p, 0);
+            else this.plugin.informPlayerNotEnabled(p);
             return;
         }
-        if (message.equalsIgnoreCase(this.plugin.getGadgets().getCommand())) {
+        Hats hats = this.plugin.getHats();
+        if (message.equalsIgnoreCase(hats.getCommand())) {
             e.setCancelled(true);
-            if (this.plugin.getGadgets().isEnabled() && !this.plugin.getBabies().getWorldsBlacklist().contains(p.getWorld().getName())) {
-                GadgetsGuiHandler.open(p, 0);
-            } else {
-                this.plugin.informPlayerNotEnabled(p);
-            }
+            if (hats.isEnabled() && !config.getWorldsBlacklist().contains(p.getWorld().getName()) && !hats.getWorldsBlacklist().contains(p.getWorld().getName())) HatsGuiHandler.open(p, 0);
+            else this.plugin.informPlayerNotEnabled(p);
             return;
         }
-        if (message.equalsIgnoreCase(this.plugin.getHats().getCommand())) {
+        Hearts hearts = this.plugin.getHearts();
+        if (message.equalsIgnoreCase(hearts.getCommand())) {
             e.setCancelled(true);
-            if (this.plugin.getHats().isEnabled() && !this.plugin.getBabies().getWorldsBlacklist().contains(p.getWorld().getName())) {
-                HatsGuiHandler.open(p, 0);
-            } else {
-                this.plugin.informPlayerNotEnabled(p);
-            }
+            if (hearts.isEnabled() && !config.getWorldsBlacklist().contains(p.getWorld().getName()) && !hearts.getWorldsBlacklist().contains(p.getWorld().getName())) HeartsGuiHandler.open(p, 0);
+            else this.plugin.informPlayerNotEnabled(p);
             return;
         }
-        if (message.equalsIgnoreCase(this.plugin.getHearts().getCommand())) {
+        Morphs morphs = this.plugin.getMorphs();
+        if (message.equalsIgnoreCase(morphs.getCommand())) {
             e.setCancelled(true);
-            if (this.plugin.getHearts().isEnabled() && !this.plugin.getBabies().getWorldsBlacklist().contains(p.getWorld().getName())) {
-                HeartsGuiHandler.open(p, 0);
-            } else {
-                this.plugin.informPlayerNotEnabled(p);
-            }
+            if (morphs.isEnabled() && !config.getWorldsBlacklist().contains(p.getWorld().getName()) && !morphs.getWorldsBlacklist().contains(p.getWorld().getName())) MorphsGuiHandler.open(p, 0);
+            else this.plugin.informPlayerNotEnabled(p);
             return;
         }
-        if (message.equalsIgnoreCase(this.plugin.getMounts().getCommand())) {
+        Mounts mounts = this.plugin.getMounts();
+        if (message.equalsIgnoreCase(mounts.getCommand())) {
             e.setCancelled(true);
-            if (this.plugin.getMounts().isEnabled() && !this.plugin.getBabies().getWorldsBlacklist().contains(p.getWorld().getName())) {
-                MountsGuiHandler.open(p, 0);
-            } else {
-                this.plugin.informPlayerNotEnabled(p);
-            }
+            if (mounts.isEnabled() && !config.getWorldsBlacklist().contains(p.getWorld().getName()) && !mounts.getWorldsBlacklist().contains(p.getWorld().getName())) MountsGuiHandler.open(p, 0);
+            else this.plugin.informPlayerNotEnabled(p);
             return;
         }
-        if (message.equalsIgnoreCase(this.plugin.getMusic().getCommand())) {
+        Music music = this.plugin.getMusic();
+        if (message.equalsIgnoreCase(music.getCommand())) {
             e.setCancelled(true);
-            if (this.plugin.getMusic().isEnabled() && !this.plugin.getBabies().getWorldsBlacklist().contains(p.getWorld().getName())) {
-                MusicGuiHandler.open(p, 0);
-            } else {
-                this.plugin.informPlayerNotEnabled(p);
-            }
+            if (music.isEnabled() && !config.getWorldsBlacklist().contains(p.getWorld().getName()) && !music.getWorldsBlacklist().contains(p.getWorld().getName())) MusicGuiHandler.open(p, 0);
+            else this.plugin.informPlayerNotEnabled(p);
             return;
         }
-        if (message.equalsIgnoreCase(this.plugin.getParticles().getCommand())) {
+        Particles particles = this.plugin.getParticles();
+        if (message.equalsIgnoreCase(particles.getCommand())) {
             e.setCancelled(true);
-            if (this.plugin.getParticles().isEnabled() && !this.plugin.getBabies().getWorldsBlacklist().contains(p.getWorld().getName())) {
-                ParticlesGuiHandler.open(p, 0);
-            } else {
-                this.plugin.informPlayerNotEnabled(p);
-            }
+            if (particles.isEnabled() && !config.getWorldsBlacklist().contains(p.getWorld().getName()) && !particles.getWorldsBlacklist().contains(p.getWorld().getName())) ParticlesGuiHandler.open(p, 0);
+            else this.plugin.informPlayerNotEnabled(p);
             return;
         }
-        if (message.equalsIgnoreCase(this.plugin.getPets().getCommand())) {
+        Pets pets = this.plugin.getPets();
+        if (message.equalsIgnoreCase(pets.getCommand())) {
             e.setCancelled(true);
-            if (this.plugin.getPets().isEnabled() && !this.plugin.getBabies().getWorldsBlacklist().contains(p.getWorld().getName())) {
-                PetsGuiHandler.open(p, 0);
-            } else {
-                this.plugin.informPlayerNotEnabled(p);
-            }
+            if (pets.isEnabled() && !config.getWorldsBlacklist().contains(p.getWorld().getName()) && !pets.getWorldsBlacklist().contains(p.getWorld().getName())) PetsGuiHandler.open(p, 0);
+            else this.plugin.informPlayerNotEnabled(p);
             return;
         }
-        if (message.equalsIgnoreCase(this.plugin.getTrails().getCommand())) {
+        Trails trails = this.plugin.getTrails();
+        if (message.equalsIgnoreCase(trails.getCommand())) {
             e.setCancelled(true);
-            if (this.plugin.getTrails().isEnabled() && !this.plugin.getBabies().getWorldsBlacklist().contains(p.getWorld().getName())) {
-                TrailsGuiHandler.open(p, 0);
-            } else {
-                this.plugin.informPlayerNotEnabled(p);
-            }
+            if (trails.isEnabled() && !config.getWorldsBlacklist().contains(p.getWorld().getName()) && !trails.getWorldsBlacklist().contains(p.getWorld().getName())) TrailsGuiHandler.open(p, 0);
+            else this.plugin.informPlayerNotEnabled(p);
             return;
         }
-        if (message.equalsIgnoreCase(this.plugin.getWardrobe().getCommand())) {
+        Wardrobe wardrobe = this.plugin.getWardrobe();
+        if (message.equalsIgnoreCase(wardrobe.getCommand())) {
             e.setCancelled(true);
-            if (this.plugin.getWardrobe().isEnabled() && !this.plugin.getBabies().getWorldsBlacklist().contains(p.getWorld().getName())) {
-                WardrobeGuiHandler.open(p, 0);
-            } else {
-                this.plugin.informPlayerNotEnabled(p);
-            }
+            if (wardrobe.isEnabled() && !config.getWorldsBlacklist().contains(p.getWorld().getName()) && !wardrobe.getWorldsBlacklist().contains(p.getWorld().getName())) WardrobeGuiHandler.open(p, 0);
+            else this.plugin.informPlayerNotEnabled(p);
         }
     }
 }

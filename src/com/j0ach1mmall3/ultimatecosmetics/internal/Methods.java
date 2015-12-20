@@ -2,6 +2,7 @@ package com.j0ach1mmall3.ultimatecosmetics.internal;
 
 import com.j0ach1mmall3.jlib.integration.Placeholders;
 import com.j0ach1mmall3.jlib.inventory.CustomItem;
+import com.j0ach1mmall3.jlib.inventory.GuiItem;
 import com.j0ach1mmall3.jlib.methods.General;
 import com.j0ach1mmall3.jlib.methods.Parsing;
 import com.j0ach1mmall3.ultimatecosmetics.Main;
@@ -18,7 +19,6 @@ import org.bukkit.permissions.Permissible;
  */
 public final class Methods {
     private Methods() {
-
     }
 
     public static CustomItem getNoPermissionItem(ConfigurationSection config) {
@@ -27,10 +27,10 @@ public final class Methods {
         return new CustomItem(Parsing.parseMaterial(item), 1, Parsing.parseData(item), Placeholders.parse(config.getString(path + "Name")), Placeholders.parse(config.getString(path + "Description")));
     }
 
-    public static CustomItem getRemoveItem(ConfigurationSection config) {
-        String path = "RemoveItem.";
-        String item = config.getString(path + "Item");
-        return new CustomItem(Parsing.parseMaterial(item), 1, Parsing.parseData(item), Placeholders.parse(config.getString(path + "Name")), Placeholders.parse(config.getString(path + "Description")));
+    public static GuiItem getGuiItem(ConfigurationSection config, String identifier) {
+        String path = identifier + '.';
+        return new GuiItem(new CustomItem(Parsing.parseMaterial(config.getString(path + "Item")), 1, Parsing.parseData(config.getString(path + "Item")), Placeholders.parse(config.getString(path + "Name")), Placeholders.parse(config.getString(path + "Description"))),
+                config.getInt(path + "Position"));
     }
 
     public static void cleanup(Main plugin) {

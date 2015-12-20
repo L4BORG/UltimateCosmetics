@@ -22,7 +22,7 @@ import com.j0ach1mmall3.ultimatecosmetics.internal.listeners.*;
 import com.j0ach1mmall3.ultimatecosmetics.internal.morphs.MorphsListener;
 import com.j0ach1mmall3.ultimatecosmetics.internal.mounts.MountsListener;
 import com.j0ach1mmall3.ultimatecosmetics.internal.music.MusicListener;
-import com.j0ach1mmall3.ultimatecosmetics.internal.particles.ParticlesTask;
+import com.j0ach1mmall3.ultimatecosmetics.internal.particles.shapes.*;
 import com.j0ach1mmall3.ultimatecosmetics.internal.pets.PetsListener;
 import com.j0ach1mmall3.ultimatecosmetics.internal.trails.TrailsListener;
 import com.j0ach1mmall3.ultimatecosmetics.internal.wardrobe.WardrobeListener;
@@ -52,7 +52,6 @@ public final class Main extends JavaPlugin {
     private Storage storage = null;
     private DataLoader dataLoader = null;
     private Misc misc = null;
-    private Pagination pagination = null;
     private Balloons balloons = null;
     private Banners banners = null;
     private Bowtrails bowtrails = null;
@@ -143,7 +142,6 @@ public final class Main extends JavaPlugin {
                 break;
         }
         this.misc = new Misc(this);
-        this.pagination = new Pagination(this);
         if (this.config.getLoggingLevel() >= 2) General.sendColoredMessage(this, "Enabling Balloons...", ChatColor.GREEN);
         this.balloons = new Balloons(this);
         new BalloonsListener(this);
@@ -175,7 +173,15 @@ public final class Main extends JavaPlugin {
         new MusicListener(this);
         if (this.config.getLoggingLevel() >= 2) General.sendColoredMessage(this, "Enabling Particles...", ChatColor.GREEN);
         this.particles = new Particles(this);
-        new ParticlesTask(this).runTaskTimerAsynchronously(this, (long) (this.particles.getUpdateInterval() * 20.0), (long) (this.particles.getUpdateInterval() * 20.0));
+        if(this.particles.isEnabled()) {
+            new Random(this).runTaskTimerAsynchronously(this, (long) (this.particles.getUpdateInterval() * 20.0), (long) (this.particles.getUpdateInterval() * 20.0));
+            new Halo(this).runTaskTimerAsynchronously(this, (long) (this.particles.getUpdateInterval() * 20.0), (long) (this.particles.getUpdateInterval() * 20.0));
+            new Helix(this).runTaskTimerAsynchronously(this, (long) (this.particles.getUpdateInterval() * 20.0), (long) (this.particles.getUpdateInterval() * 20.0));
+            new Cross(this).runTaskTimerAsynchronously(this, (long) (this.particles.getUpdateInterval() * 20.0), (long) (this.particles.getUpdateInterval() * 20.0));
+            new Trail(this).runTaskTimerAsynchronously(this, (long) (this.particles.getUpdateInterval() * 20.0), (long) (this.particles.getUpdateInterval() * 20.0));
+            new Dome(this).runTaskTimerAsynchronously(this, (long) (this.particles.getUpdateInterval() * 20.0), (long) (this.particles.getUpdateInterval() * 20.0));
+            new Sphere(this).runTaskTimerAsynchronously(this, (long) (this.particles.getUpdateInterval() * 20.0), (long) (this.particles.getUpdateInterval() * 20.0));
+        }
         if (this.config.getLoggingLevel() >= 2) General.sendColoredMessage(this, "Enabling Pets...", ChatColor.GREEN);
         this.pets = new Pets(this);
         new PetsListener(this);
@@ -346,10 +352,6 @@ public final class Main extends JavaPlugin {
 
     public MorphsListener getMorphsListener() {
         return this.morphsListener;
-    }
-
-    public Pagination getPagination() {
-        return this.pagination;
     }
 
     public Bowtrails getBowtrails() {

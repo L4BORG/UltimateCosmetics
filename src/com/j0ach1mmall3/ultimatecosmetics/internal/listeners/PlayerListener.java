@@ -7,13 +7,11 @@ import com.j0ach1mmall3.jlib.methods.Sounds;
 import com.j0ach1mmall3.ultimatecosmetics.Main;
 import com.j0ach1mmall3.ultimatecosmetics.api.CosmeticsAPI;
 import com.j0ach1mmall3.ultimatecosmetics.api.cosmetics.Morph;
+import com.j0ach1mmall3.ultimatecosmetics.api.storage.DoubleJumpStorage;
 import com.j0ach1mmall3.ultimatecosmetics.internal.Methods;
-import com.j0ach1mmall3.ultimatecosmetics.internal.config.Config;
-import com.j0ach1mmall3.ultimatecosmetics.internal.config.Pagination;
 import com.j0ach1mmall3.ultimatecosmetics.internal.data.CosmeticsQueue;
 import com.j0ach1mmall3.ultimatecosmetics.internal.data.DataLoader;
 import com.j0ach1mmall3.ultimatecosmetics.internal.gui.CosmeticsGuiHandler;
-import com.j0ach1mmall3.ultimatecosmetics.api.storage.DoubleJumpStorage;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
@@ -27,9 +25,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.*;
-import org.bukkit.inventory.ItemStack;
 
 /**
  * Created by j0ach1mmall3 on 1:53 21/08/2015 using IntelliJ IDEA.
@@ -139,18 +135,6 @@ public final class PlayerListener implements Listener {
                     }
                 }
             }
-        }
-    }
-
-    @EventHandler
-    public void onInventoryClick(InventoryClickEvent e) {
-        ItemStack item = e.getCurrentItem();
-        Player p = (Player) e.getWhoClicked();
-        Config config = this.plugin.getBabies();
-        Pagination pagination = this.plugin.getPagination();
-        if (pagination.getHomeItem().getItem().isSimilar(item)) {
-            if (config.getGuiClickSound() != null) Sounds.playSound(p, config.getGuiClickSound());
-            CosmeticsGuiHandler.open(p);
         }
     }
 

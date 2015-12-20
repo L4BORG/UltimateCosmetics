@@ -7,7 +7,6 @@ import com.j0ach1mmall3.jlib.methods.Sounds;
 import com.j0ach1mmall3.ultimatecosmetics.Main;
 import com.j0ach1mmall3.ultimatecosmetics.api.events.PlayerOpenGuiEvent;
 import com.j0ach1mmall3.ultimatecosmetics.internal.config.Config;
-import com.j0ach1mmall3.ultimatecosmetics.internal.config.Pagination;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
@@ -40,12 +39,6 @@ public final class CosmeticsGuiHandler extends GuiHandler {
     @Override
     protected void handleClick(GUI gui, Player p, ItemStack item) {
         Config config = plugin.getBabies();
-        Pagination pagination = plugin.getPagination();
-        if (pagination.getHomeItem().getItem().isSimilar(item)) {
-            if (config.getGuiClickSound() != null) Sounds.playSound(p, config.getGuiClickSound());
-            open(p);
-            return;
-        }
         if (gui.getName().equals(Placeholders.parse(config.getCosmeticsGuiName(), p))) {
             String command = config.getCommandByItemStack(item);
             PlayerCommandPreprocessEvent event = new PlayerCommandPreprocessEvent(p, command);

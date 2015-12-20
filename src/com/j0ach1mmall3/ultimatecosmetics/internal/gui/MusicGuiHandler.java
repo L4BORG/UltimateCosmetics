@@ -9,7 +9,6 @@ import com.j0ach1mmall3.ultimatecosmetics.api.events.PlayerOpenGuiEvent;
 import com.j0ach1mmall3.ultimatecosmetics.api.storage.MusicStorage;
 import com.j0ach1mmall3.ultimatecosmetics.internal.Methods;
 import com.j0ach1mmall3.ultimatecosmetics.internal.config.Music;
-import com.j0ach1mmall3.ultimatecosmetics.internal.config.Pagination;
 import com.j0ach1mmall3.ultimatecosmetics.internal.music.MusicImpl;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -27,7 +26,7 @@ public final class MusicGuiHandler extends GuiHandler {
         Player p1 = p;
         Music config = plugin.getMusic();
         CosmeticsAPI api = plugin.getApi();
-        GUI gui = buildGui(config.getGuiName(), config.getGuiSize());
+        GUI gui = buildGui(config.getGuiName(), config.getGuiSize(), config.getHomeItem(), config.getPreviousItem(), config.getNextItem());
         for (MusicStorage music : config.getMusics()) {
             int position = getRealPosition(music.getPosition(), page, config.getGuiSize());
             if (position != -1) {
@@ -42,7 +41,7 @@ public final class MusicGuiHandler extends GuiHandler {
                 }
             }
         }
-        gui.setItem(config.getRemoveItemPosition(), config.getRemoveItem());
+        gui.setItem(config.getRemoveItem());
         PlayerOpenGuiEvent event = new PlayerOpenGuiEvent(p1, gui);
         Bukkit.getPluginManager().callEvent(event);
         if (event.isCancelled()) return;
@@ -56,9 +55,14 @@ public final class MusicGuiHandler extends GuiHandler {
     protected void handleClick(GUI gui, Player p, ItemStack item) {
         Music config = plugin.getMusic();
         if (gui.getName().equals(Placeholders.parse(config.getGuiName(), p))) {
-            Pagination pagination = plugin.getPagination();
             CosmeticsAPI api = plugin.getApi();
-            if (config.getRemoveItem().isSimilar(item)) {
+            if (config.getHomeItem().getItem().isSimilar(item)) {
+                if (plugin.getBabies().getGuiClickSound() != null)
+                    Sounds.playSound(p, plugin.getBabies().getGuiClickSound());
+                CosmeticsGuiHandler.open(p);
+                return;
+            }
+            if (config.getRemoveItem().getItem().isSimilar(item)) {
                 if (api.hasMusic(p)) api.getMusic(p).remove();
                 Sounds.playSound(p, config.getRemoveSound());
                 p.closeInventory();
@@ -68,34 +72,28 @@ public final class MusicGuiHandler extends GuiHandler {
                 plugin.informPlayerNoPermission(p, config.getNoPermissionMessage());
                 return;
             }
-            if (pagination.getPreviousItem().getItem().isSimilar(item)) {
+            if (config.getPreviousItem().getItem().isSimilar(item)) {
                 if (plugin.getBabies().getGuiClickSound() != null)
                     Sounds.playSound(p, plugin.getBabies().getGuiClickSound());
                 int currPage = PAGEMAP.get(p.getName());
-                if (currPage == 0) {
-                    open(p, config.getMaxPage());
-                } else {
-                    open(p, currPage - 1);
-                }
+                if (currPage == 0) open(p, config.getMaxPage());
+                else open(p, currPage - 1);
                 return;
             }
-            if (pagination.getNextItem().getItem().isSimilar(item)) {
+            if (config.getNextItem().getItem().isSimilar(item)) {
                 if (plugin.getBabies().getGuiClickSound() != null)
                     Sounds.playSound(p, plugin.getBabies().getGuiClickSound());
                 int currPage = PAGEMAP.get(p.getName());
-                if (currPage == config.getMaxPage()) {
-                    open(p, 0);
-                } else {
-                    open(p, currPage + 1);
-                }
+                if (currPage == config.getMaxPage()) open(p, 0);
+                else open(p, currPage + 1);
                 return;
             }
-            MusicStorage music = api.getMusicByItemStack(item);
-            if (!Methods.hasPermission(p, music.getPermission())) {
+            MusicStorage musicc = api.getMusicByItemStack(item);
+            if (!Methods.hasPermission(p, musicc.getPermission())) {
                 plugin.informPlayerNoPermission(p, config.getNoPermissionMessage());
                 return;
             }
-            new MusicImpl(p, music).give();
+            new MusicImpl(p, musicc).give();
             Sounds.playSound(p, config.getGiveSound());
             p.closeInventory();
         }
