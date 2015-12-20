@@ -579,138 +579,137 @@ public final class GadgetsListener implements Listener {
                         s.setShooter(p);
 
                     }
-
-                    if ("MelonThrower".equals(gadget.getIdentifier())) {
-                        if (this.cooldownPlayers.get(p.getName()) != null && this.cooldownPlayers.get(p.getName()).split(":")[0].equals(gadget.getIdentifier())) {
-                            this.plugin.informPlayerNoPermission(p, Placeholders.parse(lang.getGadgetsCooldown().replace("%timeleft%", String.valueOf(gadget.getCooldown() - (System.currentTimeMillis() - Long.valueOf(this.cooldownPlayers.get(p.getName()).split(":")[1])) / 1000))));
-                            return;
-                        }
-                        this.cooldownPlayers.put(p.getName(), gadget.getIdentifier() + ':' + System.currentTimeMillis());
-                        Bukkit.getScheduler().scheduleSyncDelayedTask(this.plugin, () -> this.cooldownPlayers.remove(p.getName()), 20 * gadget.getCooldown());
-                        if (gadget.isUseAmmo() && !p.hasPermission("uc.unlimitedammo")) {
-                            int i = loader.getAmmo(gadget.getIdentifier(), uuid);
-                            if (i <= 0) {
-                                p.sendMessage(Placeholders.parse(lang.getNotEnoughAmmo(), p).replace("%ammoname%", gadget.getAmmoName()));
-                                return;
-                            } else {
-                                loader.takeAmmo(gadget.getIdentifier(), uuid, 1);
-                                p.sendMessage(Placeholders.parse(lang.getLostAmmo(), p).replace("%ammoleft%", String.valueOf(i - 1)).replace("%ammoname%", gadget.getAmmoName()));
-                            }
-                        }
-                        ItemStack ci = gadget.getItem().clone();
-                        ItemMeta im = ci.getItemMeta();
-                        im.setDisplayName(String.valueOf(Random.getInt()));
-                        ci.setItemMeta(im);
-                        Item item = p.getWorld().dropItemNaturally(p.getEyeLocation(), ci);
-                        item.setVelocity(p.getEyeLocation().getDirection().multiply(1.5f));
-                        item.setMetadata("UCEntity", new FixedMetadataValue(this.plugin, "Melon"));
-                        item.setPickupDelay(Integer.MAX_VALUE);
-                        this.entitiesQueue.add(item);
-
+                }
+                if ("MelonThrower".equals(gadget.getIdentifier())) {
+                    if (this.cooldownPlayers.get(p.getName()) != null && this.cooldownPlayers.get(p.getName()).split(":")[0].equals(gadget.getIdentifier())) {
+                        this.plugin.informPlayerNoPermission(p, Placeholders.parse(lang.getGadgetsCooldown().replace("%timeleft%", String.valueOf(gadget.getCooldown() - (System.currentTimeMillis() - Long.valueOf(this.cooldownPlayers.get(p.getName()).split(":")[1])) / 1000))));
+                        return;
                     }
-
-                    if ("ColorBomb".equals(gadget.getIdentifier())) {
-                        if (this.cooldownPlayers.get(p.getName()) != null && this.cooldownPlayers.get(p.getName()).split(":")[0].equals(gadget.getIdentifier())) {
-                            this.plugin.informPlayerNoPermission(p, Placeholders.parse(lang.getGadgetsCooldown().replace("%timeleft%", String.valueOf(gadget.getCooldown() - (System.currentTimeMillis() - Long.valueOf(this.cooldownPlayers.get(p.getName()).split(":")[1])) / 1000))));
+                    this.cooldownPlayers.put(p.getName(), gadget.getIdentifier() + ':' + System.currentTimeMillis());
+                    Bukkit.getScheduler().scheduleSyncDelayedTask(this.plugin, () -> this.cooldownPlayers.remove(p.getName()), 20 * gadget.getCooldown());
+                    if (gadget.isUseAmmo() && !p.hasPermission("uc.unlimitedammo")) {
+                        int i = loader.getAmmo(gadget.getIdentifier(), uuid);
+                        if (i <= 0) {
+                            p.sendMessage(Placeholders.parse(lang.getNotEnoughAmmo(), p).replace("%ammoname%", gadget.getAmmoName()));
                             return;
+                        } else {
+                            loader.takeAmmo(gadget.getIdentifier(), uuid, 1);
+                            p.sendMessage(Placeholders.parse(lang.getLostAmmo(), p).replace("%ammoleft%", String.valueOf(i - 1)).replace("%ammoname%", gadget.getAmmoName()));
                         }
-                        this.cooldownPlayers.put(p.getName(), gadget.getIdentifier() + ':' + System.currentTimeMillis());
-                        Bukkit.getScheduler().scheduleSyncDelayedTask(this.plugin, () -> this.cooldownPlayers.remove(p.getName()), 20 * gadget.getCooldown());
-                        if (gadget.isUseAmmo() && !p.hasPermission("uc.unlimitedammo")) {
-                            int i = loader.getAmmo(gadget.getIdentifier(), uuid);
-                            if (i <= 0) {
-                                p.sendMessage(Placeholders.parse(lang.getNotEnoughAmmo(), p).replace("%ammoname%", gadget.getAmmoName()));
-                                return;
-                            } else {
-                                loader.takeAmmo(gadget.getIdentifier(), uuid, 1);
-                                p.sendMessage(Placeholders.parse(lang.getLostAmmo(), p).replace("%ammoleft%", String.valueOf(i - 1)).replace("%ammoname%", gadget.getAmmoName()));
-                            }
-                        }
-                        ItemStack ci = gadget.getItem().clone();
-                        ItemMeta im = ci.getItemMeta();
-                        im.setDisplayName(String.valueOf(Random.getInt()));
-                        ci.setItemMeta(im);
-                        Item item = p.getWorld().dropItemNaturally(p.getEyeLocation(), ci);
-                        item.setVelocity(p.getEyeLocation().getDirection().multiply(1.5f));
-                        item.setMetadata("UCEntity", new FixedMetadataValue(this.plugin, "ColorBomb"));
-                        item.setPickupDelay(Integer.MAX_VALUE);
-                        this.entitiesQueue.add(item);
-
                     }
+                    ItemStack ci = gadget.getItem().clone();
+                    ItemMeta im = ci.getItemMeta();
+                    im.setDisplayName(String.valueOf(Random.getInt()));
+                    ci.setItemMeta(im);
+                    Item item = p.getWorld().dropItemNaturally(p.getEyeLocation(), ci);
+                    item.setVelocity(p.getEyeLocation().getDirection().multiply(1.5f));
+                    item.setMetadata("UCEntity", new FixedMetadataValue(this.plugin, "Melon"));
+                    item.setPickupDelay(Integer.MAX_VALUE);
+                    this.entitiesQueue.add(item);
 
-                    if ("FireTrail".equals(gadget.getIdentifier())) {
-                        if (this.cooldownPlayers.get(p.getName()) != null && this.cooldownPlayers.get(p.getName()).split(":")[0].equals(gadget.getIdentifier())) {
-                            this.plugin.informPlayerNoPermission(p, Placeholders.parse(lang.getGadgetsCooldown().replace("%timeleft%", String.valueOf(gadget.getCooldown() - (System.currentTimeMillis() - Long.valueOf(this.cooldownPlayers.get(p.getName()).split(":")[1])) / 1000))));
+                }
+
+                if ("ColorBomb".equals(gadget.getIdentifier())) {
+                    if (this.cooldownPlayers.get(p.getName()) != null && this.cooldownPlayers.get(p.getName()).split(":")[0].equals(gadget.getIdentifier())) {
+                        this.plugin.informPlayerNoPermission(p, Placeholders.parse(lang.getGadgetsCooldown().replace("%timeleft%", String.valueOf(gadget.getCooldown() - (System.currentTimeMillis() - Long.valueOf(this.cooldownPlayers.get(p.getName()).split(":")[1])) / 1000))));
+                        return;
+                    }
+                    this.cooldownPlayers.put(p.getName(), gadget.getIdentifier() + ':' + System.currentTimeMillis());
+                    Bukkit.getScheduler().scheduleSyncDelayedTask(this.plugin, () -> this.cooldownPlayers.remove(p.getName()), 20 * gadget.getCooldown());
+                    if (gadget.isUseAmmo() && !p.hasPermission("uc.unlimitedammo")) {
+                        int i = loader.getAmmo(gadget.getIdentifier(), uuid);
+                        if (i <= 0) {
+                            p.sendMessage(Placeholders.parse(lang.getNotEnoughAmmo(), p).replace("%ammoname%", gadget.getAmmoName()));
                             return;
+                        } else {
+                            loader.takeAmmo(gadget.getIdentifier(), uuid, 1);
+                            p.sendMessage(Placeholders.parse(lang.getLostAmmo(), p).replace("%ammoleft%", String.valueOf(i - 1)).replace("%ammoname%", gadget.getAmmoName()));
                         }
-                        this.cooldownPlayers.put(p.getName(), gadget.getIdentifier() + ':' + System.currentTimeMillis());
-                        Bukkit.getScheduler().scheduleSyncDelayedTask(this.plugin, () -> this.cooldownPlayers.remove(p.getName()), 20 * gadget.getCooldown());
-                        if (gadget.isUseAmmo() && !p.hasPermission("uc.unlimitedammo")) {
-                            int i = loader.getAmmo(gadget.getIdentifier(), uuid);
-                            if (i <= 0) {
-                                p.sendMessage(Placeholders.parse(lang.getNotEnoughAmmo(), p).replace("%ammoname%", gadget.getAmmoName()));
-                                return;
-                            } else {
-                                loader.takeAmmo(gadget.getIdentifier(), uuid, 1);
-                                p.sendMessage(Placeholders.parse(lang.getLostAmmo(), p).replace("%ammoleft%", String.valueOf(i - 1)).replace("%ammoname%", gadget.getAmmoName()));
-                            }
-                        }
-                        this.firePlayers.add(p.getName());
-                        p.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, config.getIntValue(gadget.getIdentifier(), "Duration") * 20, config.getIntValue(gadget.getIdentifier(), "Speed.Multiplier") - 1));
-                        General.broadcastSound(Sound.BLAZE_BREATH, p.getLocation());
-                        Bukkit.getScheduler().scheduleSyncDelayedTask(this.plugin, () -> this.firePlayers.remove(p.getName()), 20 * config.getIntValue(gadget.getIdentifier(), "Duration"));
-
                     }
+                    ItemStack ci = gadget.getItem().clone();
+                    ItemMeta im = ci.getItemMeta();
+                    im.setDisplayName(String.valueOf(Random.getInt()));
+                    ci.setItemMeta(im);
+                    Item item = p.getWorld().dropItemNaturally(p.getEyeLocation(), ci);
+                    item.setVelocity(p.getEyeLocation().getDirection().multiply(1.5f));
+                    item.setMetadata("UCEntity", new FixedMetadataValue(this.plugin, "ColorBomb"));
+                    item.setPickupDelay(Integer.MAX_VALUE);
+                    this.entitiesQueue.add(item);
 
-                    if ("DiamondShower".equals(gadget.getIdentifier())) {
-                        if (this.cooldownPlayers.get(p.getName()) != null && this.cooldownPlayers.get(p.getName()).split(":")[0].equals(gadget.getIdentifier())) {
-                            this.plugin.informPlayerNoPermission(p, Placeholders.parse(lang.getGadgetsCooldown().replace("%timeleft%", String.valueOf(gadget.getCooldown() - (System.currentTimeMillis() - Long.valueOf(this.cooldownPlayers.get(p.getName()).split(":")[1])) / 1000))));
+                }
+
+                if ("FireTrail".equals(gadget.getIdentifier())) {
+                    if (this.cooldownPlayers.get(p.getName()) != null && this.cooldownPlayers.get(p.getName()).split(":")[0].equals(gadget.getIdentifier())) {
+                        this.plugin.informPlayerNoPermission(p, Placeholders.parse(lang.getGadgetsCooldown().replace("%timeleft%", String.valueOf(gadget.getCooldown() - (System.currentTimeMillis() - Long.valueOf(this.cooldownPlayers.get(p.getName()).split(":")[1])) / 1000))));
+                        return;
+                    }
+                    this.cooldownPlayers.put(p.getName(), gadget.getIdentifier() + ':' + System.currentTimeMillis());
+                    Bukkit.getScheduler().scheduleSyncDelayedTask(this.plugin, () -> this.cooldownPlayers.remove(p.getName()), 20 * gadget.getCooldown());
+                    if (gadget.isUseAmmo() && !p.hasPermission("uc.unlimitedammo")) {
+                        int i = loader.getAmmo(gadget.getIdentifier(), uuid);
+                        if (i <= 0) {
+                            p.sendMessage(Placeholders.parse(lang.getNotEnoughAmmo(), p).replace("%ammoname%", gadget.getAmmoName()));
                             return;
+                        } else {
+                            loader.takeAmmo(gadget.getIdentifier(), uuid, 1);
+                            p.sendMessage(Placeholders.parse(lang.getLostAmmo(), p).replace("%ammoleft%", String.valueOf(i - 1)).replace("%ammoname%", gadget.getAmmoName()));
                         }
-                        this.cooldownPlayers.put(p.getName(), gadget.getIdentifier() + ':' + System.currentTimeMillis());
-                        Bukkit.getScheduler().scheduleSyncDelayedTask(this.plugin, () -> this.cooldownPlayers.remove(p.getName()), 20 * gadget.getCooldown());
-                        if (gadget.isUseAmmo() && !p.hasPermission("uc.unlimitedammo")) {
-                            int i = loader.getAmmo(gadget.getIdentifier(), uuid);
-                            if (i <= 0) {
-                                p.sendMessage(Placeholders.parse(lang.getNotEnoughAmmo(), p).replace("%ammoname%", gadget.getAmmoName()));
-                                return;
-                            } else {
-                                loader.takeAmmo(gadget.getIdentifier(), uuid, 1);
-                                p.sendMessage(Placeholders.parse(lang.getLostAmmo(), p).replace("%ammoleft%", String.valueOf(i - 1)).replace("%ammoname%", gadget.getAmmoName()));
-                            }
-                        }
-                        this.diamondShowerPlayers.add(p.getName());
-                        Bukkit.getScheduler().scheduleSyncDelayedTask(this.plugin, () -> this.diamondShowerPlayers.remove(p.getName()), 20 * config.getIntValue(gadget.getIdentifier(), "Duration"));
-
                     }
+                    this.firePlayers.add(p.getName());
+                    p.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, config.getIntValue(gadget.getIdentifier(), "Duration") * 20, config.getIntValue(gadget.getIdentifier(), "Speed.Multiplier") - 1));
+                    General.broadcastSound(Sound.BLAZE_BREATH, p.getLocation());
+                    Bukkit.getScheduler().scheduleSyncDelayedTask(this.plugin, () -> this.firePlayers.remove(p.getName()), 20 * config.getIntValue(gadget.getIdentifier(), "Duration"));
 
-                    if ("GoldFountain".equals(gadget.getIdentifier())) {
-                        if (this.cooldownPlayers.get(p.getName()) != null && this.cooldownPlayers.get(p.getName()).split(":")[0].equals(gadget.getIdentifier())) {
-                            this.plugin.informPlayerNoPermission(p, Placeholders.parse(lang.getGadgetsCooldown().replace("%timeleft%", String.valueOf(gadget.getCooldown() - (System.currentTimeMillis() - Long.valueOf(this.cooldownPlayers.get(p.getName()).split(":")[1])) / 1000))));
+                }
+
+                if ("DiamondShower".equals(gadget.getIdentifier())) {
+                    if (this.cooldownPlayers.get(p.getName()) != null && this.cooldownPlayers.get(p.getName()).split(":")[0].equals(gadget.getIdentifier())) {
+                        this.plugin.informPlayerNoPermission(p, Placeholders.parse(lang.getGadgetsCooldown().replace("%timeleft%", String.valueOf(gadget.getCooldown() - (System.currentTimeMillis() - Long.valueOf(this.cooldownPlayers.get(p.getName()).split(":")[1])) / 1000))));
+                        return;
+                    }
+                    this.cooldownPlayers.put(p.getName(), gadget.getIdentifier() + ':' + System.currentTimeMillis());
+                    Bukkit.getScheduler().scheduleSyncDelayedTask(this.plugin, () -> this.cooldownPlayers.remove(p.getName()), 20 * gadget.getCooldown());
+                    if (gadget.isUseAmmo() && !p.hasPermission("uc.unlimitedammo")) {
+                        int i = loader.getAmmo(gadget.getIdentifier(), uuid);
+                        if (i <= 0) {
+                            p.sendMessage(Placeholders.parse(lang.getNotEnoughAmmo(), p).replace("%ammoname%", gadget.getAmmoName()));
                             return;
+                        } else {
+                            loader.takeAmmo(gadget.getIdentifier(), uuid, 1);
+                            p.sendMessage(Placeholders.parse(lang.getLostAmmo(), p).replace("%ammoleft%", String.valueOf(i - 1)).replace("%ammoname%", gadget.getAmmoName()));
                         }
-                        this.cooldownPlayers.put(p.getName(), gadget.getIdentifier() + ':' + System.currentTimeMillis());
-                        Bukkit.getScheduler().scheduleSyncDelayedTask(this.plugin, () -> this.cooldownPlayers.remove(p.getName()), 20 * gadget.getCooldown());
-                        if (gadget.isUseAmmo() && !p.hasPermission("uc.unlimitedammo")) {
-                            int i = loader.getAmmo(gadget.getIdentifier(), uuid);
-                            if (i <= 0) {
-                                p.sendMessage(Placeholders.parse(lang.getNotEnoughAmmo(), p).replace("%ammoname%", gadget.getAmmoName()));
-                                return;
-                            } else {
-                                loader.takeAmmo(gadget.getIdentifier(), uuid, 1);
-                                p.sendMessage(Placeholders.parse(lang.getLostAmmo(), p).replace("%ammoleft%", String.valueOf(i - 1)).replace("%ammoname%", gadget.getAmmoName()));
-                            }
-                        }
-                        ItemStack ci = gadget.getItem().clone();
-                        ItemMeta im = ci.getItemMeta();
-                        im.setDisplayName(String.valueOf(Random.getInt()));
-                        ci.setItemMeta(im);
-                        Item item = p.getWorld().dropItemNaturally(p.getEyeLocation(), ci);
-                        item.setVelocity(p.getEyeLocation().getDirection().multiply(1.5f));
-                        item.setMetadata("UCEntity", new FixedMetadataValue(this.plugin, "GoldFountain"));
-                        item.setPickupDelay(Integer.MAX_VALUE);
-                        this.entitiesQueue.add(item);
                     }
+                    this.diamondShowerPlayers.add(p.getName());
+                    Bukkit.getScheduler().scheduleSyncDelayedTask(this.plugin, () -> this.diamondShowerPlayers.remove(p.getName()), 20 * config.getIntValue(gadget.getIdentifier(), "Duration"));
+
+                }
+
+                if ("GoldFountain".equals(gadget.getIdentifier())) {
+                    if (this.cooldownPlayers.get(p.getName()) != null && this.cooldownPlayers.get(p.getName()).split(":")[0].equals(gadget.getIdentifier())) {
+                        this.plugin.informPlayerNoPermission(p, Placeholders.parse(lang.getGadgetsCooldown().replace("%timeleft%", String.valueOf(gadget.getCooldown() - (System.currentTimeMillis() - Long.valueOf(this.cooldownPlayers.get(p.getName()).split(":")[1])) / 1000))));
+                        return;
+                    }
+                    this.cooldownPlayers.put(p.getName(), gadget.getIdentifier() + ':' + System.currentTimeMillis());
+                    Bukkit.getScheduler().scheduleSyncDelayedTask(this.plugin, () -> this.cooldownPlayers.remove(p.getName()), 20 * gadget.getCooldown());
+                    if (gadget.isUseAmmo() && !p.hasPermission("uc.unlimitedammo")) {
+                        int i = loader.getAmmo(gadget.getIdentifier(), uuid);
+                        if (i <= 0) {
+                            p.sendMessage(Placeholders.parse(lang.getNotEnoughAmmo(), p).replace("%ammoname%", gadget.getAmmoName()));
+                            return;
+                        } else {
+                            loader.takeAmmo(gadget.getIdentifier(), uuid, 1);
+                            p.sendMessage(Placeholders.parse(lang.getLostAmmo(), p).replace("%ammoleft%", String.valueOf(i - 1)).replace("%ammoname%", gadget.getAmmoName()));
+                        }
+                    }
+                    ItemStack ci = gadget.getItem().clone();
+                    ItemMeta im = ci.getItemMeta();
+                    im.setDisplayName(String.valueOf(Random.getInt()));
+                    ci.setItemMeta(im);
+                    Item item = p.getWorld().dropItemNaturally(p.getEyeLocation(), ci);
+                    item.setVelocity(p.getEyeLocation().getDirection().multiply(1.5f));
+                    item.setMetadata("UCEntity", new FixedMetadataValue(this.plugin, "GoldFountain"));
+                    item.setPickupDelay(Integer.MAX_VALUE);
+                    this.entitiesQueue.add(item);
                 }
                 if ("PaintTrail".equals(gadget.getIdentifier())) {
                     if (this.cooldownPlayers.get(p.getName()) != null && this.cooldownPlayers.get(p.getName()).split(":")[0].equals(gadget.getIdentifier())) {
