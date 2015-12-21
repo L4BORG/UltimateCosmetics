@@ -12,10 +12,7 @@ import com.j0ach1mmall3.ultimatecosmetics.internal.Methods;
 import com.j0ach1mmall3.ultimatecosmetics.internal.data.CosmeticsQueue;
 import com.j0ach1mmall3.ultimatecosmetics.internal.data.DataLoader;
 import com.j0ach1mmall3.ultimatecosmetics.internal.gui.CosmeticsGuiHandler;
-import org.bukkit.ChatColor;
-import org.bukkit.GameMode;
-import org.bukkit.Material;
-import org.bukkit.Sound;
+import org.bukkit.*;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.AnimalTamer;
 import org.bukkit.entity.Creature;
@@ -143,9 +140,11 @@ public final class PlayerListener implements Listener {
         Player p = e.getPlayer();
         String uuid = p.getUniqueId().toString();
         DataLoader loader = this.plugin.getDataLoader();
-        loader.loadAmmo(uuid);
-        loader.createStacker(p);
-        loader.createQueue(p);
+        Bukkit.getScheduler().runTaskAsynchronously(this.plugin, () -> {
+            loader.loadAmmo(uuid);
+            loader.createStacker(p);
+            loader.createQueue(p);
+        });
         if (this.plugin.getBabies().isGiveItemOnJoin()) p.getInventory().setItem(this.plugin.getBabies().getJoinItemSlot(), this.plugin.getBabies().getJoinItem());
         if (this.plugin.getBabies().isUpdateChecker() && p.hasPermission("uc.reload")) {
             AsyncUpdateChecker checker = new AsyncUpdateChecker(this.plugin, 5885, this.plugin.getDescription().getVersion());
@@ -185,13 +184,17 @@ public final class PlayerListener implements Listener {
 
     @EventHandler
     public void onPlayerLeave(PlayerQuitEvent e) {
-        this.plugin.getDataLoader().updateQueue(e.getPlayer(), new CosmeticsQueue(this.plugin, e.getPlayer()));
-        this.plugin.getDataLoader().unloadAmmo(e.getPlayer().getUniqueId().toString());
+        Bukkit.getScheduler().runTaskAsynchronously(this.plugin, () -> {
+            this.plugin.getDataLoader().updateQueue(e.getPlayer(), new CosmeticsQueue(this.plugin, e.getPlayer()));
+            this.plugin.getDataLoader().unloadAmmo(e.getPlayer().getUniqueId().toString());
+        });
     }
 
     @EventHandler
     public void onPlayerKick(PlayerKickEvent e) {
-        this.plugin.getDataLoader().updateQueue(e.getPlayer(), new CosmeticsQueue(this.plugin, e.getPlayer()));
-        this.plugin.getDataLoader().unloadAmmo(e.getPlayer().getUniqueId().toString());
+        Bukkit.getScheduler().runTaskAsynchronously(this.plugin, () -> {
+            this.plugin.getDataLoader().updateQueue(e.getPlayer(), new CosmeticsQueue(this.plugin, e.getPlayer()));
+            this.plugin.getDataLoader().unloadAmmo(e.getPlayer().getUniqueId().toString());
+        });
     }
 }
