@@ -43,7 +43,6 @@ public final class Methods {
         for (Player p : Bukkit.getOnlinePlayers()) {
             removeCosmetics(p, plugin);
         }
-        plugin.getDataLoader().disconnectLoader();
         if (plugin.getBabies().getLoggingLevel() >= 1) General.sendColoredMessage(plugin, "Done!", ChatColor.GREEN);
     }
 
