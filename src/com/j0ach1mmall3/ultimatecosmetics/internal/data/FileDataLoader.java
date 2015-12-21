@@ -81,7 +81,7 @@ public final class FileDataLoader extends ConfigLoader implements DataLoader {
 
     @Override
     public void giveBackQueue(Player p) {
-        if(this.customConfig.getKeys("Queue") == null || !this.customConfig.getKeys("Queue").contains(p.getUniqueId().toString())) new CosmeticsQueue((Main) this.plugin, this.config.getStringList("Queue." + p.getUniqueId())).give(p);
+        if(this.customConfig.getKeys("Queue") != null && this.customConfig.getKeys("Queue").contains(p.getUniqueId().toString())) new CosmeticsQueue((Main) this.plugin, this.config.getStringList("Queue." + p.getUniqueId())).give(p);
     }
 
     @Override
