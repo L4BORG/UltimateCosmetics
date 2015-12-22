@@ -5,7 +5,6 @@ import com.j0ach1mmall3.jlib.integration.Placeholders;
 import com.j0ach1mmall3.ultimatecosmetics.Main;
 import com.j0ach1mmall3.ultimatecosmetics.api.CosmeticsAPI;
 import com.j0ach1mmall3.ultimatecosmetics.api.cosmetics.Pet;
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -13,6 +12,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.*;
 import org.bukkit.event.player.*;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -24,7 +24,7 @@ public final class PetsListener implements Listener {
     public PetsListener(Main plugin) {
         this.plugin = plugin;
         plugin.getServer().getPluginManager().registerEvents(this, plugin);
-        startScheduler(plugin);
+        startScheduler();
     }
 
     @EventHandler
@@ -129,16 +129,19 @@ public final class PetsListener implements Listener {
         this.renamingPlayers.remove(e.getPlayer().getName());
     }
 
-    private void startScheduler(Main plugin) {
-        Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin, () -> {
-            for (Pet pet : plugin.getApi().getPets()) {
-                Entity ent = pet.getEntity();
-                Player p = pet.getPlayer();
-                if (!ent.getWorld().getName().equalsIgnoreCase(p.getWorld().getName()) || ent.getLocation().distance(p.getLocation()) >= plugin.getPets().getTeleportDistance()) {
-                    ent.teleport(p);
+    private void startScheduler() {
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                for (Pet pet : PetsListener.this.plugin.getApi().getPets()) {
+                    Entity ent = pet.getEntity();
+                    Player p = pet.getPlayer();
+                    if (!ent.getWorld().getName().equalsIgnoreCase(p.getWorld().getName()) || ent.getLocation().distance(p.getLocation()) >= PetsListener.this.plugin.getPets().getTeleportDistance()) {
+                        ent.teleport(p);
+                    }
                 }
             }
-        }, 0L, plugin.getPets().getTeleportInterval() * 20);
+        }.runTaskTimer(this.plugin, 0L, this.plugin.getPets().getTeleportInterval() * 20);
     }
 
     private boolean isPet(Entity ent) {

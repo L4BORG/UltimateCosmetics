@@ -12,9 +12,9 @@ import com.j0ach1mmall3.ultimatecosmetics.internal.Methods;
 import org.bukkit.ChatColor;
 import org.bukkit.Sound;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * Created by j0ach1mmall3 on 10:22 23/08/2015 using IntelliJ IDEA.
@@ -76,7 +76,11 @@ public final class Hearts extends ConfigLoader {
     }
 
     private List<HeartStorage> getHeartsInternal() {
-        return this.customConfig.getKeys("Hearts").stream().map(this::getHeartByIdentifier).collect(Collectors.toList());
+        List<HeartStorage> heartz = new ArrayList<>();
+        for(String s : this.customConfig.getKeys("Hearts")) {
+            heartz.add(this.getHeartByIdentifier(s));
+        }
+        return heartz;
     }
 
     private HeartStorage getHeartByIdentifier(String identifier) {

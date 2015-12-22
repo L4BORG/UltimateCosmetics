@@ -27,6 +27,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
 import java.util.*;
@@ -37,7 +38,7 @@ import java.util.*;
 public final class MorphsListener implements Listener {
     private final Main plugin;
     private final Collection<Entity> entitiesQueue = new ArrayList<>();
-    private final HashMap<String, String> cooldownPlayers = new HashMap<>();
+    private final Map<String, String> cooldownPlayers = new HashMap<>();
 
     public MorphsListener(Main plugin) {
         this.plugin = plugin;
@@ -65,6 +66,7 @@ public final class MorphsListener implements Listener {
             this.entitiesQueue.remove(e.getDamager());
             return;
         }
+        if (e.getDamager().hasMetadata("MorphAbility")) e.setCancelled(true);
         if (e.getEntity() instanceof LivingEntity && isEntity(e.getEntity())) e.setCancelled(true);
     }
 
@@ -95,14 +97,17 @@ public final class MorphsListener implements Listener {
             this.entitiesQueue.remove(e.getEntity());
             e.getEntity().remove();
             int duration = e.getEntity().getMetadata("AbilityEgg").get(0).asInt();
-            Ageable chicken = (Ageable) e.getEntity().getWorld().spawnEntity(e.getEntity().getLocation(), EntityType.CHICKEN);
+            final Ageable chicken = (Ageable) e.getEntity().getWorld().spawnEntity(e.getEntity().getLocation(), EntityType.CHICKEN);
             chicken.setBaby();
             chicken.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, duration * 20, 1));
             this.entitiesQueue.add(chicken);
-            Bukkit.getScheduler().scheduleSyncDelayedTask(this.plugin, () -> {
-                this.entitiesQueue.remove(chicken);
-                chicken.remove();
-            }, 20 * duration);
+            new BukkitRunnable() {
+                @Override
+                public void run() {
+                    MorphsListener.this.entitiesQueue.remove(chicken);
+                    chicken.remove();
+                }
+            }.runTaskLater(this.plugin, 20 * duration);
             return;
         }
         if (e.getEntity().hasMetadata("AbilityArrow") || e.getEntity().hasMetadata("AbilitySnowball") || e.getEntity().hasMetadata("AbilitySkull")) {
@@ -146,7 +151,7 @@ public final class MorphsListener implements Listener {
 
     @EventHandler
     public void onInteract(PlayerInteractEvent e) {
-        Player p = e.getPlayer();
+        final Player p = e.getPlayer();
         Morphs config = this.plugin.getMorphs();
         Lang lang = this.plugin.getLang();
         if (this.plugin.isLibsDisguises() && config.isAbilityItem(p.getItemInHand())) {
@@ -158,23 +163,34 @@ public final class MorphsListener implements Listener {
                 return;
             }
             this.cooldownPlayers.put(p.getName(), morph.getIdentifier() + ':' + System.currentTimeMillis());
-            Bukkit.getScheduler().scheduleSyncDelayedTask(this.plugin, () -> this.cooldownPlayers.remove(p.getName()), 20 * morph.getAbilityCooldown());
+            new BukkitRunnable() {
+                @Override
+                public void run() {
+                    MorphsListener.this.cooldownPlayers.remove(p.getName());
+                }
+            }.runTaskLater(this.plugin, 20 * morph.getAbilityCooldown());
             String morphType = morph.getMorphType().toLowerCase();
             if ("bat".equals(morphType) || "blaze".equals(morphType) || "ghast".equals(morphType) || "ender_dragon".equals(morphType)) {
+                Sounds.broadcastSound(Sound.BAT_TAKEOFF, p.getLocation());
                 p.setAllowFlight(true);
                 p.setFlying(true);
-                Bukkit.getScheduler().scheduleSyncDelayedTask(this.plugin, () -> {
-                    p.setAllowFlight(false);
-                    p.setFlying(false);
-                }, 20 * morph.getAbilityDuration());
+                new BukkitRunnable() {
+                    @Override
+                    public void run() {
+                        p.setAllowFlight(false);
+                        p.setFlying(false);
+                    }
+                }.runTaskLater(this.plugin, 20 * morph.getAbilityDuration());
                 p.updateInventory();
                 return;
             }
             if (morphType.contains("spider")) {
+                Sounds.broadcastSound(Sound.SPIDER_DEATH, p.getLocation());
                 throwItems(p, new CustomItem(Material.WEB, 1, 0), morph.getAbilityDuration(), "cobweb");
                 return;
             }
             if ("chicken".equals(morphType)) {
+                Sounds.broadcastSound(Sound.CHICKEN_EGG_POP, p.getLocation());
                 for (int i = 0; i < 10; i++) {
                     Vector velocity = p.getEyeLocation().getDirection();
                     velocity.setX(velocity.getX() + 0.5 * Random.getDouble(true));
@@ -188,6 +204,7 @@ public final class MorphsListener implements Listener {
                 return;
             }
             if ("cow".equals(morphType)) {
+                Sounds.broadcastSound(Sound.COW_IDLE, p.getLocation());
                 throwItems(p, new CustomItem(Material.MILK_BUCKET, 1, 0), morph.getAbilityDuration(), "milkbucket");
                 p.updateInventory();
                 return;
@@ -207,12 +224,13 @@ public final class MorphsListener implements Listener {
                 return;
             }
             if ("donkey".equals(morphType) || morphType.contains("guardian") || morphType.contains("horse") || "mule".equals(morphType) || "ocelot".equals(morphType) || "silverfish".equals(morphType) || "squid".equals(morphType) || "wolf".equals(morphType)) {
+                Sounds.broadcastSound(Sound.LEVEL_UP, p.getLocation());
                 p.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, morph.getAbilityDuration() * 20, 1));
                 p.updateInventory();
                 return;
             }
             if (morphType.contains("ender")) {
-                Location l = p.getTargetBlock(Collections.emptySet(), 50).getLocation();
+                Location l = p.getTargetBlock(EnumSet.noneOf(Material.class), 50).getLocation();
                 l = l.getWorld().getHighestBlockAt(l).getLocation();
                 p.teleport(l);
                 Sounds.broadcastSound(Sound.ENDERMAN_TELEPORT, p.getLocation());
@@ -223,58 +241,75 @@ public final class MorphsListener implements Listener {
                 return;
             }
             if ("giant".equals(morphType)) {
+                Sounds.broadcastSound(Sound.ZOMBIE_IDLE, p.getLocation());
                 for (int i = 0; i < 5; i++) {
-                    LivingEntity zombie = (LivingEntity) p.getWorld().spawnEntity(p.getLocation(), EntityType.ZOMBIE);
+                    final Zombie zombie = (Zombie) p.getWorld().spawnEntity(p.getLocation(), EntityType.ZOMBIE);
                     this.entitiesQueue.add(zombie);
                     zombie.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, morph.getAbilityDuration() * 20, 1));
-                    Bukkit.getScheduler().scheduleSyncDelayedTask(this.plugin, () -> {
-                        this.entitiesQueue.remove(zombie);
-                        zombie.remove();
-                    }, 20 * morph.getAbilityDuration());
+                    zombie.setBaby(false);
+                    zombie.setMetadata("MorphAbility", new FixedMetadataValue(this.plugin, p.getName()));
+                    new BukkitRunnable() {
+                        @Override
+                        public void run() {
+                            MorphsListener.this.entitiesQueue.remove(zombie);
+                            zombie.remove();
+                        }
+                    }.runTaskLater(this.plugin, 20 * morph.getAbilityDuration());
                 }
                 p.updateInventory();
                 return;
             }
             if ("iron_golem".equals(morphType)) {
+                Sounds.broadcastSound(Sound.IRONGOLEM_THROW, p.getLocation());
                 throwItems(p, new CustomItem(Material.IRON_INGOT, 1, 0), morph.getAbilityDuration(), "ironingot");
                 p.updateInventory();
                 return;
             }
             if ("magma_cube".equals(morphType) || "slime".equals(morphType) || "rabbit".equals(morphType)) {
+                Sounds.broadcastSound(Sound.SLIME_WALK2, p.getLocation());
                 p.addPotionEffect(new PotionEffect(PotionEffectType.JUMP, morph.getAbilityDuration() * 20, 1));
                 p.updateInventory();
                 return;
             }
             if ("mushroom_cow".equals(morphType)) {
+                Sounds.broadcastSound(Sound.COW_IDLE, p.getLocation());
                 throwItems(p, new CustomItem(Material.RED_MUSHROOM, 1, 0), morph.getAbilityDuration(), "mushroom");
                 p.updateInventory();
                 return;
             }
             if ("pig".equals(morphType)) {
+                Sounds.broadcastSound(Sound.PIG_IDLE, p.getLocation());
                 throwItems(p, new CustomItem(Material.GRILLED_PORK, 1, 0), morph.getAbilityDuration(), "porkchop");
                 p.updateInventory();
                 return;
             }
             if ("pig_zombie".equals(morphType)) {
+                Sounds.broadcastSound(Sound.ZOMBIE_PIG_IDLE, p.getLocation());
                 for (int i = 0; i < 5; i++) {
-                    Zombie zombie = (Zombie) p.getWorld().spawnEntity(p.getLocation(), EntityType.PIG_ZOMBIE);
+                    final Zombie zombie = (Zombie) p.getWorld().spawnEntity(p.getLocation(), EntityType.PIG_ZOMBIE);
                     this.entitiesQueue.add(zombie);
                     zombie.setBaby(true);
                     zombie.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, morph.getAbilityDuration() * 20, 1));
-                    Bukkit.getScheduler().scheduleSyncDelayedTask(this.plugin, () -> {
-                        this.entitiesQueue.remove(zombie);
-                        zombie.remove();
-                    }, 20 * morph.getAbilityDuration());
+                    zombie.setMetadata("MorphAbility", new FixedMetadataValue(this.plugin, p.getName()));
+                    new BukkitRunnable() {
+                        @Override
+                        public void run() {
+                            MorphsListener.this.entitiesQueue.remove(zombie);
+                            zombie.remove();
+                        }
+                    }.runTaskLater(this.plugin, 20 * morph.getAbilityDuration());
                 }
                 p.updateInventory();
                 return;
             }
             if ("sheep".equals(morphType)) {
+                Sounds.broadcastSound(Sound.SHEEP_IDLE, p.getLocation());
                 throwColoredWool(p, new CustomItem(Material.WOOL, 1, 0), morph.getAbilityDuration());
                 p.updateInventory();
                 return;
             }
             if (morphType.contains("skeleton")) {
+                Sounds.broadcastSound(Sound.SHOOT_ARROW, p.getLocation());
                 for (int i = 0; i < 3; i++) {
                     Vector velocity = p.getEyeLocation().getDirection();
                     velocity.setX(velocity.getX() + 0.5 * Random.getDouble(true));
@@ -288,6 +323,7 @@ public final class MorphsListener implements Listener {
                 return;
             }
             if (morphType.contains("snowman")) {
+                Sounds.broadcastSound(Sound.STEP_SNOW, p.getLocation());
                 for (int i = 0; i < 3; i++) {
                     Vector velocity = p.getEyeLocation().getDirection();
                     velocity.setX(velocity.getX() + 0.5 * Random.getDouble(true));
@@ -301,15 +337,19 @@ public final class MorphsListener implements Listener {
                 return;
             }
             if ("villager".equals(morphType)) {
+                Sounds.broadcastSound(Sound.VILLAGER_IDLE, p.getLocation());
                 for (int i = 0; i < 5; i++) {
-                    Ageable villager = (Ageable) p.getWorld().spawnEntity(p.getLocation(), EntityType.VILLAGER);
+                    final Ageable villager = (Ageable) p.getWorld().spawnEntity(p.getLocation(), EntityType.VILLAGER);
                     this.entitiesQueue.add(villager);
                     villager.setBaby();
                     villager.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, morph.getAbilityDuration() * 20, 1));
-                    Bukkit.getScheduler().scheduleSyncDelayedTask(this.plugin, () -> {
-                        this.entitiesQueue.remove(villager);
-                        villager.remove();
-                    }, 20 * morph.getAbilityDuration());
+                    new BukkitRunnable() {
+                        @Override
+                        public void run() {
+                            MorphsListener.this.entitiesQueue.remove(villager);
+                            villager.remove();
+                        }
+                    }.runTaskLater(this.plugin, 20 * morph.getAbilityDuration());
                 }
                 p.updateInventory();
                 return;
@@ -321,6 +361,7 @@ public final class MorphsListener implements Listener {
                 return;
             }
             if ("wither".equals(morphType)) {
+                Sounds.broadcastSound(Sound.WITHER_SHOOT, p.getLocation());
                 Vector velocity = p.getEyeLocation().getDirection();
                 velocity.multiply(2);
                 WitherSkull skull = p.launchProjectile(WitherSkull.class, velocity);
@@ -332,15 +373,20 @@ public final class MorphsListener implements Listener {
                 return;
             }
             if (morphType.contains("zombie")) {
+                Sounds.broadcastSound(Sound.ZOMBIE_IDLE, p.getLocation());
                 for (int i = 0; i < 5; i++) {
-                    Zombie zombie = (Zombie) p.getWorld().spawnEntity(p.getLocation(), EntityType.ZOMBIE);
+                    final Zombie zombie = (Zombie) p.getWorld().spawnEntity(p.getLocation(), EntityType.ZOMBIE);
                     zombie.setBaby(true);
                     this.entitiesQueue.add(zombie);
                     zombie.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, morph.getAbilityDuration() * 20, 1));
-                    Bukkit.getScheduler().scheduleSyncDelayedTask(this.plugin, () -> {
-                        this.entitiesQueue.remove(zombie);
-                        zombie.remove();
-                    }, 20 * morph.getAbilityDuration());
+                    zombie.setMetadata("MorphAbility", new FixedMetadataValue(this.plugin, p.getName()));
+                    new BukkitRunnable() {
+                        @Override
+                        public void run() {
+                            MorphsListener.this.entitiesQueue.remove(zombie);
+                            zombie.remove();
+                        }
+                    }.runTaskLater(this.plugin, 20 * morph.getAbilityDuration());
                 }
                 p.updateInventory();
             }
@@ -348,7 +394,9 @@ public final class MorphsListener implements Listener {
     }
 
     public void cleanup() {
-        this.entitiesQueue.forEach(Entity::remove);
+        for(Entity entity : this.entitiesQueue) {
+            entity.remove();
+        }
     }
 
     private boolean isEntity(Entity ent) {
@@ -367,14 +415,17 @@ public final class MorphsListener implements Listener {
             velocity.setX(velocity.getX() + 0.5 * Random.getDouble(true));
             velocity.setY(velocity.getY() + 0.5 * Random.getDouble());
             velocity.setZ(velocity.getZ() + 0.5 * Random.getDouble(true));
-            Item item = p.getWorld().dropItemNaturally(p.getEyeLocation(), is);
+            final Item item = p.getWorld().dropItemNaturally(p.getEyeLocation(), is);
             item.setVelocity(velocity);
             item.setMetadata("AbilityItem", new FixedMetadataValue(this.plugin, metadata + '-' + duration));
             this.entitiesQueue.add(item);
-            Bukkit.getScheduler().scheduleSyncDelayedTask(this.plugin, () -> {
-                this.entitiesQueue.remove(item);
-                item.remove();
-            }, 20 * duration);
+            new BukkitRunnable() {
+                @Override
+                public void run() {
+                    MorphsListener.this.entitiesQueue.remove(item);
+                    item.remove();
+                }
+            }.runTaskLater(this.plugin, 20 * duration);
         }
     }
 
@@ -386,14 +437,17 @@ public final class MorphsListener implements Listener {
             velocity.setX(velocity.getX() + 0.5 * Random.getDouble(true));
             velocity.setY(velocity.getY() + 0.5 * Random.getDouble());
             velocity.setZ(velocity.getZ() + 0.5 * Random.getDouble(true));
-            Item item = p.getWorld().dropItemNaturally(p.getEyeLocation(), is);
+            final Item item = p.getWorld().dropItemNaturally(p.getEyeLocation(), is);
             item.setVelocity(velocity);
             item.setMetadata("AbilityItem", new FixedMetadataValue(this.plugin, "wool"));
             this.entitiesQueue.add(item);
-            Bukkit.getScheduler().scheduleSyncDelayedTask(this.plugin, () -> {
-                this.entitiesQueue.remove(item);
-                item.remove();
-            }, 20 * duration);
+            new BukkitRunnable() {
+                @Override
+                public void run() {
+                    MorphsListener.this.entitiesQueue.remove(item);
+                    item.remove();
+                }
+            }.runTaskLater(this.plugin, 20 * duration);
         }
     }
 }

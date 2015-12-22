@@ -43,7 +43,7 @@ public final class ParticleStorage {
     }
 
     public String getIdentifier() {
-        return identifier;
+        return this.identifier;
     }
 
     public void setIdentifier(String identifier) {
@@ -51,7 +51,7 @@ public final class ParticleStorage {
     }
 
     public CustomItem getItem() {
-        return item;
+        return this.item;
     }
 
     public void setItem(CustomItem item) {
@@ -67,7 +67,7 @@ public final class ParticleStorage {
     }
 
     public String getPermission() {
-        return permission;
+        return this.permission;
     }
 
     public void setPermission(String permission) {
@@ -75,7 +75,7 @@ public final class ParticleStorage {
     }
 
     public String getParticle() {
-        return particle;
+        return this.particle;
     }
 
     public void setParticle(String particle) {
@@ -107,7 +107,7 @@ public final class ParticleStorage {
     }
 
     public ParticleShape getShape() {
-        return shape;
+        return this.shape;
     }
 
     public void setShape(ParticleShape shape) {

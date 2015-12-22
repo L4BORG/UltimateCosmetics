@@ -37,7 +37,7 @@ public final class BowtrailsListener implements Listener {
                     for (Player p : Bukkit.getOnlinePlayers()) {
                         Location l = arrowBowtrailEntry.getKey().getLocation();
                         BowtrailStorage bowtrailStorage = BowtrailsListener.this.arrowsMap.get(arrowBowtrailEntry.getKey()).getBowtrailStorage();
-                        if (ReflectionAPI.verBiggerThan(1, 8)) p.spigot().playEffect(l, Effect.valueOf(bowtrailStorage.getParticle()), bowtrailStorage.getId(), bowtrailStorage.getData(), 0.0f, 0.0f, 0.0f, 0.1f, 1, plugin.getParticles().getViewDistance());
+                        if (ReflectionAPI.verBiggerThan(1, 8)) p.spigot().playEffect(l, Effect.valueOf(bowtrailStorage.getParticle()), bowtrailStorage.getId(), bowtrailStorage.getData(), 0.0f, 0.0f, 0.0f, 0.1f, 1, BowtrailsListener.this.plugin.getParticles().getViewDistance());
                         else p.playEffect(l, Effect.valueOf(bowtrailStorage.getParticle()), bowtrailStorage.getData());
                     }
                 }

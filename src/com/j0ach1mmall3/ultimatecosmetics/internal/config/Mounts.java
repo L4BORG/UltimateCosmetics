@@ -12,9 +12,9 @@ import com.j0ach1mmall3.ultimatecosmetics.internal.Methods;
 import org.bukkit.ChatColor;
 import org.bukkit.Sound;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * Created by j0ach1mmall3 on 11:28 23/08/2015 using IntelliJ IDEA.
@@ -74,7 +74,11 @@ public final class Mounts extends ConfigLoader {
     }
 
     private List<MountStorage> getMountsInternal() {
-        return this.customConfig.getKeys("Mounts").stream().map(this::getMountByIdentifier).collect(Collectors.toList());
+        List<MountStorage> mountz = new ArrayList<>();
+        for(String s : this.customConfig.getKeys("Mounts")) {
+            mountz.add(this.getMountByIdentifier(s));
+        }
+        return mountz;
     }
 
     private MountStorage getMountByIdentifier(String identifier) {

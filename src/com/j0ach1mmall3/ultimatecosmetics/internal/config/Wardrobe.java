@@ -15,9 +15,9 @@ import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * Created by j0ach1mmall3 on 16:58 23/08/2015 using IntelliJ IDEA.
@@ -79,7 +79,11 @@ public final class Wardrobe extends ConfigLoader {
     }
 
     private List<OutfitStorage> getWardrobeInternal() {
-        return this.customConfig.getKeys("Outfits").stream().map(this::getOutfitByIdentifier).collect(Collectors.toList());
+        List<OutfitStorage> outfitz = new ArrayList<>();
+        for(String s : this.customConfig.getKeys("Outfits")) {
+            outfitz.add(this.getOutfitByIdentifier(s));
+        }
+        return outfitz;
     }
 
     private CustomItem getOutfitItem(String identifier) {

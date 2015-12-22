@@ -62,7 +62,9 @@ public final class MountImpl implements Mount {
             MountReflection.removeGoalSelectors(entity);
             entity.teleport(this.player);
             entity.setCanPickupItems(false);
-            this.mountStorage.getMountData().forEach(mountData -> addMountData(entity, MountData.valueOf(mountData)));
+            for(String data : this.mountStorage.getMountData()) {
+                addMountData(entity, MountData.valueOf(data));
+            }
             entity.setCustomName(Placeholders.parse(this.mountStorage.getItem().getItemMeta().getDisplayName(), this.player));
             entity.setCustomNameVisible(true);
             entity.setPassenger(this.player);

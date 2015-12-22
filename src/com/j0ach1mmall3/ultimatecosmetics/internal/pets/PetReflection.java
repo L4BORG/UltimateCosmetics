@@ -2,7 +2,6 @@ package com.j0ach1mmall3.ultimatecosmetics.internal.pets;
 
 import com.j0ach1mmall3.jlib.methods.ReflectionAPI;
 import org.bukkit.entity.Entity;
-import org.bukkit.entity.LivingEntity;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -50,7 +49,7 @@ final class PetReflection {
     }
 
     static void removeGoalSelectors(Entity ent) {
-        Object o = ReflectionAPI.getHandle(ent);
+        Object o = ReflectionAPI.getHandle((Object) ent);
         try {
             Field b = PGSCLASS.getDeclaredField("b");
             Field c = PGSCLASS.getDeclaredField("c");
@@ -66,7 +65,7 @@ final class PetReflection {
     }
 
     static void addGoalSelectors(Entity ent) {
-        Object o = ReflectionAPI.getHandle(ent);
+        Object o = ReflectionAPI.getHandle((Object) ent);
         try {
             Method a = PGSCLASS.getMethod("a", int.class, PATHFINDERGOALCLASS);
             a.invoke(getGoalSelector(o), 0, PGFCLASS.getConstructor(ENTITYINSENTIENTCLASS).newInstance(o));

@@ -3,7 +3,6 @@ package com.j0ach1mmall3.ultimatecosmetics.internal.mounts;
 import com.j0ach1mmall3.jlib.methods.ReflectionAPI;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
-import org.bukkit.entity.LivingEntity;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -45,7 +44,7 @@ final class MountReflection {
     }
 
     static void removeGoalSelectors(Entity ent) {
-        Object o = ReflectionAPI.getHandle(ent);
+        Object o = ReflectionAPI.getHandle((Object) ent);
         try {
             Field b = PGSCLASS.getDeclaredField("b");
             Field c = PGSCLASS.getDeclaredField("c");
@@ -61,7 +60,7 @@ final class MountReflection {
     }
 
     static void setNavigation(Entity ent, Location l, double speed) {
-        Object o = ReflectionAPI.getHandle(ent);
+        Object o = ReflectionAPI.getHandle((Object) ent);
         try {
             Object navigationAbstract = ENTITYINSENTIENTCLASS.getMethod("getNavigation").invoke(o);
             NAVIGATIONABSTRACTCLASS.getMethod("a", double.class, double.class, double.class, double.class).invoke(navigationAbstract, l.getX(), l.getY(), l.getZ(), speed);

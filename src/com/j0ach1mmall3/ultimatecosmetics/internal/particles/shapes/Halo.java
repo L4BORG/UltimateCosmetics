@@ -22,9 +22,9 @@ public final class Halo extends BukkitRunnable {
     @Override
     public void run() {
         for (Particle particle : this.plugin.getApi().getParticles()) {
-            ParticleStorage particleStorage = particle.getParticleStorage();
+            final ParticleStorage particleStorage = particle.getParticleStorage();
             if(particleStorage.getShape() == ParticleShape.HALO) {
-                Location l = particle.getPlayer().getLocation();
+                final Location l = particle.getPlayer().getLocation();
                 new BukkitRunnable() {
                     double i = 0;
 

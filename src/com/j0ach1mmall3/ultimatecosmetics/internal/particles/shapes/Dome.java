@@ -22,11 +22,11 @@ public final class Dome extends BukkitRunnable {
     @Override
     public void run() {
         for (Particle particle : this.plugin.getApi().getParticles()) {
-            ParticleStorage particleStorage = particle.getParticleStorage();
+            final ParticleStorage particleStorage = particle.getParticleStorage();
             if(particleStorage.getShape() == ParticleShape.DOME) {
+                final Location l = particle.getPlayer().getLocation();
                 new BukkitRunnable() {
                     double t = Math.PI/4;
-                    Location l = particle.getPlayer().getLocation();
 
                     @Override
                     public void run() {
@@ -35,7 +35,7 @@ public final class Dome extends BukkitRunnable {
                             double x = this.t * Math.cos(theta) / 2;
                             double y = 2 * Math.exp(-0.1 * this.t) * Math.sin(this.t) + 1;
                             double z = this.t * Math.sin(theta) / 2;
-                            this.l.getWorld().spigot().playEffect(new Location(this.l.getWorld(), this.l.getX() + x, this.l.getY() + y, this.l.getZ() + z), Effect.valueOf(particleStorage.getParticle()), particleStorage.getId(), particleStorage.getData(), 0, 0, 0, particleStorage.getSpeed(), 1, Dome.this.plugin.getParticles().getViewDistance());
+                            l.getWorld().spigot().playEffect(new Location(l.getWorld(), l.getX() + x, l.getY() + y, l.getZ() + z), Effect.valueOf(particleStorage.getParticle()), particleStorage.getId(), particleStorage.getData(), 0, 0, 0, particleStorage.getSpeed(), 1, Dome.this.plugin.getParticles().getViewDistance());
                         }
                         if (this.t > 3.5) this.cancel();
                     }

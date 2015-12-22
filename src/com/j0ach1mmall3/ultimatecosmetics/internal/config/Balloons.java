@@ -12,9 +12,9 @@ import com.j0ach1mmall3.ultimatecosmetics.internal.Methods;
 import org.bukkit.ChatColor;
 import org.bukkit.Sound;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * Created by j0ach1mmall3 on 11:10 20/08/2015 using IntelliJ IDEA.
@@ -77,7 +77,11 @@ public final class Balloons extends ConfigLoader {
     }
 
     private List<BalloonStorage> getBalloonsInternal() {
-        return this.customConfig.getKeys("Balloons").stream().map(this::getBalloonByIdentifier).collect(Collectors.toList());
+        List<BalloonStorage> balloonz = new ArrayList<>();
+        for(String s : this.customConfig.getKeys("Balloons")) {
+            balloonz.add(this.getBalloonByIdentifier(s));
+        }
+        return balloonz;
     }
 
     private BalloonStorage getBalloonByIdentifier(String identifier) {

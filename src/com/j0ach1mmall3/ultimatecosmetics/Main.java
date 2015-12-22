@@ -3,9 +3,12 @@ package com.j0ach1mmall3.ultimatecosmetics;
 import com.j0ach1mmall3.jlib.integration.MetricsLite;
 import com.j0ach1mmall3.jlib.integration.Placeholders;
 import com.j0ach1mmall3.jlib.integration.updatechecker.AsyncUpdateChecker;
+import com.j0ach1mmall3.jlib.integration.updatechecker.UpdateCheckerResult;
 import com.j0ach1mmall3.jlib.methods.General;
 import com.j0ach1mmall3.jlib.methods.Notes;
 import com.j0ach1mmall3.jlib.methods.ReflectionAPI;
+import com.j0ach1mmall3.jlib.storage.database.CallbackHandler;
+import com.j0ach1mmall3.jlib.storage.file.yaml.StorageConfigLoader;
 import com.j0ach1mmall3.ultimatecosmetics.api.CosmeticsAPI;
 import com.j0ach1mmall3.ultimatecosmetics.internal.Methods;
 import com.j0ach1mmall3.ultimatecosmetics.internal.balloons.BalloonsListener;
@@ -49,7 +52,7 @@ public final class Main extends JavaPlugin {
     private CosmeticsAPI api = null;
     private Config config = null;
     private Lang lang = null;
-    private Storage storage = null;
+    private StorageConfigLoader storage = null;
     private DataLoader dataLoader = null;
     private Misc misc = null;
     private Balloons balloons = null;
@@ -78,18 +81,21 @@ public final class Main extends JavaPlugin {
             General.sendColoredMessage(this, "You are running Bukkit version " + BUKKIT_VERSION + " (MC " + MINECRAFT_VERSION + ')', ChatColor.GOLD);
         if (this.config.isUpdateChecker()) {
             AsyncUpdateChecker checker = new AsyncUpdateChecker(this, 5885, this.getDescription().getVersion());
-            checker.checkUpdate(updateCheckerResult -> {
-                switch (updateCheckerResult.getType()) {
-                    case NEW_UPDATE:
-                        General.sendColoredMessage(this, "A new update is available!", ChatColor.GOLD);
-                        General.sendColoredMessage(this, "Version " + updateCheckerResult.getNewVersion() + " (Current: " + this.getDescription().getVersion() + ')', ChatColor.GOLD);
-                        break;
-                    case UP_TO_DATE:
-                        General.sendColoredMessage(this, "You are up to date!", ChatColor.GREEN);
-                        break;
-                    case ERROR:
-                        General.sendColoredMessage(this, "An error occured while trying to check for updates on spigotmc.org!", ChatColor.RED);
-                        break;
+            checker.checkUpdate(new CallbackHandler<UpdateCheckerResult>() {
+                @Override
+                public void callback(UpdateCheckerResult updateCheckerResult) {
+                    switch (updateCheckerResult.getType()) {
+                        case NEW_UPDATE:
+                            General.sendColoredMessage(Main.this, "A new update is available!", ChatColor.GOLD);
+                            General.sendColoredMessage(Main.this, "Version " + updateCheckerResult.getNewVersion() + " (Current: " + Main.this.getDescription().getVersion() + ')', ChatColor.GOLD);
+                            break;
+                        case UP_TO_DATE:
+                            General.sendColoredMessage(Main.this, "You are up to date!", ChatColor.GREEN);
+                            break;
+                        case ERROR:
+                            General.sendColoredMessage(Main.this, "An error occured while trying to check for updates on spigotmc.org!", ChatColor.RED);
+                            break;
+                    }
                 }
             });
         }
@@ -122,7 +128,7 @@ public final class Main extends JavaPlugin {
         new NoteBlockPlayerMain(this);
         if (this.config.getLoggingLevel() >= 1) General.sendColoredMessage(this, "Loading Configs...", ChatColor.GREEN);
         this.lang = new Lang(this);
-        this.storage = new Storage(this);
+        this.storage = new StorageConfigLoader(this);
         switch (this.storage.getType()) {
             case FILE:
                 this.dataLoader = new FileDataLoader(this);
@@ -136,8 +142,7 @@ public final class Main extends JavaPlugin {
             case MONGODB:
                 this.dataLoader = new MongoDBDataLoader(this);
                 break;
-            case REDIS:
-                General.sendColoredMessage(this, "Redis Storage is deprecated as of version 3.6.0! Switching back to File Storage!", ChatColor.RED);
+            default:
                 this.dataLoader = new FileDataLoader(this);
                 break;
         }
@@ -347,7 +352,7 @@ public final class Main extends JavaPlugin {
         return this.wardrobe;
     }
 
-    public Storage getStorage() {
+    public StorageConfigLoader getStorage() {
         return this.storage;
     }
 

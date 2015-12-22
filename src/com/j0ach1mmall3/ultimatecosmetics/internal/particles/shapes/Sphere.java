@@ -22,9 +22,9 @@ public final class Sphere extends BukkitRunnable {
     @Override
     public void run() {
         for (Particle particle : this.plugin.getApi().getParticles()) {
-            ParticleStorage particleStorage = particle.getParticleStorage();
+            final ParticleStorage particleStorage = particle.getParticleStorage();
             if(particleStorage.getShape() == ParticleShape.SPHERE) {
-                Location l = particle.getPlayer().getLocation();
+                final Location l = particle.getPlayer().getLocation();
                 new BukkitRunnable() {
                     double phi = 0;
 

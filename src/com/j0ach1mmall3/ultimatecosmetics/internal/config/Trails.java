@@ -12,9 +12,9 @@ import com.j0ach1mmall3.ultimatecosmetics.internal.Methods;
 import org.bukkit.ChatColor;
 import org.bukkit.Sound;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * Created by j0ach1mmall3 on 14:21 23/08/2015 using IntelliJ IDEA.
@@ -76,7 +76,11 @@ public final class Trails extends ConfigLoader {
     }
 
     private List<TrailStorage> getTrailsInternal() {
-        return this.customConfig.getKeys("Trails").stream().map(this::getTrailByIdentifier).collect(Collectors.toList());
+        List<TrailStorage> trailz = new ArrayList<>();
+        for(String s : this.customConfig.getKeys("Trails")) {
+            trailz.add(this.getTrailByIdentifier(s));
+        }
+        return trailz;
     }
 
     private TrailStorage getTrailByIdentifier(String identifier) {

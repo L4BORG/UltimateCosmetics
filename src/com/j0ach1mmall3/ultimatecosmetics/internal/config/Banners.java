@@ -18,9 +18,9 @@ import org.bukkit.block.banner.Pattern;
 import org.bukkit.block.banner.PatternType;
 import org.bukkit.inventory.meta.BannerMeta;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * Created by j0ach1mmall3 on 4:56 21/08/2015 using IntelliJ IDEA.
@@ -89,7 +89,11 @@ public final class Banners extends ConfigLoader {
     }
 
     private List<BannerStorage> getBannersInternal() {
-        return this.customConfig.getKeys("Banners").stream().map(this::getBannerByIdentifier).collect(Collectors.toList());
+        List<BannerStorage> bannerz = new ArrayList<>();
+        for(String s : this.customConfig.getKeys("Banners")) {
+            bannerz.add(this.getBannerByIdentifier(s));
+        }
+        return bannerz;
     }
 
     private CustomItem getBannerItem(String identifier) {

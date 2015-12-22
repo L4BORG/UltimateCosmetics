@@ -2,6 +2,7 @@ package com.j0ach1mmall3.ultimatecosmetics.internal.commands;
 
 import com.j0ach1mmall3.jlib.integration.Placeholders;
 import com.j0ach1mmall3.jlib.methods.Parsing;
+import com.j0ach1mmall3.jlib.storage.database.CallbackHandler;
 import com.j0ach1mmall3.ultimatecosmetics.Main;
 import com.j0ach1mmall3.ultimatecosmetics.api.CosmeticsAPI;
 import com.j0ach1mmall3.ultimatecosmetics.internal.Methods;
@@ -96,15 +97,18 @@ public final class Commands implements CommandExecutor {
                 return true;
             }
             if (sender instanceof Player) {
-                Player p = (Player) sender;
+                final Player p = (Player) sender;
                 if (!p.hasPermission("uc.stacker")) {
                     this.plugin.informPlayerNoPermission(p, this.plugin.getLang().getCommandNoPermission());
                     return true;
                 }
-                DataLoader loader = this.plugin.getDataLoader();
-                loader.getStacker(p, b -> {
-                    sender.sendMessage(this.plugin.getLang().getToggledStacker().replace("{statuscolor}", (b ? ChatColor.RED : ChatColor.GREEN).toString()));
-                    loader.setStacker(p, !b);
+                final DataLoader loader = this.plugin.getDataLoader();
+                loader.getStacker(p, new CallbackHandler<Boolean>() {
+                    @Override
+                    public void callback(Boolean b) {
+                        p.sendMessage(Commands.this.plugin.getLang().getToggledStacker().replace("{statuscolor}", (b ? ChatColor.RED : ChatColor.GREEN).toString()));
+                        loader.setStacker(p, !b);
+                    }
                 });
                 return true;
             } else {

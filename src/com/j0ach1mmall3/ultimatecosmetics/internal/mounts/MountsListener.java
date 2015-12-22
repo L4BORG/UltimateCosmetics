@@ -3,7 +3,6 @@ package com.j0ach1mmall3.ultimatecosmetics.internal.mounts;
 import com.j0ach1mmall3.ultimatecosmetics.Main;
 import com.j0ach1mmall3.ultimatecosmetics.api.CosmeticsAPI;
 import com.j0ach1mmall3.ultimatecosmetics.api.cosmetics.Mount;
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.AnimalTamer;
 import org.bukkit.entity.Entity;
@@ -14,6 +13,7 @@ import org.bukkit.event.entity.*;
 import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.inventory.HorseInventory;
+import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
 /**
@@ -25,7 +25,7 @@ public final class MountsListener implements Listener {
     public MountsListener(Main plugin) {
         this.plugin = plugin;
         plugin.getServer().getPluginManager().registerEvents(this, plugin);
-        startScheduler(plugin);
+        startScheduler();
     }
 
     @EventHandler
@@ -110,21 +110,24 @@ public final class MountsListener implements Listener {
         if (isMount(e.getEntity())) e.setCancelled(true);
     }
 
-    private void startScheduler(Main plugin) {
-        CosmeticsAPI api = plugin.getApi();
-        Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin, () -> {
-            for (Mount mount : api.getMounts()) {
-                Entity ent = mount.getEntity();
-                Player p = mount.getPlayer();
-                if (ent.getPassenger() == null) {
-                    api.getMount(p).remove();
-                    return;
+    private void startScheduler() {
+        final CosmeticsAPI api = this.plugin.getApi();
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                for (Mount mount : api.getMounts()) {
+                    Entity ent = mount.getEntity();
+                    Player p = mount.getPlayer();
+                    if (ent.getPassenger() == null) {
+                        api.getMount(p).remove();
+                        return;
+                    }
+                    Vector v = p.getLocation().getDirection().setY(0).normalize().multiply(4);
+                    Location loc = p.getLocation().add(v);
+                    MountReflection.setNavigation(ent, loc, MountsListener.this.plugin.getMounts().getMountSpeed());
                 }
-                Vector v = p.getLocation().getDirection().setY(0).normalize().multiply(4);
-                Location loc = p.getLocation().add(v);
-                MountReflection.setNavigation(ent, loc, plugin.getMounts().getMountSpeed());
             }
-        }, 0L, 5L);
+        }.runTaskTimer(this.plugin, 0L, 5L);
     }
 
     private boolean isMount(Entity ent) {

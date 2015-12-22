@@ -4,6 +4,7 @@ import com.j0ach1mmall3.jlib.integration.Placeholders;
 import com.j0ach1mmall3.jlib.integration.updatechecker.AsyncUpdateChecker;
 import com.j0ach1mmall3.jlib.integration.updatechecker.UpdateCheckerResult;
 import com.j0ach1mmall3.jlib.methods.Sounds;
+import com.j0ach1mmall3.jlib.storage.database.CallbackHandler;
 import com.j0ach1mmall3.ultimatecosmetics.Main;
 import com.j0ach1mmall3.ultimatecosmetics.api.CosmeticsAPI;
 import com.j0ach1mmall3.ultimatecosmetics.api.cosmetics.Morph;
@@ -12,7 +13,10 @@ import com.j0ach1mmall3.ultimatecosmetics.internal.Methods;
 import com.j0ach1mmall3.ultimatecosmetics.internal.data.CosmeticsQueue;
 import com.j0ach1mmall3.ultimatecosmetics.internal.data.DataLoader;
 import com.j0ach1mmall3.ultimatecosmetics.internal.gui.CosmeticsGuiHandler;
-import org.bukkit.*;
+import org.bukkit.ChatColor;
+import org.bukkit.GameMode;
+import org.bukkit.Material;
+import org.bukkit.Sound;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.AnimalTamer;
 import org.bukkit.entity.Creature;
@@ -23,6 +27,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.player.*;
+import org.bukkit.scheduler.BukkitRunnable;
 
 /**
  * Created by j0ach1mmall3 on 1:53 21/08/2015 using IntelliJ IDEA.
@@ -73,47 +78,40 @@ public final class PlayerListener implements Listener {
     }
 
     @EventHandler(ignoreCancelled = true)
-    public void onPlayerInteractWithEntity(PlayerInteractEntityEvent e) {
+    public void onPlayerInteractWithEntity(final PlayerInteractEntityEvent e) {
+        final Player p = e.getPlayer();
         if (this.plugin.getMisc().isStackerEnabled()) {
-            Player p = e.getPlayer();
-            this.plugin.getDataLoader().getStacker(p, b -> {
-                if(b) {
-                    if (Methods.hasPermission(p, this.plugin.getMisc().getStackerPermission())) {
-                        if (e.getRightClicked() instanceof Player) {
-                            Player clicked = (Player) e.getRightClicked();
-                            this.plugin.getDataLoader().getStacker(clicked, b1 -> {
-                                if(b1) {
-                                    e.setCancelled(true);
-                                    if (p.getVehicle() != null) {
-                                        p.getVehicle().remove();
+            this.plugin.getDataLoader().getStacker(p, new CallbackHandler<Boolean>() {
+                @Override
+                public void callback(Boolean b) {
+                    if(b) {
+                        if (Methods.hasPermission(p, PlayerListener.this.plugin.getMisc().getStackerPermission())) {
+                            if (e.getRightClicked() instanceof Player) {
+                                final Player clicked = (Player) e.getRightClicked();
+                                PlayerListener.this.plugin.getDataLoader().getStacker(clicked, new CallbackHandler<Boolean>() {
+                                    @Override
+                                    public void callback(Boolean b1) {
+                                        if (b1) {
+                                            e.setCancelled(true);
+                                            if (p.getVehicle() != null) p.getVehicle().remove();
+                                            if (clicked.getVehicle() != null) return;
+                                            p.setPassenger(clicked);
+                                            p.sendMessage(Placeholders.parse(PlayerListener.this.plugin.getMisc().getStackerPrefix(), p) + Placeholders.parse(PlayerListener.this.plugin.getLang().getStackedPlayer(), p).replace("%target%", clicked.getName()));
+                                            clicked.sendMessage(Placeholders.parse(PlayerListener.this.plugin.getMisc().getStackerPrefix(), clicked) + Placeholders.parse(PlayerListener.this.plugin.getLang().getStackedByPlayer(), clicked).replace("%stacker%", p.getName()));
+                                        } else PlayerListener.this.plugin.informPlayerNoPermission(p, Placeholders.parse(PlayerListener.this.plugin.getLang().getStackedNotEnabled().replace("{stacked}", clicked.getName()), p));
                                     }
-                                    if (clicked.getVehicle() != null) {
-                                        return;
-                                    }
-                                    p.setPassenger(clicked);
-                                    p.sendMessage(Placeholders.parse(this.plugin.getMisc().getStackerPrefix(), p) + Placeholders.parse(this.plugin.getLang().getStackedPlayer(), p).replace("%target%", clicked.getName()));
-                                    clicked.sendMessage(Placeholders.parse(this.plugin.getMisc().getStackerPrefix(), clicked) + Placeholders.parse(this.plugin.getLang().getStackedByPlayer(), clicked).replace("%stacker%", p.getName()));
-                                } else {
-                                    this.plugin.informPlayerNoPermission(p, Placeholders.parse(this.plugin.getLang().getStackedNotEnabled().replace("{stacked}", clicked.getName()), p));
-                                }
-                            });
-                        }
-                        if (!this.plugin.getMisc().isStackerStackPlayersOnly()) {
-                            if (e.getRightClicked() instanceof Creature) {
-                                if (e.getRightClicked().getCustomName() == null) {
-                                    e.setCancelled(true);
-                                    p.setPassenger(e.getRightClicked());
-                                    p.sendMessage(Placeholders.parse(this.plugin.getMisc().getStackerPrefix(), p) + Placeholders.parse(this.plugin.getLang().getStackedPlayer(), p).replace("%target%", e.getRightClicked().getType().name().replace("_", " ").toLowerCase()));
-                                }
+                                });
+                            } else if (!PlayerListener.this.plugin.getMisc().isStackerStackPlayersOnly() && e.getRightClicked() instanceof Creature && e.getRightClicked().getCustomName() == null) {
+                                e.setCancelled(true);
+                                p.setPassenger(e.getRightClicked());
+                                p.sendMessage(Placeholders.parse(PlayerListener.this.plugin.getMisc().getStackerPrefix(), p) + Placeholders.parse(PlayerListener.this.plugin.getLang().getStackedPlayer(), p).replace("%target%", e.getRightClicked().getType().name().replace("_", " ").toLowerCase()));
                             }
-                        }
-                    } else {
-                        this.plugin.informPlayerNoPermission(p, this.plugin.getMisc().getStackerNoPermissionMessage());
+                        } else PlayerListener.this.plugin.informPlayerNoPermission(p, PlayerListener.this.plugin.getMisc().getStackerNoPermissionMessage());
                     }
-                } else {
-                    this.plugin.informPlayerNoPermission(p, Placeholders.parse(this.plugin.getLang().getStackerNotEnabled(), p));
                 }
             });
+        } else {
+            this.plugin.informPlayerNoPermission(p, Placeholders.parse(this.plugin.getLang().getStackerNotEnabled(), p));
         }
     }
 
@@ -137,21 +135,27 @@ public final class PlayerListener implements Listener {
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onJoin(PlayerJoinEvent e) {
-        Player p = e.getPlayer();
-        String uuid = p.getUniqueId().toString();
-        DataLoader loader = this.plugin.getDataLoader();
-        Bukkit.getScheduler().runTaskAsynchronously(this.plugin, () -> {
-            loader.loadAmmo(uuid);
-            loader.createStacker(p);
-            loader.createQueue(p);
-        });
+        final Player p = e.getPlayer();
+        final String uuid = p.getUniqueId().toString();
+        final DataLoader loader = this.plugin.getDataLoader();
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                loader.loadAmmo(uuid);
+                loader.createStacker(p);
+                loader.createQueue(p);
+            }
+        }.runTaskAsynchronously(this.plugin);
         if (this.plugin.getBabies().isGiveItemOnJoin()) p.getInventory().setItem(this.plugin.getBabies().getJoinItemSlot(), this.plugin.getBabies().getJoinItem());
         if (this.plugin.getBabies().isUpdateChecker() && p.hasPermission("uc.reload")) {
             AsyncUpdateChecker checker = new AsyncUpdateChecker(this.plugin, 5885, this.plugin.getDescription().getVersion());
-            checker.checkUpdate(updateCheckerResult -> {
-                if(updateCheckerResult.getType() == UpdateCheckerResult.ResultType.NEW_UPDATE) {
-                    p.sendMessage(ChatColor.RED + "" + ChatColor.BOLD + '[' + ChatColor.DARK_RED + "UltimateCosmetics" + ChatColor.RED + ChatColor.BOLD + ']' + ChatColor.GOLD + "A new update is available!");
-                    p.sendMessage(ChatColor.RED + "" + ChatColor.BOLD + '[' + ChatColor.DARK_RED + "UltimateCosmetics" + ChatColor.RED + ChatColor.BOLD + ']' + ChatColor.GOLD + "Version " + updateCheckerResult.getNewVersion());
+            checker.checkUpdate(new CallbackHandler<UpdateCheckerResult>() {
+                @Override
+                public void callback(UpdateCheckerResult updateCheckerResult) {
+                    if(updateCheckerResult.getType() == UpdateCheckerResult.ResultType.NEW_UPDATE) {
+                        p.sendMessage(ChatColor.RED + "" + ChatColor.BOLD + '[' + ChatColor.DARK_RED + "UltimateCosmetics" + ChatColor.RED + ChatColor.BOLD + ']' + ChatColor.GOLD + "A new update is available!");
+                        p.sendMessage(ChatColor.RED + "" + ChatColor.BOLD + '[' + ChatColor.DARK_RED + "UltimateCosmetics" + ChatColor.RED + ChatColor.BOLD + ']' + ChatColor.GOLD + "Version " + updateCheckerResult.getNewVersion());
+                    }
                 }
             });
         }
@@ -184,17 +188,25 @@ public final class PlayerListener implements Listener {
 
     @EventHandler
     public void onPlayerLeave(PlayerQuitEvent e) {
-        Bukkit.getScheduler().runTaskAsynchronously(this.plugin, () -> {
-            this.plugin.getDataLoader().updateQueue(e.getPlayer(), new CosmeticsQueue(this.plugin, e.getPlayer()));
-            this.plugin.getDataLoader().unloadAmmo(e.getPlayer().getUniqueId().toString());
-        });
+        final Player p = e.getPlayer();
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                PlayerListener.this.plugin.getDataLoader().updateQueue(p, new CosmeticsQueue(PlayerListener.this.plugin, p));
+                PlayerListener.this.plugin.getDataLoader().unloadAmmo(p.getUniqueId().toString());
+            }
+        }.runTaskAsynchronously(this.plugin);
     }
 
     @EventHandler
     public void onPlayerKick(PlayerKickEvent e) {
-        Bukkit.getScheduler().runTaskAsynchronously(this.plugin, () -> {
-            this.plugin.getDataLoader().updateQueue(e.getPlayer(), new CosmeticsQueue(this.plugin, e.getPlayer()));
-            this.plugin.getDataLoader().unloadAmmo(e.getPlayer().getUniqueId().toString());
-        });
+        final Player p = e.getPlayer();
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                PlayerListener.this.plugin.getDataLoader().updateQueue(p, new CosmeticsQueue(PlayerListener.this.plugin, p));
+                PlayerListener.this.plugin.getDataLoader().unloadAmmo(p.getUniqueId().toString());
+            }
+        }.runTaskAsynchronously(this.plugin);
     }
 }

@@ -22,13 +22,15 @@ public final class MusicListener implements Listener {
     @EventHandler
     public void onSongEnd(SongEndEvent e) {
         CosmeticsAPI api = this.plugin.getApi();
-        e.getSongPlayer().getPlayerList().stream().filter(p -> api.hasMusic(Bukkit.getPlayer(p))).forEach(p -> {
-            Music musicc = api.getMusic(Bukkit.getPlayer(p));
-            if (this.plugin.getMusic().isLoop()) {
-                musicc.give();
-            } else {
-                musicc.remove();
+        for(String p : e.getSongPlayer().getPlayerList()) {
+            if(api.hasMusic(Bukkit.getPlayer(p))) {
+                Music musicc = api.getMusic(Bukkit.getPlayer(p));
+                if (this.plugin.getMusic().isLoop()) {
+                    musicc.give();
+                } else {
+                    musicc.remove();
+                }
             }
-        });
+        }
     }
 }

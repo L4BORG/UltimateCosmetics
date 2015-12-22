@@ -3,7 +3,6 @@ package com.j0ach1mmall3.ultimatecosmetics.internal.trails;
 import com.j0ach1mmall3.jlib.methods.Random;
 import com.j0ach1mmall3.ultimatecosmetics.Main;
 import com.j0ach1mmall3.ultimatecosmetics.api.cosmetics.Trail;
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
@@ -17,10 +16,10 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 
 /**
  * Created by j0ach1mmall3 on 17:09 23/08/2015 using IntelliJ IDEA.
@@ -33,33 +32,43 @@ public final class TrailsListener implements Listener {
         startScheduler(plugin);
     }
 
-    private void startScheduler(Main plugin) {
-        Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin, () -> {
-            for (Trail trail : plugin.getApi().getTrails()) {
-                Player p = trail.getPlayer();
-                ItemStack ci = trail.getTrailStorage().getItem().clone();
-                ItemMeta im = ci.getItemMeta();
-                im.setDisplayName(String.valueOf(Random.getInt(100)));
-                ci.setItemMeta(im);
-                Item i = p.getWorld().dropItem(p.getLocation(), ci);
-                i.setPickupDelay(Integer.MAX_VALUE);
-                this.entitiesQueue.add(i);
-                Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () -> {
-                    i.remove();
-                    this.entitiesQueue.remove(i);
-                }, plugin.getTrails().getRemoveDelay() * 20);
+    private void startScheduler(final Main plugin) {
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                for (Trail trail : plugin.getApi().getTrails()) {
+                    Player p = trail.getPlayer();
+                    ItemStack ci = trail.getTrailStorage().getItem().clone();
+                    ItemMeta im = ci.getItemMeta();
+                    im.setDisplayName(String.valueOf(Random.getInt(100)));
+                    ci.setItemMeta(im);
+                    final Item i = p.getWorld().dropItem(p.getLocation(), ci);
+                    i.setPickupDelay(Integer.MAX_VALUE);
+                    TrailsListener.this.entitiesQueue.add(i);
+                    new BukkitRunnable() {
+                        @Override
+                        public void run() {
+                            i.remove();
+                            TrailsListener.this.entitiesQueue.remove(i);
+                        }
+                    }.runTaskLater(plugin,  plugin.getTrails().getRemoveDelay() * 20);
+                }
             }
-        }, 0L, (long) (plugin.getTrails().getDropInterval() * 20.0));
+        }.runTaskTimer(plugin, 0, (long) (plugin.getTrails().getDropInterval() * 20.0));
     }
 
     public void cleanup() {
-        this.entitiesQueue.forEach(Entity::remove);
+        for(Entity entity : this.entitiesQueue) {
+            entity.remove();
+        }
     }
 
     @EventHandler
     public void onTeleport(PlayerTeleportEvent e) {
         Player p = e.getPlayer();
-        p.getNearbyEntities(20.0, 20.0, 20.0).stream().filter(this::isItem).forEach(Entity::remove);
+        for(Entity ent : p.getNearbyEntities(20.0, 20.0, 20.0)) {
+            if(isItem(ent)) ent.remove();
+        }
     }
 
     @EventHandler
@@ -80,13 +89,17 @@ public final class TrailsListener implements Listener {
     @EventHandler
     public void onKick(PlayerKickEvent e) {
         Player p = e.getPlayer();
-        p.getNearbyEntities(20.0, 20.0, 20.0).stream().filter(this::isItem).forEach(Entity::remove);
+        for(Entity ent : p.getNearbyEntities(20.0, 20.0, 20.0)) {
+            if(isItem(ent)) ent.remove();
+        }
     }
 
     @EventHandler
     public void onQuit(PlayerQuitEvent e) {
         Player p = e.getPlayer();
-        p.getNearbyEntities(20.0, 20.0, 20.0).stream().filter(this::isItem).forEach(Entity::remove);
+        for(Entity ent : p.getNearbyEntities(20.0, 20.0, 20.0)) {
+            if(isItem(ent)) ent.remove();
+        }
     }
 
     private boolean isItem(Entity item) {

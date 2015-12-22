@@ -12,9 +12,9 @@ import com.j0ach1mmall3.ultimatecosmetics.internal.Methods;
 import org.bukkit.ChatColor;
 import org.bukkit.Sound;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * Created by j0ach1mmall3 on 15:47 23/08/2015 using IntelliJ IDEA.
@@ -76,7 +76,11 @@ public final class Pets extends ConfigLoader {
     }
 
     private List<PetStorage> getPetsInternal() {
-        return this.customConfig.getKeys("Pets").stream().map(this::getPetByIdentifier).collect(Collectors.toList());
+        List<PetStorage> petz = new ArrayList<>();
+        for(String s : this.customConfig.getKeys("Pets")) {
+            petz.add(this.getPetByIdentifier(s));
+        }
+        return petz;
     }
 
     private PetStorage getPetByIdentifier(String identifier) {

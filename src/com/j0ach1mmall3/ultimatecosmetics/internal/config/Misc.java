@@ -5,9 +5,9 @@ import com.j0ach1mmall3.jlib.storage.file.yaml.ConfigLoader;
 import com.j0ach1mmall3.ultimatecosmetics.Main;
 import com.j0ach1mmall3.ultimatecosmetics.api.storage.DoubleJumpStorage;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * Created by j0ach1mmall3 on 11:28 23/08/2015 using IntelliJ IDEA.
@@ -33,7 +33,11 @@ public final class Misc extends ConfigLoader {
     }
 
     private List<DoubleJumpStorage> getDoubleJumpGroupsInternal() {
-        return this.customConfig.getKeys("DoubleJump.Groups").stream().map(this::getDoubleJumpGroupByIdentifier).collect(Collectors.toList());
+        List<DoubleJumpStorage> doubleJumpz = new ArrayList<>();
+        for(String s : this.customConfig.getKeys("DoubleJump.Groups")) {
+            doubleJumpz.add(this.getDoubleJumpGroupByIdentifier(s));
+        }
+        return doubleJumpz;
     }
 
     private DoubleJumpStorage getDoubleJumpGroupByIdentifier(String identifier) {

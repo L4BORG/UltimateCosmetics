@@ -43,42 +43,51 @@ public final class GadgetsListener implements Listener {
     private final Main plugin;
     private final Collection<Entity> entitiesQueue = new ArrayList<>();
     private final Map<Location, Map<Material, Byte>> blockQueue = new HashMap<>();
-    private final List<String> firePlayers = new ArrayList<>();
-    private final List<String> diamondShowerPlayers = new ArrayList<>();
-    private final List<String> paintTrailPlayers = new ArrayList<>();
+    private final Collection<String> firePlayers = new ArrayList<>();
+    private final Collection<String> diamondShowerPlayers = new ArrayList<>();
+    private final Collection<String> paintTrailPlayers = new ArrayList<>();
     private final Map<String, String> cooldownPlayers = new HashMap<>();
     private final Map<String, Entity> fishingPlayers = new HashMap<>();
 
     public GadgetsListener(Main plugin) {
         this.plugin = plugin;
         plugin.getServer().getPluginManager().registerEvents(this, plugin);
-        Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin, () -> {
-            for (World world : Bukkit.getWorlds()) {
-                for (Entity ent : world.getEntities()) {
-                    if (ent.hasMetadata("UCEntity") && "Melon".equals(ent.getMetadata("UCEntity").get(0).asString()) && ent.isOnGround())
-                        handleMelon(ent);
-                    if (ent.hasMetadata("UCEntity") && "ColorBomb".equals(ent.getMetadata("UCEntity").get(0).asString()) && ent.isOnGround())
-                        handleColorBomb(ent);
-                    if (ent.hasMetadata("UCEntity") && "GoldFountain".equals(ent.getMetadata("UCEntity").get(0).asString()) && ent.isOnGround())
-                        handleGoldFountain(ent);
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                for (World world : Bukkit.getWorlds()) {
+                    for (Entity ent : world.getEntities()) {
+                        if (ent.hasMetadata("UCEntity") && "Melon".equals(ent.getMetadata("UCEntity").get(0).asString()) && ent.isOnGround())
+                            handleMelon(ent);
+                        if (ent.hasMetadata("UCEntity") && "ColorBomb".equals(ent.getMetadata("UCEntity").get(0).asString()) && ent.isOnGround())
+                            handleColorBomb(ent);
+                        if (ent.hasMetadata("UCEntity") && "GoldFountain".equals(ent.getMetadata("UCEntity").get(0).asString()) && ent.isOnGround())
+                            handleGoldFountain(ent);
+                    }
                 }
             }
-        }, 0L, 10L);
-        Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin, () -> {
-            for (String player : this.diamondShowerPlayers) {
-                Player p = Bukkit.getPlayer(player);
-                Sounds.broadcastSound(Sound.CHICKEN_EGG_POP, p.getLocation());
-                Location l = p.getLocation();
-                l.setY(l.getY() + 2.0);
-                Item i = l.getWorld().dropItemNaturally(l, new CustomItem(Material.DIAMOND, 1, 0, String.valueOf(Random.getInt())));
-                i.setPickupDelay(Integer.MAX_VALUE);
-                this.entitiesQueue.add(i);
-                Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () -> {
-                    i.remove();
-                    this.entitiesQueue.remove(i);
-                }, 20L);
+        }.runTaskTimer(plugin, 0L, 10L);
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                for (String player : GadgetsListener.this.diamondShowerPlayers) {
+                    Player p = Bukkit.getPlayer(player);
+                    Sounds.broadcastSound(Sound.CHICKEN_EGG_POP, p.getLocation());
+                    Location l = p.getLocation();
+                    l.setY(l.getY() + 2.0);
+                    final Item i = l.getWorld().dropItemNaturally(l, new CustomItem(Material.DIAMOND, 1, 0, String.valueOf(Random.getInt())));
+                    i.setPickupDelay(Integer.MAX_VALUE);
+                    GadgetsListener.this.entitiesQueue.add(i);
+                    new BukkitRunnable() {
+                        @Override
+                        public void run() {
+                            i.remove();
+                            GadgetsListener.this.entitiesQueue.remove(i);
+                        }
+                    }.runTaskLater(GadgetsListener.this.plugin, 20L);
+                }
             }
-        }, 0L, plugin.getGadgets().getIntValue("DiamondShower", "Interval"));
+        }.runTaskTimer(plugin, 0L, plugin.getGadgets().getIntValue("DiamondShower", "Interval"));
     }
 
     @EventHandler
@@ -97,17 +106,19 @@ public final class GadgetsListener implements Listener {
     public void onPlayerMove(PlayerMoveEvent e) {
         Player p = e.getPlayer();
         if (this.firePlayers.contains(p.getName())) {
-            Location l = p.getLocation();
-            Block b = l.getBlock();
-            if (b.getType() == Material.AIR) {
-                Map<Material, Byte> map = new HashMap<>();
-                map.put(Material.AIR, (byte) 0);
-                this.blockQueue.put(l, map);
-                Bukkit.getOnlinePlayers().forEach(online -> online.sendBlockChange(l, Material.FIRE, (byte) 0));
-                Bukkit.getScheduler().scheduleSyncDelayedTask(this.plugin, () -> {
-                    b.setType(Material.AIR);
-                    Bukkit.getOnlinePlayers().forEach(online -> online.sendBlockChange(l, Material.AIR, (byte) 0));
-                }, 20 * this.plugin.getGadgets().getIntValue("FireTrail", "RemoveDelay"));
+            final Location l = p.getLocation();
+            if (l.getBlock().getType() == Material.AIR) {
+                for(Player online : Bukkit.getOnlinePlayers()) {
+                    online.sendBlockChange(l, Material.FIRE, (byte) 0);
+                }
+                new BukkitRunnable() {
+                    @Override
+                    public void run() {
+                        for(Player online : Bukkit.getOnlinePlayers()) {
+                            online.sendBlockChange(l, Material.AIR, (byte) 0);
+                        }
+                    }
+                }.runTaskLater(this.plugin, 20 * this.plugin.getGadgets().getIntValue("FireTrail", "RemoveDelay"));
             }
             return;
         }
@@ -132,14 +143,14 @@ public final class GadgetsListener implements Listener {
     @SuppressWarnings({"deprecation", "OverlyComplexMethod"})
     @EventHandler
     public void onInteract(PlayerInteractEvent e) {
-        Player p = e.getPlayer();
-        Gadgets config = this.plugin.getGadgets();
+        final Player p = e.getPlayer();
+        final Gadgets config = this.plugin.getGadgets();
         DataLoader loader = this.plugin.getDataLoader();
         Lang lang = this.plugin.getLang();
         CosmeticsAPI api = this.plugin.getApi();
         String uuid = p.getUniqueId().toString();
         if (api.isGadget(p.getItemInHand())) {
-            GadgetStorage gadget = api.getGadgetByItemStack(p.getItemInHand());
+            final GadgetStorage gadget = api.getGadgetByItemStack(p.getItemInHand());
             if (e.getAction() != Action.PHYSICAL) {
                 e.setCancelled(true);
                 if (!config.isKeepGadget()) p.setItemInHand(null);
@@ -155,7 +166,12 @@ public final class GadgetsListener implements Listener {
                         return;
                     }
                     this.cooldownPlayers.put(p.getName(), gadget.getIdentifier() + ':' + System.currentTimeMillis());
-                    Bukkit.getScheduler().scheduleSyncDelayedTask(this.plugin, () -> this.cooldownPlayers.remove(p.getName()), 20 * gadget.getCooldown());
+                    new BukkitRunnable() {
+                        @Override
+                        public void run() {
+                            GadgetsListener.this.cooldownPlayers.remove(p.getName());
+                        }
+                    }.runTaskLater(this.plugin, 20 * gadget.getCooldown());
                     if (gadget.isUseAmmo() && !p.hasPermission("uc.unlimitedammo")) {
                         int i = loader.getAmmo(gadget.getIdentifier(), uuid);
                         if (i <= 0) {
@@ -182,7 +198,12 @@ public final class GadgetsListener implements Listener {
                         return;
                     }
                     this.cooldownPlayers.put(p.getName(), gadget.getIdentifier() + ':' + System.currentTimeMillis());
-                    Bukkit.getScheduler().scheduleSyncDelayedTask(this.plugin, () -> this.cooldownPlayers.remove(p.getName()), 20 * gadget.getCooldown());
+                    new BukkitRunnable() {
+                        @Override
+                        public void run() {
+                            GadgetsListener.this.cooldownPlayers.remove(p.getName());
+                        }
+                    }.runTaskLater(this.plugin, 20 * gadget.getCooldown());
                     if (gadget.isUseAmmo() && !p.hasPermission("uc.unlimitedammo")) {
                         int i = loader.getAmmo(gadget.getIdentifier(), uuid);
                         if (i <= 0) {
@@ -207,7 +228,12 @@ public final class GadgetsListener implements Listener {
                         return;
                     }
                     this.cooldownPlayers.put(p.getName(), gadget.getIdentifier() + ':' + System.currentTimeMillis());
-                    Bukkit.getScheduler().scheduleSyncDelayedTask(this.plugin, () -> this.cooldownPlayers.remove(p.getName()), 20 * gadget.getCooldown());
+                    new BukkitRunnable() {
+                        @Override
+                        public void run() {
+                            GadgetsListener.this.cooldownPlayers.remove(p.getName());
+                        }
+                    }.runTaskLater(this.plugin, 20 * gadget.getCooldown());
                     if (gadget.isUseAmmo() && !p.hasPermission("uc.unlimitedammo")) {
                         int i = loader.getAmmo(gadget.getIdentifier(), uuid);
                         if (i <= 0) {
@@ -234,7 +260,12 @@ public final class GadgetsListener implements Listener {
                         return;
                     }
                     this.cooldownPlayers.put(p.getName(), gadget.getIdentifier() + ':' + System.currentTimeMillis());
-                    Bukkit.getScheduler().scheduleSyncDelayedTask(this.plugin, () -> this.cooldownPlayers.remove(p.getName()), 20 * gadget.getCooldown());
+                    new BukkitRunnable() {
+                        @Override
+                        public void run() {
+                            GadgetsListener.this.cooldownPlayers.remove(p.getName());
+                        }
+                    }.runTaskLater(this.plugin, 20 * gadget.getCooldown());
                     if (gadget.isUseAmmo() && !p.hasPermission("uc.unlimitedammo")) {
                         int i = loader.getAmmo(gadget.getIdentifier(), uuid);
                         if (i <= 0) {
@@ -267,7 +298,12 @@ public final class GadgetsListener implements Listener {
                         return;
                     }
                     this.cooldownPlayers.put(p.getName(), gadget.getIdentifier() + ':' + System.currentTimeMillis());
-                    Bukkit.getScheduler().scheduleSyncDelayedTask(this.plugin, () -> this.cooldownPlayers.remove(p.getName()), 20 * gadget.getCooldown());
+                    new BukkitRunnable() {
+                        @Override
+                        public void run() {
+                            GadgetsListener.this.cooldownPlayers.remove(p.getName());
+                        }
+                    }.runTaskLater(this.plugin, 20 * gadget.getCooldown());
                     if (gadget.isUseAmmo() && !p.hasPermission("uc.unlimitedammo")) {
                         int i = loader.getAmmo(gadget.getIdentifier(), uuid);
                         if (i <= 0) {
@@ -280,14 +316,16 @@ public final class GadgetsListener implements Listener {
                     }
                     Location l = p.getEyeLocation();
                     for (int a = 0; a < config.getIntValue(gadget.getIdentifier(), "Amount"); a++) {
-                        Damageable bat = (Damageable) p.getWorld().spawnEntity(l, EntityType.BAT);
+                        final Damageable bat = (Damageable) p.getWorld().spawnEntity(l, EntityType.BAT);
                         bat.setVelocity(l.getDirection().multiply(config.getIntValue(gadget.getIdentifier(), "Speed")));
                         this.entitiesQueue.add(bat);
-                        Bukkit.getScheduler().scheduleSyncDelayedTask(this.plugin, () -> {
-                            bat.damage(1000.0);
-                            this.entitiesQueue.remove(bat);
-                        }, 20 * config.getIntValue(gadget.getIdentifier(), "RemoveDelay"));
-
+                        new BukkitRunnable() {
+                            @Override
+                            public void run() {
+                                bat.damage(1000.0);
+                                GadgetsListener.this.entitiesQueue.remove(bat);
+                            }
+                        }.runTaskLater(this.plugin, 20 * config.getIntValue(gadget.getIdentifier(), "RemoveDelay"));
                     }
                 }
                 if ("CATapult".equals(gadget.getIdentifier())) {
@@ -296,7 +334,12 @@ public final class GadgetsListener implements Listener {
                         return;
                     }
                     this.cooldownPlayers.put(p.getName(), gadget.getIdentifier() + ':' + System.currentTimeMillis());
-                    Bukkit.getScheduler().scheduleSyncDelayedTask(this.plugin, () -> this.cooldownPlayers.remove(p.getName()), 20 * gadget.getCooldown());
+                    new BukkitRunnable() {
+                        @Override
+                        public void run() {
+                            GadgetsListener.this.cooldownPlayers.remove(p.getName());
+                        }
+                    }.runTaskLater(this.plugin, 20 * gadget.getCooldown());
                     if (gadget.isUseAmmo() && !p.hasPermission("uc.unlimitedammo")) {
                         int i = loader.getAmmo(gadget.getIdentifier(), uuid);
                         if (i <= 0) {
@@ -310,7 +353,7 @@ public final class GadgetsListener implements Listener {
                     Location l = p.getEyeLocation();
                     General.broadcastSound(Sound.CAT_MEOW, l);
                     for (int a = 0; a < config.getIntValue(gadget.getIdentifier(), "Amount"); a++) {
-                        Ocelot cat = (Ocelot) p.getWorld().spawnEntity(l, EntityType.OCELOT);
+                        final Ocelot cat = (Ocelot) p.getWorld().spawnEntity(l, EntityType.OCELOT);
                         cat.setTamed(true);
                         Vector v = l.getDirection().multiply(config.getIntValue(gadget.getIdentifier(), "Speed"));
                         v.setX(v.getX() + Random.getDouble());
@@ -318,11 +361,14 @@ public final class GadgetsListener implements Listener {
                         v.setZ(v.getZ() + Random.getDouble());
                         cat.setVelocity(v);
                         this.entitiesQueue.add(cat);
-                        Bukkit.getScheduler().scheduleSyncDelayedTask(this.plugin, () -> {
-                            cat.getWorld().createExplosion(cat.getLocation().getX(), cat.getLocation().getY(), cat.getLocation().getZ(), config.getIntValue(gadget.getIdentifier(), "ExplosionPower"), false, false);
-                            cat.remove();
-                            this.entitiesQueue.remove(cat);
-                        }, 20 * config.getIntValue(gadget.getIdentifier(), "ExplosionDelay"));
+                        new BukkitRunnable() {
+                            @Override
+                            public void run() {
+                                cat.getWorld().createExplosion(cat.getLocation().getX(), cat.getLocation().getY(), cat.getLocation().getZ(), config.getIntValue(gadget.getIdentifier(), "ExplosionPower"), false, false);
+                                cat.remove();
+                                GadgetsListener.this.entitiesQueue.remove(cat);
+                            }
+                        }.runTaskLater(this.plugin, 20 * config.getIntValue(gadget.getIdentifier(), "ExplosionDelay"));
                     }
 
                 }
@@ -332,7 +378,12 @@ public final class GadgetsListener implements Listener {
                         return;
                     }
                     this.cooldownPlayers.put(p.getName(), gadget.getIdentifier() + ':' + System.currentTimeMillis());
-                    Bukkit.getScheduler().scheduleSyncDelayedTask(this.plugin, () -> this.cooldownPlayers.remove(p.getName()), 20 * gadget.getCooldown());
+                    new BukkitRunnable() {
+                        @Override
+                        public void run() {
+                            GadgetsListener.this.cooldownPlayers.remove(p.getName());
+                        }
+                    }.runTaskLater(this.plugin, 20 * gadget.getCooldown());
                     if (gadget.isUseAmmo() && !p.hasPermission("uc.unlimitedammo")) {
                         int i = loader.getAmmo(gadget.getIdentifier(), uuid);
                         if (i <= 0) {
@@ -358,8 +409,8 @@ public final class GadgetsListener implements Listener {
                     }
                 }
                 if ("CryoTube".equals(gadget.getIdentifier())) {
-                    Location l1 = p.getLocation();
-                    Location l2 = new Location(l1.getWorld(), l1.getX(), l1.getY() + 1.0, l1.getZ());
+                    final Location l1 = p.getLocation();
+                    final Location l2 = new Location(l1.getWorld(), l1.getX(), l1.getY() + 1.0, l1.getZ());
                     if (l1.getBlock().getType() != Material.AIR || l2.getBlock().getType() != Material.AIR) {
                         this.plugin.informPlayerNoPermission(p, lang.getNotEnoughSpace());
                         p.updateInventory();
@@ -370,7 +421,12 @@ public final class GadgetsListener implements Listener {
                         return;
                     }
                     this.cooldownPlayers.put(p.getName(), gadget.getIdentifier() + ':' + System.currentTimeMillis());
-                    Bukkit.getScheduler().scheduleSyncDelayedTask(this.plugin, () -> this.cooldownPlayers.remove(p.getName()), 20 * gadget.getCooldown());
+                    new BukkitRunnable() {
+                        @Override
+                        public void run() {
+                            GadgetsListener.this.cooldownPlayers.remove(p.getName());
+                        }
+                    }.runTaskLater(this.plugin, 20 * gadget.getCooldown());
                     if (gadget.isUseAmmo() && !p.hasPermission("uc.unlimitedammo")) {
                         int i = loader.getAmmo(gadget.getIdentifier(), uuid);
                         if (i <= 0) {
@@ -382,18 +438,27 @@ public final class GadgetsListener implements Listener {
                         }
                     }
                     Map<Material, Byte> map1 = new HashMap<>();
-                    Block b1 = l1.getBlock();
+                    final Block b1 = l1.getBlock();
                     map1.put(Material.AIR, (byte) 0);
                     this.blockQueue.put(l1, map1);
                     b1.setType(Material.ICE);
                     b1.setMetadata("CryoTube", new FixedMetadataValue(this.plugin, p.getName()));
                     Map<Material, Byte> map2 = new HashMap<>();
-                    Block b2 = l2.getBlock();
+                    final Block b2 = l2.getBlock();
                     map2.put(Material.AIR, (byte) 0);
                     this.blockQueue.put(l2, map2);
                     b2.setType(Material.ICE);
                     b2.setMetadata("CryoTube", new FixedMetadataValue(this.plugin, p.getName()));
                     General.broadcastSound(Sound.GLASS, l1);
+                    new BukkitRunnable() {
+                        @Override
+                        public void run() {
+                            b1.setType(Material.AIR);
+                            b2.setType(Material.AIR);
+                            GadgetsListener.this.blockQueue.remove(l1);
+                            GadgetsListener.this.blockQueue.remove(l2);
+                        }
+                    }.runTaskLater(this.plugin, config.getIntValue(gadget.getIdentifier(), "RemoveDelay") * 20);
                     for (Player online : Bukkit.getOnlinePlayers()) {
                         if (ReflectionAPI.verBiggerThan(1, 8))
                             online.spigot().playEffect(l1, Effect.STEP_SOUND, 79, 79, 0.7f, 0.7f, 0.7f, 2.0F, 10, 100);
@@ -401,13 +466,6 @@ public final class GadgetsListener implements Listener {
                         if (ReflectionAPI.verBiggerThan(1, 8))
                             online.spigot().playEffect(l2, Effect.STEP_SOUND, 79, 79, 0.7f, 0.7f, 0.7f, 2.0F, 10, 100);
                         else p.playEffect(l2, Effect.STEP_SOUND, Material.ICE);
-                        Bukkit.getScheduler().scheduleSyncDelayedTask(this.plugin, () -> {
-                            b1.setType(Material.AIR);
-                            b2.setType(Material.AIR);
-                            this.blockQueue.remove(l1);
-                            this.blockQueue.remove(l2);
-                        }, config.getIntValue(gadget.getIdentifier(), "RemoveDelay") * 20);
-
                     }
                 }
                 if ("Rocket".equals(gadget.getIdentifier())) {
@@ -421,7 +479,12 @@ public final class GadgetsListener implements Listener {
                         return;
                     }
                     this.cooldownPlayers.put(p.getName(), gadget.getIdentifier() + ':' + System.currentTimeMillis());
-                    Bukkit.getScheduler().scheduleSyncDelayedTask(this.plugin, () -> this.cooldownPlayers.remove(p.getName()), 20 * gadget.getCooldown());
+                    new BukkitRunnable() {
+                        @Override
+                        public void run() {
+                            GadgetsListener.this.cooldownPlayers.remove(p.getName());
+                        }
+                    }.runTaskLater(this.plugin, 20 * gadget.getCooldown());
                     if (gadget.isUseAmmo() && !p.hasPermission("uc.unlimitedammo")) {
                         int i = loader.getAmmo(gadget.getIdentifier(), uuid);
                         if (i <= 0) {
@@ -441,7 +504,12 @@ public final class GadgetsListener implements Listener {
                         return;
                     }
                     this.cooldownPlayers.put(p.getName(), gadget.getIdentifier() + ':' + System.currentTimeMillis());
-                    Bukkit.getScheduler().scheduleSyncDelayedTask(this.plugin, () -> this.cooldownPlayers.remove(p.getName()), 20 * gadget.getCooldown());
+                    new BukkitRunnable() {
+                        @Override
+                        public void run() {
+                            GadgetsListener.this.cooldownPlayers.remove(p.getName());
+                        }
+                    }.runTaskLater(this.plugin, 20 * gadget.getCooldown());
                     if (gadget.isUseAmmo() && !p.hasPermission("uc.unlimitedammo")) {
                         int i = loader.getAmmo(gadget.getIdentifier(), uuid);
                         if (i <= 0) {
@@ -460,20 +528,23 @@ public final class GadgetsListener implements Listener {
                         l.setX(l.getX() + x);
                         l.setY(l.getY() + 20.0);
                         l.setZ(l.getZ() + z);
-                        Item item = l.getWorld().dropItemNaturally(l, new CustomItem(Material.INK_SACK, 1, (short) 3, p.getName() + ":poopbomb", new String[]{String.valueOf(Random.getInt())}));
+                        final Item item = l.getWorld().dropItemNaturally(l, new CustomItem(Material.INK_SACK, 1, (short) 3, p.getName() + ":poopbomb", new String[]{String.valueOf(Random.getInt())}));
                         item.setMetadata("PoopBomb", new FixedMetadataValue(this.plugin, p.getName()));
                         item.setPickupDelay(Integer.MAX_VALUE);
                         this.entitiesQueue.add(item);
-                        Bukkit.getScheduler().scheduleSyncDelayedTask(this.plugin, () -> {
-                            for (Player online : Bukkit.getOnlinePlayers()) {
-                                if (ReflectionAPI.verBiggerThan(1, 8))
-                                    online.spigot().playEffect(item.getLocation(), Effect.SMOKE, 0, 0, 0.0F, 0.0F, 0.0F, 2.0F, 10, 100);
-                                else p.playEffect(item.getLocation(), Effect.SMOKE, 0);
-                                General.broadcastSound(Sound.FIREWORK_BLAST2, item.getLocation());
-                                item.remove();
-                                this.entitiesQueue.remove(item);
+                        new BukkitRunnable() {
+                            @Override
+                            public void run() {
+                                for (Player online : Bukkit.getOnlinePlayers()) {
+                                    if (ReflectionAPI.verBiggerThan(1, 8))
+                                        online.spigot().playEffect(item.getLocation(), Effect.SMOKE, 0, 0, 0.0F, 0.0F, 0.0F, 2.0F, 10, 100);
+                                    else p.playEffect(item.getLocation(), Effect.SMOKE, 0);
+                                    General.broadcastSound(Sound.FIREWORK_BLAST2, item.getLocation());
+                                    item.remove();
+                                    GadgetsListener.this.entitiesQueue.remove(item);
+                                }
                             }
-                        }, config.getIntValue(gadget.getIdentifier(), "RemoveDelay") * 20);
+                        }.runTaskLater(this.plugin, config.getIntValue(gadget.getIdentifier(), "RemoveDelay") * 20);
 
                     }
                 }
@@ -503,7 +574,12 @@ public final class GadgetsListener implements Listener {
                         return;
                     }
                     this.cooldownPlayers.put(p.getName(), gadget.getIdentifier() + ':' + System.currentTimeMillis());
-                    Bukkit.getScheduler().scheduleSyncDelayedTask(this.plugin, () -> this.cooldownPlayers.remove(p.getName()), 20 * gadget.getCooldown());
+                    new BukkitRunnable() {
+                        @Override
+                        public void run() {
+                            GadgetsListener.this.cooldownPlayers.remove(p.getName());
+                        }
+                    }.runTaskLater(this.plugin, 20 * gadget.getCooldown());
                     if (gadget.isUseAmmo() && !p.hasPermission("uc.unlimitedammo")) {
                         int i = loader.getAmmo(gadget.getIdentifier(), uuid);
                         if (i <= 0) {
@@ -533,7 +609,12 @@ public final class GadgetsListener implements Listener {
                         return;
                     }
                     this.cooldownPlayers.put(p.getName(), gadget.getIdentifier() + ':' + System.currentTimeMillis());
-                    Bukkit.getScheduler().scheduleSyncDelayedTask(this.plugin, () -> this.cooldownPlayers.remove(p.getName()), 20 * gadget.getCooldown());
+                    new BukkitRunnable() {
+                        @Override
+                        public void run() {
+                            GadgetsListener.this.cooldownPlayers.remove(p.getName());
+                        }
+                    }.runTaskLater(this.plugin, 20 * gadget.getCooldown());
                     if (gadget.isUseAmmo() && !p.hasPermission("uc.unlimitedammo")) {
                         int i = loader.getAmmo(gadget.getIdentifier(), uuid);
                         if (i <= 0) {
@@ -545,15 +626,17 @@ public final class GadgetsListener implements Listener {
                         }
                     }
                     for (int a = 0; a < config.getIntValue(gadget.getIdentifier(), "Amount"); a++) {
-                        Slime slime = (Slime) p.getWorld().spawnEntity(p.getLocation(), EntityType.SLIME);
+                        final Slime slime = (Slime) p.getWorld().spawnEntity(p.getLocation(), EntityType.SLIME);
                         slime.setSize(Random.getInt(1, 4));
                         slime.setMetadata("SlimeVasion", new FixedMetadataValue(this.plugin, p.getName()));
                         this.entitiesQueue.add(slime);
-                        Bukkit.getScheduler().scheduleSyncDelayedTask(this.plugin, () -> {
-                            slime.remove();
-                            this.entitiesQueue.remove(slime);
-                        }, config.getIntValue(gadget.getIdentifier(), "RemoveDelay") * 20);
-
+                        new BukkitRunnable() {
+                            @Override
+                            public void run() {
+                                slime.remove();
+                                GadgetsListener.this.entitiesQueue.remove(slime);
+                            }
+                        }.runTaskLater(this.plugin, config.getIntValue(gadget.getIdentifier(), "RemoveDelay") * 20);
                     }
                 }
                 if ("FunGun".equals(gadget.getIdentifier())) {
@@ -562,7 +645,12 @@ public final class GadgetsListener implements Listener {
                         return;
                     }
                     this.cooldownPlayers.put(p.getName(), gadget.getIdentifier() + ':' + System.currentTimeMillis());
-                    Bukkit.getScheduler().scheduleSyncDelayedTask(this.plugin, () -> this.cooldownPlayers.remove(p.getName()), 20 * gadget.getCooldown());
+                    new BukkitRunnable() {
+                        @Override
+                        public void run() {
+                            GadgetsListener.this.cooldownPlayers.remove(p.getName());
+                        }
+                    }.runTaskLater(this.plugin, 20 * gadget.getCooldown());
                     if (gadget.isUseAmmo() && !p.hasPermission("uc.unlimitedammo")) {
                         int i = loader.getAmmo(gadget.getIdentifier(), uuid);
                         if (i <= 0) {
@@ -586,7 +674,12 @@ public final class GadgetsListener implements Listener {
                         return;
                     }
                     this.cooldownPlayers.put(p.getName(), gadget.getIdentifier() + ':' + System.currentTimeMillis());
-                    Bukkit.getScheduler().scheduleSyncDelayedTask(this.plugin, () -> this.cooldownPlayers.remove(p.getName()), 20 * gadget.getCooldown());
+                    new BukkitRunnable() {
+                        @Override
+                        public void run() {
+                            GadgetsListener.this.cooldownPlayers.remove(p.getName());
+                        }
+                    }.runTaskLater(this.plugin, 20 * gadget.getCooldown());
                     if (gadget.isUseAmmo() && !p.hasPermission("uc.unlimitedammo")) {
                         int i = loader.getAmmo(gadget.getIdentifier(), uuid);
                         if (i <= 0) {
@@ -615,7 +708,12 @@ public final class GadgetsListener implements Listener {
                         return;
                     }
                     this.cooldownPlayers.put(p.getName(), gadget.getIdentifier() + ':' + System.currentTimeMillis());
-                    Bukkit.getScheduler().scheduleSyncDelayedTask(this.plugin, () -> this.cooldownPlayers.remove(p.getName()), 20 * gadget.getCooldown());
+                    new BukkitRunnable() {
+                        @Override
+                        public void run() {
+                            GadgetsListener.this.cooldownPlayers.remove(p.getName());
+                        }
+                    }.runTaskLater(this.plugin, 20 * gadget.getCooldown());
                     if (gadget.isUseAmmo() && !p.hasPermission("uc.unlimitedammo")) {
                         int i = loader.getAmmo(gadget.getIdentifier(), uuid);
                         if (i <= 0) {
@@ -644,7 +742,12 @@ public final class GadgetsListener implements Listener {
                         return;
                     }
                     this.cooldownPlayers.put(p.getName(), gadget.getIdentifier() + ':' + System.currentTimeMillis());
-                    Bukkit.getScheduler().scheduleSyncDelayedTask(this.plugin, () -> this.cooldownPlayers.remove(p.getName()), 20 * gadget.getCooldown());
+                    new BukkitRunnable() {
+                        @Override
+                        public void run() {
+                            GadgetsListener.this.cooldownPlayers.remove(p.getName());
+                        }
+                    }.runTaskLater(this.plugin, 20 * gadget.getCooldown());
                     if (gadget.isUseAmmo() && !p.hasPermission("uc.unlimitedammo")) {
                         int i = loader.getAmmo(gadget.getIdentifier(), uuid);
                         if (i <= 0) {
@@ -658,8 +761,12 @@ public final class GadgetsListener implements Listener {
                     this.firePlayers.add(p.getName());
                     p.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, config.getIntValue(gadget.getIdentifier(), "Duration") * 20, config.getIntValue(gadget.getIdentifier(), "Speed.Multiplier") - 1));
                     General.broadcastSound(Sound.BLAZE_BREATH, p.getLocation());
-                    Bukkit.getScheduler().scheduleSyncDelayedTask(this.plugin, () -> this.firePlayers.remove(p.getName()), 20 * config.getIntValue(gadget.getIdentifier(), "Duration"));
-
+                    new BukkitRunnable() {
+                        @Override
+                        public void run() {
+                            GadgetsListener.this.firePlayers.remove(p.getName());
+                        }
+                    }.runTaskLater(this.plugin, config.getIntValue(gadget.getIdentifier(), "Duration") * 20);
                 }
 
                 if ("DiamondShower".equals(gadget.getIdentifier())) {
@@ -668,7 +775,12 @@ public final class GadgetsListener implements Listener {
                         return;
                     }
                     this.cooldownPlayers.put(p.getName(), gadget.getIdentifier() + ':' + System.currentTimeMillis());
-                    Bukkit.getScheduler().scheduleSyncDelayedTask(this.plugin, () -> this.cooldownPlayers.remove(p.getName()), 20 * gadget.getCooldown());
+                    new BukkitRunnable() {
+                        @Override
+                        public void run() {
+                            GadgetsListener.this.cooldownPlayers.remove(p.getName());
+                        }
+                    }.runTaskLater(this.plugin, 20 * gadget.getCooldown());
                     if (gadget.isUseAmmo() && !p.hasPermission("uc.unlimitedammo")) {
                         int i = loader.getAmmo(gadget.getIdentifier(), uuid);
                         if (i <= 0) {
@@ -680,8 +792,12 @@ public final class GadgetsListener implements Listener {
                         }
                     }
                     this.diamondShowerPlayers.add(p.getName());
-                    Bukkit.getScheduler().scheduleSyncDelayedTask(this.plugin, () -> this.diamondShowerPlayers.remove(p.getName()), 20 * config.getIntValue(gadget.getIdentifier(), "Duration"));
-
+                    new BukkitRunnable() {
+                        @Override
+                        public void run() {
+                            GadgetsListener.this.diamondShowerPlayers.remove(p.getName());
+                        }
+                    }.runTaskLater(this.plugin, config.getIntValue(gadget.getIdentifier(), "Duration") * 20);
                 }
 
                 if ("GoldFountain".equals(gadget.getIdentifier())) {
@@ -690,7 +806,12 @@ public final class GadgetsListener implements Listener {
                         return;
                     }
                     this.cooldownPlayers.put(p.getName(), gadget.getIdentifier() + ':' + System.currentTimeMillis());
-                    Bukkit.getScheduler().scheduleSyncDelayedTask(this.plugin, () -> this.cooldownPlayers.remove(p.getName()), 20 * gadget.getCooldown());
+                    new BukkitRunnable() {
+                        @Override
+                        public void run() {
+                            GadgetsListener.this.cooldownPlayers.remove(p.getName());
+                        }
+                    }.runTaskLater(this.plugin, 20 * gadget.getCooldown());
                     if (gadget.isUseAmmo() && !p.hasPermission("uc.unlimitedammo")) {
                         int i = loader.getAmmo(gadget.getIdentifier(), uuid);
                         if (i <= 0) {
@@ -717,7 +838,12 @@ public final class GadgetsListener implements Listener {
                         return;
                     }
                     this.cooldownPlayers.put(p.getName(), gadget.getIdentifier() + ':' + System.currentTimeMillis());
-                    Bukkit.getScheduler().scheduleSyncDelayedTask(this.plugin, () -> this.cooldownPlayers.remove(p.getName()), 20 * gadget.getCooldown());
+                    new BukkitRunnable() {
+                        @Override
+                        public void run() {
+                            GadgetsListener.this.cooldownPlayers.remove(p.getName());
+                        }
+                    }.runTaskLater(this.plugin, 20 * gadget.getCooldown());
                     if (gadget.isUseAmmo() && !p.hasPermission("uc.unlimitedammo")) {
                         int i = loader.getAmmo(gadget.getIdentifier(), uuid);
                         if (i <= 0) {
@@ -730,7 +856,12 @@ public final class GadgetsListener implements Listener {
                     }
                     this.paintTrailPlayers.add(p.getName());
                     General.broadcastSound(Sound.SPLASH, p.getLocation());
-                    Bukkit.getScheduler().scheduleSyncDelayedTask(this.plugin, () -> this.paintTrailPlayers.remove(p.getName()), 20 * config.getIntValue(gadget.getIdentifier(), "Duration"));
+                    new BukkitRunnable() {
+                        @Override
+                        public void run() {
+                            GadgetsListener.this.paintTrailPlayers.remove(p.getName());
+                        }
+                    }.runTaskLater(this.plugin, config.getIntValue(gadget.getIdentifier(), "Duration") * 20);
                 }
             }
         }
@@ -881,19 +1012,25 @@ public final class GadgetsListener implements Listener {
     @EventHandler
     public void onPlayerQuit(PlayerQuitEvent e) {
         Player p = e.getPlayer();
-        p.getNearbyEntities(20.0, 20.0, 20.0).stream().filter(this::isEntity).forEach(Entity::remove);
+        for(Entity ent : p.getNearbyEntities(20.0, 20.0, 20.0)) {
+            if(this.isEntity(ent)) ent.remove();
+        }
     }
 
     @EventHandler
     public void onPlayerKick(PlayerKickEvent e) {
         Player p = e.getPlayer();
-        p.getNearbyEntities(20.0, 20.0, 20.0).stream().filter(this::isEntity).forEach(Entity::remove);
+        for(Entity ent : p.getNearbyEntities(20.0, 20.0, 20.0)) {
+            if(this.isEntity(ent)) ent.remove();
+        }
     }
 
     @EventHandler
     public void onTeleport(PlayerTeleportEvent e) {
         Player p = e.getPlayer();
-        p.getNearbyEntities(20.0, 20.0, 20.0).stream().filter(this::isEntity).forEach(Entity::remove);
+        for(Entity ent : p.getNearbyEntities(20.0, 20.0, 20.0)) {
+            if(this.isEntity(ent)) ent.remove();
+        }
     }
 
     @EventHandler
@@ -912,26 +1049,25 @@ public final class GadgetsListener implements Listener {
     }
 
     @SuppressWarnings("deprecation")
-    private void setRandomClay(Block block, int delay, Plugin plugin) {
-        if (block.getType() == Material.AIR || block.getTypeId() == 166 || this.blockQueue.containsKey(block.getLocation()))
+    private void setRandomClay(final Block block, int delay, Plugin plugin) {
+        if (block.getType() == Material.AIR || block.getTypeId() == 166)
             return;
-        Material mat = block.getType();
-        byte data = block.getData();
-        Map<Material, Byte> map = new HashMap<>();
-        map.put(mat, data);
-        this.blockQueue.put(block.getLocation(), map);
-        Bukkit.getOnlinePlayers().forEach(online -> online.sendBlockChange(block.getLocation(), Material.STAINED_CLAY, (byte) Random.getInt(15)));
+        final Material mat = block.getType();
+        final byte data = block.getData();
         for (Player p : Bukkit.getOnlinePlayers()) {
+            p.sendBlockChange(block.getLocation(), Material.STAINED_CLAY, (byte) Random.getInt(15));
             if (ReflectionAPI.verBiggerThan(1, 8))
                 p.spigot().playEffect(block.getLocation(), Effect.MAGIC_CRIT, 0, 0, 0.7f, 0.7f, 0.7f, 2.0F, 10, 100);
             else p.playEffect(block.getLocation(), Effect.MAGIC_CRIT, 0);
         }
-        Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () -> {
-            Bukkit.getOnlinePlayers().forEach(online -> online.sendBlockChange(block.getLocation(), mat, data));
-            block.setType(mat);
-            block.setData(data);
-            this.blockQueue.remove(block.getLocation());
-        }, delay * 20);
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                for (Player p : Bukkit.getOnlinePlayers()) {
+                    p.sendBlockChange(block.getLocation(), mat, data);
+                }
+            }
+        }.runTaskLater(plugin, delay * 20);
     }
 
     private void pullEntityToLocation(Entity p, Location l) {
@@ -963,18 +1099,21 @@ public final class GadgetsListener implements Listener {
             else p.playEffect(l, Effect.STEP_SOUND, Material.MELON_BLOCK);
         }
         for (int a = 0; a < this.plugin.getGadgets().getIntValue("MelonThrower", "Amount"); a++) {
-            Item i = l.getWorld().dropItemNaturally(l, new CustomItem(Material.MELON, 1, 0, Random.getInt() + "UCEntity"));
+            final Item i = l.getWorld().dropItemNaturally(l, new CustomItem(Material.MELON, 1, 0, Random.getInt() + "UCEntity"));
             this.entitiesQueue.add(i);
             i.setMetadata("UCEntity", new FixedMetadataValue(this.plugin, "MelonSlice"));
-            Bukkit.getScheduler().scheduleSyncDelayedTask(this.plugin, () -> {
-                i.remove();
-                this.entitiesQueue.remove(i);
-            }, this.plugin.getGadgets().getIntValue("MelonThrower", "RemoveDelay") * 20);
+            new BukkitRunnable() {
+                @Override
+                public void run() {
+                    i.remove();
+                    GadgetsListener.this.entitiesQueue.remove(i);
+                }
+            }.runTaskLater(this.plugin, this.plugin.getGadgets().getIntValue("MelonThrower", "RemoveDelay") * 20);
         }
     }
 
     private void handleColorBomb(Entity ent) {
-        Location l = ent.getLocation();
+        final Location l = ent.getLocation();
         this.entitiesQueue.remove(ent);
         ent.remove();
         new BukkitRunnable() {
@@ -984,26 +1123,29 @@ public final class GadgetsListener implements Listener {
             public void run() {
                 this.count++;
                 if (this.count > GadgetsListener.this.plugin.getGadgets().getIntValue("ColorBomb", "RemoveDelay") * 20) {
-                    this.cancel();
+                    cancel();
                 } else {
                     Sounds.broadcastSound(Sound.CHICKEN_EGG_POP, l);
                     String item = GadgetsListener.this.plugin.getGadgets().getStringList("ColorBomb", "Items").get(Random.getInt(GadgetsListener.this.plugin.getGadgets().getStringList("ColorBomb", "Items").size() - 1));
-                    Item i = l.getWorld().dropItemNaturally(l, new CustomItem(Parsing.parseMaterial(item), 1, Parsing.parseData(item), Random.getInt() + "UCEntity"));
+                    final Item i = l.getWorld().dropItemNaturally(l, new CustomItem(Parsing.parseMaterial(item), 1, Parsing.parseData(item), Random.getInt() + "UCEntity"));
                     i.setMetadata("UCEntity", new FixedMetadataValue(GadgetsListener.this.plugin, "ColorBomb"));
                     GadgetsListener.this.entitiesQueue.add(i);
                     i.setVelocity(i.getVelocity().setY(0.75));
                     i.setPickupDelay(Integer.MAX_VALUE);
-                    Bukkit.getScheduler().scheduleSyncDelayedTask(GadgetsListener.this.plugin, () -> {
-                        i.remove();
-                        GadgetsListener.this.entitiesQueue.remove(i);
-                    }, 5L);
+                    new BukkitRunnable() {
+                        @Override
+                        public void run() {
+                            i.remove();
+                            GadgetsListener.this.entitiesQueue.remove(i);
+                        }
+                    }.runTaskLater(GadgetsListener.this.plugin, 5L);
                 }
             }
         }.runTaskTimer(this.plugin, 0L, 1L);
     }
 
     private void handleGoldFountain(Entity ent) {
-        Location l = ent.getLocation();
+        final Location l = ent.getLocation();
         this.entitiesQueue.remove(ent);
         ent.remove();
         new BukkitRunnable() {
@@ -1013,18 +1155,21 @@ public final class GadgetsListener implements Listener {
             public void run() {
                 this.count++;
                 if (this.count > GadgetsListener.this.plugin.getGadgets().getIntValue("GoldFountain", "RemoveDelay") * 20) {
-                    this.cancel();
+                    cancel();
                 } else {
                     Sounds.broadcastSound(Sound.CHICKEN_EGG_POP, l);
-                    Item i = l.getWorld().dropItemNaturally(l, new CustomItem(Material.GOLD_INGOT, 1, 0, Random.getInt() + "UCEntity"));
+                    final Item i = l.getWorld().dropItemNaturally(l, new CustomItem(Material.GOLD_INGOT, 1, 0, Random.getInt() + "UCEntity"));
                     i.setMetadata("UCEntity", new FixedMetadataValue(GadgetsListener.this.plugin, "GoldFountain"));
                     GadgetsListener.this.entitiesQueue.add(i);
                     i.setVelocity(i.getVelocity().setY(0.75));
                     i.setPickupDelay(Integer.MAX_VALUE);
-                    Bukkit.getScheduler().scheduleSyncDelayedTask(GadgetsListener.this.plugin, () -> {
-                        i.remove();
-                        GadgetsListener.this.entitiesQueue.remove(i);
-                    }, 5L);
+                    new BukkitRunnable() {
+                        @Override
+                        public void run() {
+                            i.remove();
+                            GadgetsListener.this.entitiesQueue.remove(i);
+                        }
+                    }.runTaskLater(GadgetsListener.this.plugin, 5L);
                 }
             }
         }.runTaskTimer(this.plugin, 0L, 1L);
@@ -1032,11 +1177,15 @@ public final class GadgetsListener implements Listener {
 
     @SuppressWarnings("deprecation")
     public void cleanup() {
-        this.entitiesQueue.forEach(Entity::remove);
+        for(Entity ent : this.entitiesQueue) {
+            ent.remove();
+        }
         for (Map.Entry<Location, Map<Material, Byte>> locationHashMapEntry : this.blockQueue.entrySet()) {
             Block block = locationHashMapEntry.getKey().getWorld().getBlockAt(locationHashMapEntry.getKey());
             for (Material m : locationHashMapEntry.getValue().keySet()) {
-                Bukkit.getOnlinePlayers().forEach(online -> online.sendBlockChange(locationHashMapEntry.getKey(), m, locationHashMapEntry.getValue().get(m)));
+                for(Player p : Bukkit.getOnlinePlayers()) {
+                    p.sendBlockChange(locationHashMapEntry.getKey(), m, locationHashMapEntry.getValue().get(m));
+                }
                 block.setType(m);
                 block.setData(locationHashMapEntry.getValue().get(m));
             }
@@ -1091,7 +1240,7 @@ public final class GadgetsListener implements Listener {
                 fw.setVelocity(new Vector(0, this.config.getIntValue(this.gadget.getIdentifier(), "Speed"), 0));
                 this.p.setFallDistance(-100.0F);
                 Sounds.broadcastSound(Sound.EXPLODE, this.p.getLocation());
-                this.cancel();
+                cancel();
             }
         }
     }

@@ -13,9 +13,9 @@ import com.j0ach1mmall3.ultimatecosmetics.internal.particles.shapes.ParticleShap
 import org.bukkit.ChatColor;
 import org.bukkit.Sound;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * Created by j0ach1mmall3 on 14:24 23/08/2015 using IntelliJ IDEA.
@@ -77,7 +77,11 @@ public final class Particles extends ConfigLoader {
     }
 
     private List<ParticleStorage> getParticlesInternal() {
-        return this.customConfig.getKeys("Particles").stream().map(this::getParticleByIdentifier).collect(Collectors.toList());
+        List<ParticleStorage> particlez = new ArrayList<>();
+        for(String s : this.customConfig.getKeys("Particles")) {
+            particlez.add(this.getParticleByIdentifier(s));
+        }
+        return particlez;
     }
 
     private ParticleStorage getParticleByIdentifier(String identifier) {

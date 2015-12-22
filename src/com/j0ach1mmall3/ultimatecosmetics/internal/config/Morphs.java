@@ -15,9 +15,9 @@ import org.bukkit.Sound;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.SkullMeta;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * Created by j0ach1mmall3 on 20:42 1/10/2015 using IntelliJ IDEA.
@@ -88,7 +88,11 @@ public final class Morphs extends ConfigLoader {
     }
 
     private List<MorphStorage> getMorphsInternal() {
-        return this.customConfig.getKeys("Morphs").stream().map(this::getMorphByIdentifier).collect(Collectors.toList());
+        List<MorphStorage> morphz = new ArrayList<>();
+        for(String s : this.customConfig.getKeys("Morphs")) {
+            morphz.add(this.getMorphByIdentifier(s));
+        }
+        return morphz;
     }
 
     private CustomItem getMorphItem(String identifier) {

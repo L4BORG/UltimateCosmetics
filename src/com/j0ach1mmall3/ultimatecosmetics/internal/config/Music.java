@@ -16,9 +16,9 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * Created by j0ach1mmall3 on 13:39 23/08/2015 using IntelliJ IDEA.
@@ -81,7 +81,11 @@ public final class Music extends ConfigLoader {
     }
 
     private List<MusicStorage> getMusicsInternal() {
-        return this.customConfig.getKeys("Music").stream().map(this::getMusicByIdentifier).collect(Collectors.toList());
+        List<MusicStorage> musicz = new ArrayList<>();
+        for(String s : this.customConfig.getKeys("Music")) {
+            musicz.add(this.getMusicByIdentifier(s));
+        }
+        return musicz;
     }
 
     private MusicStorage getMusicByIdentifier(String identifier) {

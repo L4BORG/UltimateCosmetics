@@ -22,9 +22,9 @@ public final class Cross extends BukkitRunnable {
     @Override
     public void run() {
         for (Particle particle : this.plugin.getApi().getParticles()) {
-            ParticleStorage particleStorage = particle.getParticleStorage();
+            final ParticleStorage particleStorage = particle.getParticleStorage();
             if (particleStorage.getShape() == ParticleShape.CROSS) {
-                Location l = particle.getPlayer().getLocation();
+                final Location l = particle.getPlayer().getLocation();
                 new BukkitRunnable() {
                     double y = 0;
 

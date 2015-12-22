@@ -8,6 +8,8 @@ import com.j0ach1mmall3.ultimatecosmetics.internal.Methods;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -40,46 +42,55 @@ public final class SQLiteDataLoader extends SQLiteLoader implements DataLoader {
     }
 
     @Override
-    public void loadAmmo(String uuid) {
-        Map<String, Integer> gadgetAmmo = new HashMap<>();
-        this.sqLite.prepareStatement("SELECT * FROM " + this.ammoName + " WHERE Player = ?", preparedStatement -> {
-            this.sqLite.setString(preparedStatement, 1, uuid);
-            this.sqLite.executeQuerry(preparedStatement, resultSet ->  {
-                try {
-                    if(!resultSet.next()) {
-                        createAmmo(uuid);
-                        for (GadgetStorage gadget : ((Main) this.plugin).getGadgets().getGadgets()) {
-                            gadgetAmmo.put(gadget.getIdentifier(), 0);
+    public void loadAmmo(final String uuid) {
+        final Map<String, Integer> gadgetAmmo = new HashMap<>();
+        this.sqLite.prepareStatement("SELECT * FROM " + this.ammoName + " WHERE Player = ?", new CallbackHandler<PreparedStatement>() {
+            @Override
+            public void callback(PreparedStatement preparedStatement) {
+                SQLiteDataLoader.this.sqLite.setString(preparedStatement, 1, uuid);
+                SQLiteDataLoader.this.sqLite.executeQuerry(preparedStatement, new CallbackHandler<ResultSet>() {
+                    @Override
+                    public void callback(ResultSet resultSet) {
+                        try {
+                            if(!resultSet.next()) {
+                                createAmmo(uuid);
+                                for (GadgetStorage gadget : ((Main) SQLiteDataLoader.this.plugin).getGadgets().getGadgets()) {
+                                    gadgetAmmo.put(gadget.getIdentifier(), 0);
+                                }
+                                SQLiteDataLoader.this.ammo.put(uuid, gadgetAmmo);
+                            } else {
+                                for (GadgetStorage gadget : ((Main) SQLiteDataLoader.this.plugin).getGadgets().getGadgets()) {
+                                    gadgetAmmo.put(gadget.getIdentifier(), resultSet.getInt(gadget.getIdentifier()));
+                                }
+                                SQLiteDataLoader.this.ammo.put(uuid, gadgetAmmo);
+                            }
+                        } catch (SQLException e) {
+                            e.printStackTrace();
+                            createAmmo(uuid);
+                            for (GadgetStorage gadget : ((Main) SQLiteDataLoader.this.plugin).getGadgets().getGadgets()) {
+                                gadgetAmmo.put(gadget.getIdentifier(), 0);
+                            }
+                            SQLiteDataLoader.this.ammo.put(uuid, gadgetAmmo);
                         }
-                        this.ammo.put(uuid, gadgetAmmo);
-                    } else {
-                        for (GadgetStorage gadget : ((Main) this.plugin).getGadgets().getGadgets()) {
-                            gadgetAmmo.put(gadget.getIdentifier(), resultSet.getInt(gadget.getIdentifier()));
-                        }
-                        this.ammo.put(uuid, gadgetAmmo);
                     }
-                } catch (SQLException e) {
-                    createAmmo(uuid);
-                    e.printStackTrace();
-                    for (GadgetStorage gadget : ((Main) this.plugin).getGadgets().getGadgets()) {
-                        gadgetAmmo.put(gadget.getIdentifier(), 0);
-                    }
-                    this.ammo.put(uuid, gadgetAmmo);
-                }
-            });
+                });
+            }
         });
     }
 
     @Override
-    public void unloadAmmo(String uuid) {
+    public void unloadAmmo(final String uuid) {
         Map<String, Integer> gadgetAmmo = this.ammo.get(uuid);
         this.ammo.remove(uuid);
         if(gadgetAmmo == null) return;
-        for(Map.Entry<String, Integer> entry : gadgetAmmo.entrySet()) {
-            this.sqLite.prepareStatement("UPDATE " + this.ammoName + " SET " + entry.getKey() + "=? WHERE Player=?", preparedStatement -> {
-                this.sqLite.setString(preparedStatement, 1, String.valueOf(entry.getValue()));
-                this.sqLite.setString(preparedStatement, 2, uuid);
-                this.sqLite.execute(preparedStatement);
+        for(final Map.Entry<String, Integer> entry : gadgetAmmo.entrySet()) {
+            this.sqLite.prepareStatement("UPDATE " + this.ammoName + " SET " + entry.getKey() + "=? WHERE Player=?", new CallbackHandler<PreparedStatement>() {
+                @Override
+                public void callback(PreparedStatement preparedStatement) {
+                    SQLiteDataLoader.this.sqLite.setString(preparedStatement, 1, String.valueOf(entry.getValue()));
+                    SQLiteDataLoader.this.sqLite.setString(preparedStatement, 2, uuid);
+                    SQLiteDataLoader.this.sqLite.execute(preparedStatement);
+                }
             });
         }
     }
@@ -100,19 +111,29 @@ public final class SQLiteDataLoader extends SQLiteLoader implements DataLoader {
     }
 
     @Override
-    public void createAmmo(String uuid) {
-        this.sqLite.prepareStatement("SELECT * FROM " + this.ammoName + " WHERE Player = ?", preparedStatement -> {
-            this.sqLite.setString(preparedStatement, 1, uuid);
-            this.sqLite.executeQuerry(preparedStatement, resultSet -> {
-                try {
-                    if(!resultSet.next()) this.sqLite.prepareStatement("INSERT INTO " + this.ammoName + " VALUES(?, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)", preparedStatement1 -> {
-                        this.sqLite.setString(preparedStatement1, 1, uuid);
-                        this.sqLite.execute(preparedStatement1);
-                    });
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            });
+    public void createAmmo(final String uuid) {
+        this.sqLite.prepareStatement("SELECT * FROM " + this.ammoName + " WHERE Player = ?", new CallbackHandler<PreparedStatement>() {
+            @Override
+            public void callback(PreparedStatement preparedStatement) {
+                SQLiteDataLoader.this.sqLite.setString(preparedStatement, 1, uuid);
+                SQLiteDataLoader.this.sqLite.executeQuerry(preparedStatement, new CallbackHandler<ResultSet>() {
+                    @Override
+                    public void callback(ResultSet resultSet) {
+                        try {
+                            if (!resultSet.next())
+                                SQLiteDataLoader.this.sqLite.prepareStatement("INSERT INTO " + SQLiteDataLoader.this.ammoName + " VALUES(?, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)", new CallbackHandler<PreparedStatement>() {
+                                    @Override
+                                    public void callback(PreparedStatement preparedStatement) {
+                                        SQLiteDataLoader.this.sqLite.setString(preparedStatement, 1, uuid);
+                                        SQLiteDataLoader.this.sqLite.execute(preparedStatement);
+                                    }
+                                });
+                        } catch (SQLException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                });
+            }
         });
     }
 
@@ -122,95 +143,133 @@ public final class SQLiteDataLoader extends SQLiteLoader implements DataLoader {
     }
 
     @Override
-    public void giveBackQueue(Player p) {
-        this.sqLite.prepareStatement("SELECT * FROM " + this.queueName + " WHERE Player = ?", preparedStatement -> {
-            this.sqLite.setString(preparedStatement, 1, p.getUniqueId().toString());
-            this.sqLite.executeQuerry(preparedStatement, resultSet ->  {
-                try {
-                    if(resultSet.next()) {
-                        CosmeticsQueue queue = new CosmeticsQueue((Main) this.plugin, Arrays.asList(resultSet.getString("Balloon"), resultSet.getString("Banner"), resultSet.getString("Bowtrail"), resultSet.getString("Gadget"), resultSet.getString("Hat"), resultSet.getString("Hearts"), resultSet.getString("Morph"), resultSet.getString("Mount"), resultSet.getString("Music"), resultSet.getString("Particles"), resultSet.getString("Pet"), resultSet.getString("Trail"), resultSet.getString("Outfit")));
-                        Bukkit.getScheduler().callSyncMethod(this.plugin, (Callable<Void>) () -> {
-                            queue.give(p);
-                            return null;
-                        });
+    public void giveBackQueue(final Player p) {
+        this.sqLite.prepareStatement("SELECT * FROM " + this.queueName + " WHERE Player = ?", new CallbackHandler<PreparedStatement>() {
+            @Override
+            public void callback(PreparedStatement preparedStatement) {
+                SQLiteDataLoader.this.sqLite.setString(preparedStatement, 1, p.getUniqueId().toString());
+                SQLiteDataLoader.this.sqLite.executeQuerry(preparedStatement, new CallbackHandler<ResultSet>() {
+                    @Override
+                    public void callback(ResultSet resultSet) {
+                        try {
+                            if(resultSet.next()) {
+                                final CosmeticsQueue queue = new CosmeticsQueue((Main) SQLiteDataLoader.this.plugin, Arrays.asList(resultSet.getString("Balloon"), resultSet.getString("Banner"), resultSet.getString("Bowtrail"), resultSet.getString("Gadget"), resultSet.getString("Hat"), resultSet.getString("Hearts"), resultSet.getString("Morph"), resultSet.getString("Mount"), resultSet.getString("Music"), resultSet.getString("Particles"), resultSet.getString("Pet"), resultSet.getString("Trail"), resultSet.getString("Outfit")));
+                                Bukkit.getScheduler().callSyncMethod(SQLiteDataLoader.this.plugin, new Callable<Void>() {
+                                    @Override
+                                    public Void call() {
+                                        queue.give(p);
+                                        return null;
+                                    }
+                                });
+                            }
+                        } catch (SQLException e) {
+                            e.printStackTrace();
+                        }
                     }
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            });
-        });
-    }
-
-    @Override
-    public void updateQueue(Player p, CosmeticsQueue queue) {
-        Methods.removeCosmetics(p, (Main) this.plugin);
-        List<String> list = queue.asList();
-        this.sqLite.prepareStatement("UPDATE " + this.queueName + " SET Balloon=?, Banner=?, Bowtrail=?, Gadget=?, Hat=?, Hearts=?, Morph=?, Mount=?, Music=?, Particles=?, Pet=?, Trail=?, Outfit=? WHERE Player=?", preparedStatement -> {
-            for(int i=0;i<13;i++) {
-                this.sqLite.setString(preparedStatement, i+1, list.get(i));
+                });
             }
-            this.sqLite.setString(preparedStatement, 14, p.getUniqueId().toString());
-            this.sqLite.execute(preparedStatement);
         });
     }
 
     @Override
-    public void createQueue(Player p) {
-        this.sqLite.prepareStatement("SELECT * FROM " + this.queueName + " WHERE Player = ?", preparedStatement -> {
-            this.sqLite.setString(preparedStatement, 1, p.getUniqueId().toString());
-            this.sqLite.executeQuerry(preparedStatement, resultSet ->  {
-                try {
-                    if(!resultSet.next()) this.sqLite.prepareStatement("INSERT INTO " + this.queueName + " VALUES(?, '', '', '', '', '', '', '', '', '', '', '', '', '')", preparedStatement1 -> {
-                        this.sqLite.setString(preparedStatement1, 1, p.getUniqueId().toString());
-                        this.sqLite.execute(preparedStatement1);
-                    });
-                } catch (SQLException e) {
-                    e.printStackTrace();
+    public void updateQueue(final Player p, CosmeticsQueue queue) {
+        Methods.removeCosmetics(p, (Main) this.plugin);
+        final List<String> list = queue.asList();
+        this.sqLite.prepareStatement("UPDATE " + this.queueName + " SET Balloon=?, Banner=?, Bowtrail=?, Gadget=?, Hat=?, Hearts=?, Morph=?, Mount=?, Music=?, Particles=?, Pet=?, Trail=?, Outfit=? WHERE Player=?", new CallbackHandler<PreparedStatement>() {
+            @Override
+            public void callback(PreparedStatement preparedStatement) {
+                for(int i=0;i<13;i++) {
+                    SQLiteDataLoader.this.sqLite.setString(preparedStatement, i+1, list.get(i));
                 }
-            });
+                SQLiteDataLoader.this.sqLite.setString(preparedStatement, 14, p.getUniqueId().toString());
+                SQLiteDataLoader.this.sqLite.execute(preparedStatement);
+            }
         });
     }
 
     @Override
-    public void getStacker(Player p, CallbackHandler<Boolean> callbackHandler) {
-        this.sqLite.prepareStatement("SELECT * FROM " + this.stackerName + " WHERE Player = ?", preparedStatement -> {
-            this.sqLite.setString(preparedStatement, 1, p.getUniqueId().toString());
-            this.sqLite.executeQuerry(preparedStatement, resultSet ->  {
-                try {
-                    resultSet.next();
-                    callbackHandler.callback(resultSet.getBoolean("Enabled"));
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                    callbackHandler.callback(false);
-                }
-            });
+    public void createQueue(final Player p) {
+        this.sqLite.prepareStatement("SELECT * FROM " + this.queueName + " WHERE Player = ?", new CallbackHandler<PreparedStatement>() {
+            @Override
+            public void callback(PreparedStatement preparedStatement) {
+                SQLiteDataLoader.this.sqLite.setString(preparedStatement, 1, p.getUniqueId().toString());
+                SQLiteDataLoader.this.sqLite.executeQuerry(preparedStatement, new CallbackHandler<ResultSet>() {
+                    @Override
+                    public void callback(ResultSet resultSet) {
+                        try {
+                            if(!resultSet.next()) SQLiteDataLoader.this.sqLite.prepareStatement("INSERT INTO " + SQLiteDataLoader.this.queueName + " VALUES(?, '', '', '', '', '', '', '', '', '', '', '', '', '')", new CallbackHandler<PreparedStatement>() {
+                                @Override
+                                public void callback(PreparedStatement preparedStatement) {
+                                    SQLiteDataLoader.this.sqLite.setString(preparedStatement, 1, p.getUniqueId().toString());
+                                    SQLiteDataLoader.this.sqLite.execute(preparedStatement);
+                                }
+                            });
+                        } catch (SQLException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                });
+            }
         });
-
     }
 
     @Override
-    public void setStacker(Player p, boolean stacker) {
-        this.sqLite.prepareStatement("UPDATE " + this.stackerName + " SET Enabled=? WHERE Player=?", preparedStatement -> {
-            this.sqLite.setBoolean(preparedStatement, 1, stacker);
-            this.sqLite.setString(preparedStatement, 2, p.getUniqueId().toString());
-            this.sqLite.execute(preparedStatement);
+    public void getStacker(final Player p, final CallbackHandler<Boolean> callbackHandler) {
+        this.sqLite.prepareStatement("SELECT * FROM " + this.stackerName + " WHERE Player = ?", new CallbackHandler<PreparedStatement>() {
+            @Override
+            public void callback(PreparedStatement preparedStatement) {
+                SQLiteDataLoader.this.sqLite.setString(preparedStatement, 1, p.getUniqueId().toString());
+                SQLiteDataLoader.this.sqLite.executeQuerry(preparedStatement, new CallbackHandler<ResultSet>() {
+                    @Override
+                    public void callback(ResultSet resultSet) {
+                        try {
+                            resultSet.next();
+                            callbackHandler.callback(resultSet.getBoolean("Enabled"));
+                        } catch (SQLException e) {
+                            e.printStackTrace();
+                            callbackHandler.callback(false);
+                        }
+                    }
+                });
+            }
         });
     }
 
     @Override
-    public void createStacker(Player p) {
-        this.sqLite.prepareStatement("SELECT * FROM " + this.stackerName + " WHERE Player = ?", preparedStatement -> {
-            this.sqLite.setString(preparedStatement, 1, p.getUniqueId().toString());
-            this.sqLite.executeQuerry(preparedStatement, resultSet -> {
-                try {
-                    if(!resultSet.next()) this.sqLite.prepareStatement("INSERT INTO " + this.stackerName + " VALUES(?, 1)", preparedStatement1 -> {
-                        this.sqLite.setString(preparedStatement1, 1, p.getUniqueId().toString());
-                        this.sqLite.execute(preparedStatement1);
-                    });
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            });
+    public void setStacker(final Player p, final boolean stacker) {
+        this.sqLite.prepareStatement("UPDATE " + this.stackerName + " SET Enabled=? WHERE Player=?", new CallbackHandler<PreparedStatement>() {
+            @Override
+            public void callback(PreparedStatement preparedStatement) {
+                SQLiteDataLoader.this.sqLite.setBoolean(preparedStatement, 1, stacker);
+                SQLiteDataLoader.this.sqLite.setString(preparedStatement, 2, p.getUniqueId().toString());
+                SQLiteDataLoader.this.sqLite.execute(preparedStatement);
+            }
+        });
+    }
+
+    @Override
+    public void createStacker(final Player p) {
+        this.sqLite.prepareStatement("SELECT * FROM " + this.stackerName + " WHERE Player = ?", new CallbackHandler<PreparedStatement>() {
+            @Override
+            public void callback(PreparedStatement preparedStatement) {
+                SQLiteDataLoader.this.sqLite.setString(preparedStatement, 1, p.getUniqueId().toString());
+                SQLiteDataLoader.this.sqLite.executeQuerry(preparedStatement, new CallbackHandler<ResultSet>() {
+                    @Override
+                    public void callback(ResultSet resultSet) {
+                        try {
+                            if(!resultSet.next()) SQLiteDataLoader.this.sqLite.prepareStatement("INSERT INTO " + SQLiteDataLoader.this.stackerName + " VALUES(?, 1)", new CallbackHandler<PreparedStatement>() {
+                                @Override
+                                public void callback(PreparedStatement preparedStatement) {
+                                    SQLiteDataLoader.this.sqLite.setString(preparedStatement, 1, p.getUniqueId().toString());
+                                    SQLiteDataLoader.this.sqLite.execute(preparedStatement);
+                                }
+                            });
+                        } catch (SQLException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                });
+            }
         });
     }
 }

@@ -14,9 +14,9 @@ import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.inventory.meta.SkullMeta;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * Created by j0ach1mmall3 on 4:01 23/08/2015 using IntelliJ IDEA.
@@ -78,7 +78,11 @@ public final class Hats extends ConfigLoader {
     }
 
     private List<HatStorage> getHatsInternal() {
-        return this.customConfig.getKeys("Hats").stream().map(this::getHatByIdentifier).collect(Collectors.toList());
+        List<HatStorage> hatz = new ArrayList<>();
+        for(String s : this.customConfig.getKeys("Hats")) {
+            hatz.add(this.getHatByIdentifier(s));
+        }
+        return hatz;
     }
 
     private HatStorage getHatByIdentifier(String identifier) {

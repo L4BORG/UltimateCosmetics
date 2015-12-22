@@ -15,9 +15,9 @@ import org.bukkit.FireworkEffect;
 import org.bukkit.Material;
 import org.bukkit.inventory.meta.FireworkMeta;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * Created by j0ach1mmall3 on 16:40 22/08/2015 using IntelliJ IDEA.
@@ -69,7 +69,11 @@ public final class Fireworks extends ConfigLoader {
     }
 
     private List<FireworkStorage> getFireworksInternal() {
-        return this.customConfig.getKeys("Fireworks").stream().map(this::getFireworkByIdentifier).collect(Collectors.toList());
+        List<FireworkStorage> fireworkz = new ArrayList<>();
+        for(String s : this.customConfig.getKeys("Fireworks")) {
+            fireworkz.add(this.getFireworkByIdentifier(s));
+        }
+        return fireworkz;
     }
 
     private CustomItem getFireworkItem(String identifier) {

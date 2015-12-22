@@ -11,10 +11,10 @@ import org.bukkit.ChatColor;
 import org.bukkit.Sound;
 import org.bukkit.inventory.ItemStack;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * Created by j0ach1mmall3 on 13:23 20/08/2015 using IntelliJ IDEA.
@@ -69,7 +69,11 @@ public final class Config extends ConfigLoader {
     }
 
     private List<GuiItem> getItems() {
-        return this.customConfig.getKeys("CosmeticsGUI.Items").stream().map(this::getItemByIdentifier).collect(Collectors.toList());
+        List<GuiItem> items = new ArrayList<>();
+        for(String s : this.customConfig.getKeys("CosmeticsGUI.Items")) {
+            items.add(this.getItemByIdentifier(s));
+        }
+        return items;
     }
 
     private GuiItem getItemByIdentifier(String s) {

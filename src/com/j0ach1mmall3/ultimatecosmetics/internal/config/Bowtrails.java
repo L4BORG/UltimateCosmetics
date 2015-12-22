@@ -12,9 +12,9 @@ import com.j0ach1mmall3.ultimatecosmetics.internal.Methods;
 import org.bukkit.ChatColor;
 import org.bukkit.Sound;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * Created by j0ach1mmall3 on 16:11 31/10/2015 using IntelliJ IDEA.
@@ -76,7 +76,11 @@ public final class Bowtrails extends ConfigLoader {
     }
 
     private List<BowtrailStorage> getBowtrailsInternal() {
-        return this.customConfig.getKeys("Bowtrails").stream().map(this::getBowtrailByIdentifier).collect(Collectors.toList());
+        List<BowtrailStorage> bowtrailz = new ArrayList<>();
+        for(String s : this.customConfig.getKeys("Bowtrails")) {
+            bowtrailz.add(this.getBowtrailByIdentifier(s));
+        }
+        return bowtrailz;
     }
 
     private BowtrailStorage getBowtrailByIdentifier(String identifier) {

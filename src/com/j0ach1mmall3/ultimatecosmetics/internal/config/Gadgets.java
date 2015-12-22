@@ -12,9 +12,9 @@ import com.j0ach1mmall3.ultimatecosmetics.internal.Methods;
 import org.bukkit.ChatColor;
 import org.bukkit.Sound;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * Created by j0ach1mmall3 on 19:36 22/08/2015 using IntelliJ IDEA.
@@ -80,7 +80,11 @@ public final class Gadgets extends ConfigLoader {
     }
 
     private List<GadgetStorage> getGadgetsInternal() {
-        return this.customConfig.getKeys("Gadgets").stream().map(this::getGadgetByIdentifier).collect(Collectors.toList());
+        List<GadgetStorage> gadgetz = new ArrayList<>();
+        for(String s : this.customConfig.getKeys("Gadgets")) {
+            gadgetz.add(this.getGadgetByIdentifier(s));
+        }
+        return gadgetz;
     }
 
     private GadgetStorage getGadgetByIdentifier(String identifier) {

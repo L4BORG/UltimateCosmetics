@@ -15,10 +15,8 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityPortalEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerUnleashEntityEvent;
+import org.bukkit.scheduler.BukkitRunnable;
 import org.spigotmc.event.entity.EntityDismountEvent;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 public final class BalloonsListener implements Listener {
     private final Main plugin;
@@ -97,17 +95,19 @@ public final class BalloonsListener implements Listener {
     }
 
     private void startScheduler() {
-        Bukkit.getScheduler().scheduleSyncRepeatingTask(this.plugin, () -> {
-            List<Balloon> balloons = this.plugin.getApi().getBalloons().stream().collect(Collectors.toList());
-            for (Balloon balloon : balloons) {
-                Bat bat = balloon.getBat();
-                Player p = balloon.getPlayer();
-                if (bat != null) {
-                    if (!bat.getWorld().getName().equalsIgnoreCase(p.getWorld().getName()) || bat.getLocation().distance(p.getLocation()) >= this.plugin.getBalloons().getTeleportDistance()) {
-                        balloon.give();
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                for (Balloon balloon : BalloonsListener.this.plugin.getApi().getBalloons()) {
+                    Bat bat = balloon.getBat();
+                    Player p = balloon.getPlayer();
+                    if (bat != null) {
+                        if (!bat.getWorld().getName().equalsIgnoreCase(p.getWorld().getName()) || bat.getLocation().distance(p.getLocation()) >= BalloonsListener.this.plugin.getBalloons().getTeleportDistance()) {
+                            balloon.give();
+                        }
                     }
                 }
             }
-        }, 0L, this.plugin.getBalloons().getTeleportInterval() * 20);
+        }.runTaskTimer(this.plugin, 0L, this.plugin.getBalloons().getTeleportInterval() * 20);
     }
 }
