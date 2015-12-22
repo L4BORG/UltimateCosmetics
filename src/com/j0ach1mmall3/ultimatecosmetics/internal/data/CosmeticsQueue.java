@@ -42,19 +42,35 @@ public final class CosmeticsQueue {
 
     CosmeticsQueue(Main plugin, List<String> cosmetics) {
         CosmeticsAPI api = plugin.getApi();
-        this.balloon = api.getBalloonByIdentifier(cosmetics.get(0)) != null ? api.getBalloonByIdentifier(cosmetics.get(0)) : null;
-        this.banner = api.getBannerByIdentifier(cosmetics.get(1)) != null ? api.getBannerByIdentifier(cosmetics.get(1)) : null;
-        this.bowtrail = api.getBowtrailByIdentifier(cosmetics.get(2)) != null ? api.getBowtrailByIdentifier(cosmetics.get(2)) : null;
-        this.gadget = api.getGadgetByIdentifier(cosmetics.get(3)) != null ? api.getGadgetByIdentifier(cosmetics.get(3)) : null;
-        this.hat = api.getHatByIdentifier(cosmetics.get(4)) != null ? api.getHatByIdentifier(cosmetics.get(4)) : null;
-        this.hearts = api.getHeartByIdentifier(cosmetics.get(5)) != null ? api.getHeartByIdentifier(cosmetics.get(5)) : null;
-        this.morph = api.getMorphByIdentifier(cosmetics.get(6)) != null ? api.getMorphByIdentifier(cosmetics.get(6)) : null;
-        this.mount = api.getMountByIdentifier(cosmetics.get(7)) != null ? api.getMountByIdentifier(cosmetics.get(7)) : null;
-        this.music = api.getMusicByIdentifier(cosmetics.get(8)) != null ? api.getMusicByIdentifier(cosmetics.get(8)) : null;
-        this.particles = api.getParticleByIdentifier(cosmetics.get(9)) != null ? api.getParticleByIdentifier(cosmetics.get(9)) : null;
-        this.pet = api.getPetByIdentifier(cosmetics.get(10)) != null ? api.getPetByIdentifier(cosmetics.get(10)) : null;
-        this.trail = api.getTrailByIdentifier(cosmetics.get(11)) != null ? api.getTrailByIdentifier(cosmetics.get(11)) : null;
-        this.outfit = api.getOutfitByIdentifier(cosmetics.get(12)) != null ? api.getOutfitByIdentifier(cosmetics.get(12)) : null;
+        if(cosmetics.isEmpty()) {
+            this.balloon = null;
+            this.banner = null;
+            this.bowtrail = null;
+            this.gadget =  null;
+            this.hat = null;
+            this.hearts = null;
+            this.morph = null;
+            this.mount = null;
+            this.music = null;
+            this.particles = null;
+            this.pet = null;
+            this.trail = null;
+            this.outfit =null;
+        } else {
+            this.balloon = api.getBalloonByIdentifier(cosmetics.get(0)) != null ? api.getBalloonByIdentifier(cosmetics.get(0)) : null;
+            this.banner = api.getBannerByIdentifier(cosmetics.get(1)) != null ? api.getBannerByIdentifier(cosmetics.get(1)) : null;
+            this.bowtrail = api.getBowtrailByIdentifier(cosmetics.get(2)) != null ? api.getBowtrailByIdentifier(cosmetics.get(2)) : null;
+            this.gadget = api.getGadgetByIdentifier(cosmetics.get(3)) != null ? api.getGadgetByIdentifier(cosmetics.get(3)) : null;
+            this.hat = api.getHatByIdentifier(cosmetics.get(4)) != null ? api.getHatByIdentifier(cosmetics.get(4)) : null;
+            this.hearts = api.getHeartByIdentifier(cosmetics.get(5)) != null ? api.getHeartByIdentifier(cosmetics.get(5)) : null;
+            this.morph = api.getMorphByIdentifier(cosmetics.get(6)) != null ? api.getMorphByIdentifier(cosmetics.get(6)) : null;
+            this.mount = api.getMountByIdentifier(cosmetics.get(7)) != null ? api.getMountByIdentifier(cosmetics.get(7)) : null;
+            this.music = api.getMusicByIdentifier(cosmetics.get(8)) != null ? api.getMusicByIdentifier(cosmetics.get(8)) : null;
+            this.particles = api.getParticleByIdentifier(cosmetics.get(9)) != null ? api.getParticleByIdentifier(cosmetics.get(9)) : null;
+            this.pet = api.getPetByIdentifier(cosmetics.get(10)) != null ? api.getPetByIdentifier(cosmetics.get(10)) : null;
+            this.trail = api.getTrailByIdentifier(cosmetics.get(11)) != null ? api.getTrailByIdentifier(cosmetics.get(11)) : null;
+            this.outfit = api.getOutfitByIdentifier(cosmetics.get(12)) != null ? api.getOutfitByIdentifier(cosmetics.get(12)) : null;
+        }
     }
 
     CosmeticsQueue(Main plugin, String cosmetics) {
