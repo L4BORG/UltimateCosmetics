@@ -4,11 +4,6 @@
 Yes, you can compile the source for yourself, or buy the plugin and get access to the binaries, and support.
 Keep in mind that buying the plugin supports the author of it!
 
-## I get Unsupported major.minor version 52.0!
-Install java 8.
-Java 8 is required for this plugin to work, no Java 7 version is available!
-If you are using shared hosting, you'll have to contact your host support.
-
 ## I am running Minecraft 1.7 and I get an error upon startup!
 Remove the Banners item from the config.yml, and disable Banners in banners.yml
 
