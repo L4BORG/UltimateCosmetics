@@ -106,13 +106,11 @@ public final class PlayerListener implements Listener {
                                 p.setPassenger(e.getRightClicked());
                                 p.sendMessage(Placeholders.parse(PlayerListener.this.plugin.getMisc().getStackerPrefix(), p) + Placeholders.parse(PlayerListener.this.plugin.getLang().getStackedPlayer(), p).replace("%target%", e.getRightClicked().getType().name().replace("_", " ").toLowerCase()));
                             }
-                        } else PlayerListener.this.plugin.informPlayerNoPermission(p, PlayerListener.this.plugin.getMisc().getStackerNoPermissionMessage());
+                        }
                     }
                 }
             });
-        } else {
-            this.plugin.informPlayerNoPermission(p, Placeholders.parse(this.plugin.getLang().getStackerNotEnabled(), p));
-        }
+        } else this.plugin.informPlayerNoPermission(p, Placeholders.parse(this.plugin.getLang().getStackerNotEnabled(), p));
     }
 
     @EventHandler(ignoreCancelled = true)

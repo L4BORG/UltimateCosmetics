@@ -400,7 +400,7 @@ public final class MorphsListener implements Listener {
     }
 
     private boolean isEntity(Entity ent) {
-        if (ent.hasMetadata("AbilityItem") || ent.getCustomName() != null && ent.getCustomName().endsWith("AbilityItem"))
+        if (ent.hasMetadata("AbilityItem") || ent instanceof LivingEntity && ent.getCustomName() != null && ent.getCustomName().endsWith("AbilityItem"))
             return true;
         for (Entity e : this.entitiesQueue) {
             if (ent.getUniqueId().equals(e.getUniqueId())) return true;
