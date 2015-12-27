@@ -4,7 +4,6 @@ import com.j0ach1mmall3.jlib.storage.database.CallbackHandler;
 import com.j0ach1mmall3.jlib.storage.file.yaml.ConfigLoader;
 import com.j0ach1mmall3.ultimatecosmetics.Main;
 import com.j0ach1mmall3.ultimatecosmetics.api.storage.GadgetStorage;
-import com.j0ach1mmall3.ultimatecosmetics.internal.Methods;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
@@ -88,7 +87,6 @@ public final class FileDataLoader extends ConfigLoader implements DataLoader {
     public void updateQueue(Player p, CosmeticsQueue queue) {
         this.config.set("Queue." + p.getUniqueId(), queue.asList());
         this.customConfig.saveConfig(this.config);
-        Methods.removeCosmetics(p, (Main) this.plugin);
     }
 
     @Override
@@ -117,5 +115,15 @@ public final class FileDataLoader extends ConfigLoader implements DataLoader {
             this.config.set("Stacker." + p.getUniqueId(), true);
             this.customConfig.saveConfig(this.config);
         }
+    }
+
+    @Override
+    public void getPetName(Player p, CallbackHandler<String> callbackHandler) {
+        callbackHandler.callback(this.config.getString("PetNames." + p.getUniqueId()));
+    }
+
+    @Override
+    public void setPetName(Player p, String name) {
+        this.config.set("PetNames." + p.getUniqueId(), name.replace(".", ""));
     }
 }

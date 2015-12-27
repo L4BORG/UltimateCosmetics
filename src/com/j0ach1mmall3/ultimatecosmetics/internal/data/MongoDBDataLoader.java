@@ -4,7 +4,6 @@ import com.j0ach1mmall3.jlib.storage.database.CallbackHandler;
 import com.j0ach1mmall3.jlib.storage.database.mongodb.MongoDBLoader;
 import com.j0ach1mmall3.ultimatecosmetics.Main;
 import com.j0ach1mmall3.ultimatecosmetics.api.storage.GadgetStorage;
-import com.j0ach1mmall3.ultimatecosmetics.internal.Methods;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
 import org.bson.BSONObject;
@@ -26,12 +25,14 @@ public final class MongoDBDataLoader extends MongoDBLoader implements DataLoader
     private final String ammoName;
     private final String queueName;
     private final String stackerName;
+    private final String petNamesName;
 
     public MongoDBDataLoader(Main plugin) {
         super(plugin, plugin.getStorage().getDatabaseHost(), plugin.getStorage().getDatabasePort(), plugin.getStorage().getDatabaseDatabase(), plugin.getStorage().getDatabaseUser(), plugin.getStorage().getDatabasePassword());
         this.ammoName = plugin.getStorage().getDatabasePrefix() + "ammo";
         this.queueName = plugin.getStorage().getDatabasePrefix() + "queue";
         this.stackerName = plugin.getStorage().getDatabasePrefix() + "stacker";
+        this.petNamesName = plugin.getStorage().getDatabasePrefix() + "petnames";
     }
 
     @Override
@@ -145,7 +146,6 @@ public final class MongoDBDataLoader extends MongoDBLoader implements DataLoader
 
     @Override
     public void updateQueue(final Player p, final CosmeticsQueue queue) {
-        Methods.removeCosmetics(p, (Main) this.plugin);
         this.mongoDB.getObject(new BasicDBObject("player", p.getUniqueId().toString()), this.queueName, new CallbackHandler<DBObject>() {
             @Override
             public void callback(DBObject dbObject) {
@@ -226,5 +226,22 @@ public final class MongoDBDataLoader extends MongoDBLoader implements DataLoader
                 }
             }
         });
+    }
+
+    @Override
+    public void getPetName(Player p, final CallbackHandler<String> callbackHandler) {
+        this.mongoDB.getObject(new BasicDBObject("player", p.getUniqueId().toString()), this.petNamesName, new CallbackHandler<DBObject>() {
+            @Override
+            public void callback(DBObject dbObject) {
+                callbackHandler.callback((String) dbObject.get("PetName"));
+            }
+        });
+    }
+
+    @Override
+    public void setPetName(Player p, final String name) {
+        DBObject object = new BasicDBObject("player", p.getUniqueId().toString());
+        object.put("PetName", name);
+        this.mongoDB.updateObject(object, new BasicDBObject("player", p.getUniqueId().toString()), this.stackerName);
     }
 }

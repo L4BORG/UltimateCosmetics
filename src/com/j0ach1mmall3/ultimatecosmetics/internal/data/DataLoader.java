@@ -34,5 +34,9 @@ public interface DataLoader {
 
     void setStacker(Player p, boolean stacker);
 
+    void getPetName(Player p, CallbackHandler<String> callbackHandler);
+
+    void setPetName(Player p, String name);
+
     void disconnectLoader();
 }

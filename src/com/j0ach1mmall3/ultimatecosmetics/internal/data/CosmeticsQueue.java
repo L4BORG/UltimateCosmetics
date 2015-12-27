@@ -3,7 +3,19 @@ package com.j0ach1mmall3.ultimatecosmetics.internal.data;
 import com.j0ach1mmall3.jlib.storage.serialization.SerializedList;
 import com.j0ach1mmall3.ultimatecosmetics.Main;
 import com.j0ach1mmall3.ultimatecosmetics.api.CosmeticsAPI;
-import com.j0ach1mmall3.ultimatecosmetics.api.storage.*;
+import com.j0ach1mmall3.ultimatecosmetics.api.storage.BalloonStorage;
+import com.j0ach1mmall3.ultimatecosmetics.api.storage.BannerStorage;
+import com.j0ach1mmall3.ultimatecosmetics.api.storage.BowtrailStorage;
+import com.j0ach1mmall3.ultimatecosmetics.api.storage.GadgetStorage;
+import com.j0ach1mmall3.ultimatecosmetics.api.storage.HatStorage;
+import com.j0ach1mmall3.ultimatecosmetics.api.storage.HeartStorage;
+import com.j0ach1mmall3.ultimatecosmetics.api.storage.MorphStorage;
+import com.j0ach1mmall3.ultimatecosmetics.api.storage.MountStorage;
+import com.j0ach1mmall3.ultimatecosmetics.api.storage.MusicStorage;
+import com.j0ach1mmall3.ultimatecosmetics.api.storage.OutfitStorage;
+import com.j0ach1mmall3.ultimatecosmetics.api.storage.ParticleStorage;
+import com.j0ach1mmall3.ultimatecosmetics.api.storage.PetStorage;
+import com.j0ach1mmall3.ultimatecosmetics.api.storage.TrailStorage;
 import com.j0ach1mmall3.ultimatecosmetics.internal.balloons.BalloonImpl;
 import com.j0ach1mmall3.ultimatecosmetics.internal.banners.BannerImpl;
 import com.j0ach1mmall3.ultimatecosmetics.internal.bowtrails.BowtrailImpl;
@@ -17,6 +29,7 @@ import com.j0ach1mmall3.ultimatecosmetics.internal.particles.ParticleImpl;
 import com.j0ach1mmall3.ultimatecosmetics.internal.pets.PetImpl;
 import com.j0ach1mmall3.ultimatecosmetics.internal.trails.TrailImpl;
 import com.j0ach1mmall3.ultimatecosmetics.internal.wardrobe.OutfitImpl;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import java.util.Arrays;
@@ -26,6 +39,7 @@ import java.util.List;
  * Created by j0ach1mmall3 on 8:45 1/11/2015 using IntelliJ IDEA.
  */
 public final class CosmeticsQueue {
+    private final Main plugin;
     private final BalloonStorage balloon;
     private final BannerStorage banner;
     private final BowtrailStorage bowtrail;
@@ -41,6 +55,7 @@ public final class CosmeticsQueue {
     private final OutfitStorage outfit;
 
     CosmeticsQueue(Main plugin, List<String> cosmetics) {
+        this.plugin = plugin;
         CosmeticsAPI api = plugin.getApi();
         if(cosmetics.isEmpty()) {
             this.balloon = null;
@@ -78,6 +93,7 @@ public final class CosmeticsQueue {
     }
 
     public CosmeticsQueue(Main plugin, Player p) {
+        this.plugin = plugin;
         CosmeticsAPI api = plugin.getApi();
         this.balloon = api.hasBalloon(p) ? api.getBalloon(p).getBalloonStorage() : null;
         this.banner = api.hasBanner(p) ? api.getBanner(p).getBannerStorage() : null;
@@ -94,7 +110,7 @@ public final class CosmeticsQueue {
         this.outfit = api.hasOutfit(p) ? api.getOutfit(p).getOutfitStorage() : null;
     }
 
-    public void give(Player p) {
+    public void give(final Player p) {
         if (this.balloon != null) new BalloonImpl(p, this.balloon).give();
         if (this.banner != null) new BannerImpl(p, this.banner).give();
         if (this.bowtrail != null) new BowtrailImpl(p, this.bowtrail).give();
@@ -102,12 +118,18 @@ public final class CosmeticsQueue {
         if (this.hat != null) new HatImpl(p, this.hat).give();
         if (this.hearts != null) new HeartImpl(p, this.hearts).give();
         if (this.morph != null) new MorphImpl(p, this.morph).give();
-        if (this.mount != null) new MountImpl(p, this.mount).give();
         if (this.music != null) new MusicImpl(p, this.music).give();
         if (this.particles != null) new ParticleImpl(p, this.particles).give();
-        if (this.pet != null) new PetImpl(p, this.pet).give();
         if (this.trail != null) new TrailImpl(p, this.trail).give();
         if (this.outfit != null) new OutfitImpl(p, this.outfit).give();
+        //Let's delay this because otherwise it doesn't give
+        Bukkit.getScheduler().scheduleSyncDelayedTask(this.plugin, new Runnable() {
+            @Override
+            public void run() {
+                if (CosmeticsQueue.this.mount != null) new MountImpl(p, CosmeticsQueue.this.mount).give();
+                if (CosmeticsQueue.this.pet != null) new PetImpl(p, CosmeticsQueue.this.pet).give();
+            }
+        }, 10L);
     }
 
     public List<String> asList() {

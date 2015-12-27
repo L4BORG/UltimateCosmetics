@@ -110,7 +110,7 @@ public final class PlayerListener implements Listener {
                     }
                 }
             });
-        } else this.plugin.informPlayerNoPermission(p, Placeholders.parse(this.plugin.getLang().getStackerNotEnabled(), p));
+        }
     }
 
     @EventHandler(ignoreCancelled = true)
@@ -187,10 +187,12 @@ public final class PlayerListener implements Listener {
     @EventHandler
     public void onPlayerLeave(PlayerQuitEvent e) {
         final Player p = e.getPlayer();
+        final CosmeticsQueue queue =  new CosmeticsQueue(this.plugin, p);
+        Methods.removeCosmetics(p, this.plugin);
         new BukkitRunnable() {
             @Override
             public void run() {
-                PlayerListener.this.plugin.getDataLoader().updateQueue(p, new CosmeticsQueue(PlayerListener.this.plugin, p));
+                PlayerListener.this.plugin.getDataLoader().updateQueue(p, queue);
                 PlayerListener.this.plugin.getDataLoader().unloadAmmo(p.getUniqueId().toString());
             }
         }.runTaskAsynchronously(this.plugin);
@@ -199,10 +201,12 @@ public final class PlayerListener implements Listener {
     @EventHandler
     public void onPlayerKick(PlayerKickEvent e) {
         final Player p = e.getPlayer();
+        final CosmeticsQueue queue =  new CosmeticsQueue(this.plugin, p);
+        Methods.removeCosmetics(p, this.plugin);
         new BukkitRunnable() {
             @Override
             public void run() {
-                PlayerListener.this.plugin.getDataLoader().updateQueue(p, new CosmeticsQueue(PlayerListener.this.plugin, p));
+                PlayerListener.this.plugin.getDataLoader().updateQueue(p, queue);
                 PlayerListener.this.plugin.getDataLoader().unloadAmmo(p.getUniqueId().toString());
             }
         }.runTaskAsynchronously(this.plugin);

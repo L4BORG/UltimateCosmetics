@@ -3,6 +3,7 @@ package com.j0ach1mmall3.ultimatecosmetics.internal.pets;
 
 import com.j0ach1mmall3.jlib.integration.Placeholders;
 import com.j0ach1mmall3.jlib.methods.ReflectionAPI;
+import com.j0ach1mmall3.jlib.storage.database.CallbackHandler;
 import com.j0ach1mmall3.ultimatecosmetics.api.CosmeticsAPI;
 import com.j0ach1mmall3.ultimatecosmetics.api.cosmetics.Cosmetic;
 import com.j0ach1mmall3.ultimatecosmetics.api.cosmetics.Pet;
@@ -12,9 +13,23 @@ import com.j0ach1mmall3.ultimatecosmetics.api.storage.PetStorage;
 import org.bukkit.Bukkit;
 import org.bukkit.DyeColor;
 import org.bukkit.Material;
-import org.bukkit.entity.*;
+import org.bukkit.entity.Ageable;
+import org.bukkit.entity.Creature;
+import org.bukkit.entity.Creeper;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.Horse;
+import org.bukkit.entity.Ocelot;
+import org.bukkit.entity.Pig;
+import org.bukkit.entity.Player;
+import org.bukkit.entity.Sheep;
+import org.bukkit.entity.Skeleton;
+import org.bukkit.entity.Tameable;
+import org.bukkit.entity.Villager;
+import org.bukkit.entity.Zombie;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.Colorable;
+
+import java.util.concurrent.Callable;
 
 /**
  * Created by j0ach1mmall3 on 15:06 23/08/2015 using IntelliJ IDEA.
@@ -74,6 +89,19 @@ public final class PetImpl implements Pet {
             entity.setHealth(entity.getMaxHealth());
             this.ent = entity;
             api.addPet(this);
+            this.petStorage.getPlugin().getDataLoader().getPetName(this.player, new CallbackHandler<String>() {
+                @Override
+                public void callback(final String s) {
+                    if(s == null) return;
+                    Bukkit.getScheduler().callSyncMethod(PetImpl.this.petStorage.getPlugin(), new Callable<Void>() {
+                        @Override
+                        public Void call() {
+                            PetImpl.this.ent.setCustomName(Placeholders.parse(s, PetImpl.this.player));
+                            return null;
+                        }
+                    });
+                }
+            });
         }
     }
 
@@ -87,6 +115,7 @@ public final class PetImpl implements Pet {
             Cosmetic cosmetic = event.getCosmetic();
             this.player = cosmetic.getPlayer();
             this.ent = ((Pet) cosmetic).getEntity();
+            if(!this.ent.getCustomName().equals(Placeholders.parse(this.petStorage.getItem().getItemMeta().getDisplayName(), this.player))) this.petStorage.getPlugin().getDataLoader().setPetName(this.player, this.ent.getCustomName());
             api.removePet(this);
             this.ent.remove();
         }

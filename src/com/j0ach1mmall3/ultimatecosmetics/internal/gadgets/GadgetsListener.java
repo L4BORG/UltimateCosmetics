@@ -1193,7 +1193,7 @@ public final class GadgetsListener implements Listener {
     }
 
     private boolean isEntity(Entity ent) {
-        if (ent.hasMetadata("UCEntity") || ent instanceof LivingEntity && ent.getCustomName() != null && ent.getCustomName().endsWith("UCEntity"))
+        if (ent.hasMetadata("UCEntity") || ent instanceof LivingEntity && ((LivingEntity) ent).getCustomName() != null && ((LivingEntity) ent).getCustomName().endsWith("UCEntity"))
             return true;
         for (Entity e : this.entitiesQueue) {
             if (ent.getUniqueId().equals(e.getUniqueId())) return true;

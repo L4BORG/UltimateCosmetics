@@ -4,7 +4,6 @@ import com.j0ach1mmall3.jlib.storage.database.CallbackHandler;
 import com.j0ach1mmall3.jlib.storage.database.sqlite.SQLiteLoader;
 import com.j0ach1mmall3.ultimatecosmetics.Main;
 import com.j0ach1mmall3.ultimatecosmetics.api.storage.GadgetStorage;
-import com.j0ach1mmall3.ultimatecosmetics.internal.Methods;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
@@ -26,14 +25,18 @@ public final class SQLiteDataLoader extends SQLiteLoader implements DataLoader {
     private final String ammoName;
     private final String queueName;
     private final String stackerName;
+    private final String petNamesName;
+
     public SQLiteDataLoader(Main plugin) {
         super(plugin, "data");
         this.ammoName = plugin.getStorage().getDatabasePrefix() + "ammo";
         this.queueName = plugin.getStorage().getDatabasePrefix() + "queue";
         this.stackerName = plugin.getStorage().getDatabasePrefix() + "stacker";
+        this.petNamesName = plugin.getStorage().getDatabasePrefix() + "petnames";
         this.sqLite.execute("CREATE TABLE IF NOT EXISTS " + this.ammoName + "(Player VARCHAR(36), Enderbow INT(5), EtherealPearl INT(5), PaintballGun INT(5), FlyingPig INT(5), BatBlaster INT(5), CATapult INT(5), RailGun INT(5), CryoTube INT(5), Rocket INT(5), PoopBomb INT(5), GrapplingHook INT(5), SelfDestruct INT(5), SlimeVasion INT(5), FunGun INT(5), MelonThrower INT(5), ColorBomb INT(5), FireTrail INT(5), DiamondShower INT(5), GoldFountain INT(5), PaintTrail INT(5))");
         this.sqLite.execute("CREATE TABLE IF NOT EXISTS " + this.queueName + "(Player VARCHAR(36), Balloon VARCHAR(64), Banner VARCHAR(64), Bowtrail VARCHAR(64), Gadget VARCHAR(64), Hat VARCHAR(64), Hearts VARCHAR(64), Morph VARCHAR(64), Mount VARCHAR(64), Music VARCHAR(64), Particles VARCHAR(64), Pet VARCHAR(64), Trail VARCHAR(64), Outfit VARCHAR(64))");
         this.sqLite.execute("CREATE TABLE IF NOT EXISTS " +  this.stackerName + "(Player VARCHAR(36), Enabled TINYINT(1))");
+        this.sqLite.execute("CREATE TABLE IF NOT EXISTS " +  this.petNamesName + "(Player VARCHAR(36), PetNames VARCHAR(64))");
     }
 
     @Override
@@ -52,15 +55,15 @@ public final class SQLiteDataLoader extends SQLiteLoader implements DataLoader {
                     @Override
                     public void callback(ResultSet resultSet) {
                         try {
-                            if(!resultSet.next()) {
-                                createAmmo(uuid);
+                            if(resultSet.next()) {
                                 for (GadgetStorage gadget : ((Main) SQLiteDataLoader.this.plugin).getGadgets().getGadgets()) {
-                                    gadgetAmmo.put(gadget.getIdentifier(), 0);
+                                    gadgetAmmo.put(gadget.getIdentifier(), resultSet.getInt(gadget.getIdentifier()));
                                 }
                                 SQLiteDataLoader.this.ammo.put(uuid, gadgetAmmo);
                             } else {
+                                createAmmo(uuid);
                                 for (GadgetStorage gadget : ((Main) SQLiteDataLoader.this.plugin).getGadgets().getGadgets()) {
-                                    gadgetAmmo.put(gadget.getIdentifier(), resultSet.getInt(gadget.getIdentifier()));
+                                    gadgetAmmo.put(gadget.getIdentifier(), 0);
                                 }
                                 SQLiteDataLoader.this.ammo.put(uuid, gadgetAmmo);
                             }
@@ -173,7 +176,6 @@ public final class SQLiteDataLoader extends SQLiteLoader implements DataLoader {
 
     @Override
     public void updateQueue(final Player p, CosmeticsQueue queue) {
-        Methods.removeCosmetics(p, (Main) this.plugin);
         final List<String> list = queue.asList();
         this.sqLite.prepareStatement("UPDATE " + this.queueName + " SET Balloon=?, Banner=?, Bowtrail=?, Gadget=?, Hat=?, Hearts=?, Morph=?, Mount=?, Music=?, Particles=?, Pet=?, Trail=?, Outfit=? WHERE Player=?", new CallbackHandler<PreparedStatement>() {
             @Override
@@ -264,6 +266,66 @@ public final class SQLiteDataLoader extends SQLiteLoader implements DataLoader {
                                     SQLiteDataLoader.this.sqLite.execute(preparedStatement);
                                 }
                             });
+                        } catch (SQLException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                });
+            }
+        });
+    }
+
+    @Override
+    public void getPetName(final Player p, final CallbackHandler<String> callbackHandler) {
+        this.sqLite.prepareStatement("SELECT * FROM " + this.petNamesName + " WHERE Player = ?", new CallbackHandler<PreparedStatement>() {
+            @Override
+            public void callback(PreparedStatement preparedStatement) {
+                SQLiteDataLoader.this.sqLite.setString(preparedStatement, 1, p.getUniqueId().toString());
+                SQLiteDataLoader.this.sqLite.executeQuerry(preparedStatement, new CallbackHandler<ResultSet>() {
+                    @Override
+                    public void callback(ResultSet resultSet) {
+                        try {
+                            resultSet.next();
+                            callbackHandler.callback(resultSet.getString("PetName"));
+                        } catch (SQLException e) {
+                            e.printStackTrace();
+                            callbackHandler.callback(null);
+                        }
+                    }
+                });
+            }
+        });
+    }
+
+    @Override
+    public void setPetName(final Player p, final String name) {
+        this.sqLite.prepareStatement("SELECT * FROM " + this.petNamesName + " WHERE Player = ?", new CallbackHandler<PreparedStatement>() {
+            @Override
+            public void callback(PreparedStatement preparedStatement) {
+                SQLiteDataLoader.this.sqLite.setString(preparedStatement, 1, p.getUniqueId().toString());
+                SQLiteDataLoader.this.sqLite.executeQuerry(preparedStatement, new CallbackHandler<ResultSet>() {
+                    @Override
+                    public void callback(ResultSet resultSet) {
+                        try {
+                            if(resultSet.next()) {
+                                SQLiteDataLoader.this.sqLite.prepareStatement("UPDATE " + SQLiteDataLoader.this.petNamesName + " SET PetName = ? WHERE Player = ?", new CallbackHandler<PreparedStatement>() {
+                                    @Override
+                                    public void callback(PreparedStatement preparedStatement) {
+                                        SQLiteDataLoader.this.sqLite.setString(preparedStatement, 1, name);
+                                        SQLiteDataLoader.this.sqLite.setString(preparedStatement, 2, p.getUniqueId().toString());
+                                        SQLiteDataLoader.this.sqLite.execute(preparedStatement);
+                                    }
+                                });
+                            } else {
+                                SQLiteDataLoader.this.sqLite.prepareStatement("INSERT INTO " + SQLiteDataLoader.this.petNamesName + " VALUES(?, ?)", new CallbackHandler<PreparedStatement>() {
+                                    @Override
+                                    public void callback(PreparedStatement preparedStatement) {
+                                        SQLiteDataLoader.this.sqLite.setString(preparedStatement, 1, p.getUniqueId().toString());
+                                        SQLiteDataLoader.this.sqLite.setString(preparedStatement, 2, name);
+                                        SQLiteDataLoader.this.sqLite.execute(preparedStatement);
+                                    }
+                                });
+                            }
                         } catch (SQLException e) {
                             e.printStackTrace();
                         }
