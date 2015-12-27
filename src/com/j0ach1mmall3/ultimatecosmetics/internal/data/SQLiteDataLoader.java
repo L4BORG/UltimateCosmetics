@@ -36,7 +36,7 @@ public final class SQLiteDataLoader extends SQLiteLoader implements DataLoader {
         this.sqLite.execute("CREATE TABLE IF NOT EXISTS " + this.ammoName + "(Player VARCHAR(36), Enderbow INT(5), EtherealPearl INT(5), PaintballGun INT(5), FlyingPig INT(5), BatBlaster INT(5), CATapult INT(5), RailGun INT(5), CryoTube INT(5), Rocket INT(5), PoopBomb INT(5), GrapplingHook INT(5), SelfDestruct INT(5), SlimeVasion INT(5), FunGun INT(5), MelonThrower INT(5), ColorBomb INT(5), FireTrail INT(5), DiamondShower INT(5), GoldFountain INT(5), PaintTrail INT(5))");
         this.sqLite.execute("CREATE TABLE IF NOT EXISTS " + this.queueName + "(Player VARCHAR(36), Balloon VARCHAR(64), Banner VARCHAR(64), Bowtrail VARCHAR(64), Gadget VARCHAR(64), Hat VARCHAR(64), Hearts VARCHAR(64), Morph VARCHAR(64), Mount VARCHAR(64), Music VARCHAR(64), Particles VARCHAR(64), Pet VARCHAR(64), Trail VARCHAR(64), Outfit VARCHAR(64))");
         this.sqLite.execute("CREATE TABLE IF NOT EXISTS " +  this.stackerName + "(Player VARCHAR(36), Enabled TINYINT(1))");
-        this.sqLite.execute("CREATE TABLE IF NOT EXISTS " +  this.petNamesName + "(Player VARCHAR(36), PetNames VARCHAR(64))");
+        this.sqLite.execute("CREATE TABLE IF NOT EXISTS " +  this.petNamesName + "(Player VARCHAR(36), PetName VARCHAR(64))");
     }
 
     @Override
