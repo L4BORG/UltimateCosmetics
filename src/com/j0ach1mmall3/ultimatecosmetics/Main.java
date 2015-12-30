@@ -239,9 +239,11 @@ public final class Main extends JavaPlugin {
 
     public void reload() {
         Methods.cleanup(this);
+        this.config = new Config(this);
         this.lang = new Lang(this);
         this.misc = new Misc(this);
         this.balloons = new Balloons(this);
+        this.bowtrails = new Bowtrails(this);
         this.banners = new Banners(this);
         this.morphs = new Morphs(this);
         this.fireworks = new Fireworks(this);
