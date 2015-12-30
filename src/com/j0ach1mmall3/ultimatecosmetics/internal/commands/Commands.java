@@ -45,11 +45,11 @@ public final class Commands implements CommandExecutor {
         CosmeticsAPI api = this.plugin.getApi();
         if ("UltimateCosmetics".equalsIgnoreCase(cmd.getName())) {
             if (args.length == 0) {
-                sender.sendMessage(ChatColor.GRAY + "" + ChatColor.STRIKETHROUGH + "-------------------------------------");
+                sender.sendMessage(ChatColor.GRAY + "" + ChatColor.STRIKETHROUGH + "----------------------------------------------------");
                 sender.sendMessage(ChatColor.GOLD + this.plugin.getDescription().getName() + ' ' + ChatColor.DARK_PURPLE + this.plugin.getDescription().getVersion());
                 sender.sendMessage(ChatColor.GOLD + "Author: " + ChatColor.DARK_PURPLE + this.plugin.getDescription().getAuthors().get(0));
                 sender.sendMessage(ChatColor.GOLD + this.plugin.getDescription().getDescription());
-                sender.sendMessage(ChatColor.GRAY + "" + ChatColor.STRIKETHROUGH + "-------------------------------------");
+                sender.sendMessage(ChatColor.GRAY + "" + ChatColor.STRIKETHROUGH + "----------------------------------------------------");
                 return true;
             }
             if ("reload".equalsIgnoreCase(args[0])) {
@@ -61,6 +61,8 @@ public final class Commands implements CommandExecutor {
                 sender.sendMessage(ChatColor.GREEN + "Done reloading the plugin!");
                 return true;
             }
+            sender.sendMessage(ChatColor.RED + "Usage: /uc reload");
+            return true;
         }
         if ("GiveAmmo".equalsIgnoreCase(cmd.getName())) {
             if (checkAmmoRequirements(sender, args, "uc.giveammo")) {

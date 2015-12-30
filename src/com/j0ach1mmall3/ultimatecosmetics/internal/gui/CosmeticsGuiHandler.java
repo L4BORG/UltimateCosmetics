@@ -41,9 +41,10 @@ public final class CosmeticsGuiHandler extends GuiHandler {
         Config config = plugin.getBabies();
         if (gui.getName().equals(Placeholders.parse(config.getCosmeticsGuiName(), p))) {
             String command = config.getCommandByItemStack(item);
-            PlayerCommandPreprocessEvent event = new PlayerCommandPreprocessEvent(p, command);
+            if(command == null || command.isEmpty()) return;
+            PlayerCommandPreprocessEvent event = new PlayerCommandPreprocessEvent(p, Placeholders.parse(command, p));
             plugin.getServer().getPluginManager().callEvent(event);
-            if (!event.isCancelled()) p.performCommand(command.substring(1));
+            if (!event.isCancelled()) p.performCommand(Placeholders.parse(command.substring(1), p));
             if (config.getGuiClickSound() != null) Sounds.playSound(p, config.getGuiClickSound());
         }
     }
