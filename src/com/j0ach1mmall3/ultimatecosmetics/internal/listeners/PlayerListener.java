@@ -26,7 +26,14 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.event.player.*;
+import org.bukkit.event.player.PlayerChangedWorldEvent;
+import org.bukkit.event.player.PlayerInteractEntityEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerKickEvent;
+import org.bukkit.event.player.PlayerMoveEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.event.player.PlayerToggleFlightEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 
 /**
@@ -70,6 +77,12 @@ public final class PlayerListener implements Listener {
             Player p = e.getPlayer();
             for (DoubleJumpStorage group : this.plugin.getMisc().getDoubleJumpGroups()) {
                 if (Methods.hasPermission(p, group.getPermission()) && p.getGameMode() != GameMode.CREATIVE && p.getLocation().getBlock().getRelative(BlockFace.DOWN).getType() != Material.AIR && p.getVehicle() == null) {
+                    if (this.plugin.getApi().hasMorph(p)) {
+                        Morph morph = this.plugin.getApi().getMorph(p);
+                        String type = morph.getMorphStorage().getMorphType().toLowerCase();
+                        if ("bat".equalsIgnoreCase(type) || "blaze".equalsIgnoreCase(type) || "ghast".equalsIgnoreCase(type) || "ender_dragon".equalsIgnoreCase(type))
+                            return;
+                    }
                     p.setAllowFlight(true);
                     return;
                 }

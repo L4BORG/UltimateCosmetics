@@ -65,13 +65,14 @@ abstract class GuiHandler implements Listener {
                 if (item.getItemMeta().getDisplayName().isEmpty()) return;
                 Player p = (Player) e.getWhoClicked();
                 if (item.containsEnchantment(glow)) return;
-                PlayerClickInGuiEvent event = new PlayerClickInGuiEvent(p, gui, item);
+                PlayerClickInGuiEvent event = new PlayerClickInGuiEvent(p, gui, e);
                 Bukkit.getPluginManager().callEvent(event);
                 if (event.isCancelled()) return;
                 p = event.getPlayer();
                 gui = event.getGui();
-                item = event.getClickedItem();
+                item = event.getEvent().getCurrentItem();
                 handleClick(gui, p, item);
+                return;
             }
         }
     }
