@@ -132,10 +132,7 @@ public final class Morphs extends ConfigLoader {
     }
 
     public boolean isAbilityItem(ItemStack item) {
-        for (MorphStorage morph : this.morphs) {
-            if (morph.getAbilityItem().isSimilar(item)) return true;
-        }
-        return false;
+        return getMorphByAbilityItem(item) != null;
     }
 
     private String getOwner(String type) {

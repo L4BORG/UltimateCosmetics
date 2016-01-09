@@ -54,7 +54,7 @@ public final class CosmeticsQueue {
     private final TrailStorage trail;
     private final OutfitStorage outfit;
 
-    CosmeticsQueue(Main plugin, List<String> cosmetics) {
+    public CosmeticsQueue(Main plugin, List<String> cosmetics) {
         this.plugin = plugin;
         CosmeticsAPI api = plugin.getApi();
         if(cosmetics.isEmpty()) {

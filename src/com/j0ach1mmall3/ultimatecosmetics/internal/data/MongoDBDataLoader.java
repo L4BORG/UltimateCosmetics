@@ -46,16 +46,16 @@ public final class MongoDBDataLoader extends MongoDBLoader implements DataLoader
         this.mongoDB.getObject(new BasicDBObject("player", uuid), this.ammoName, new CallbackHandler<DBObject>() {
             @Override
             public void callback(DBObject dbObject) {
-                if (dbObject != null) {
-                    DBObject ammoObject = (DBObject) dbObject.get("ammo");
-                    for (GadgetStorage gadget : ((Main) MongoDBDataLoader.this.plugin).getGadgets().getGadgets()) {
-                        gadgetAmmo.put(gadget.getIdentifier(), (int) ammoObject.get(gadget.getIdentifier().toLowerCase()));
-                    }
-                    MongoDBDataLoader.this.ammo.put(uuid, gadgetAmmo);
-                } else {
+                if(dbObject == null) {
                     createAmmo(uuid);
                     for (GadgetStorage gadget : ((Main) MongoDBDataLoader.this.plugin).getGadgets().getGadgets()) {
                         gadgetAmmo.put(gadget.getIdentifier(), 0);
+                    }
+                    MongoDBDataLoader.this.ammo.put(uuid, gadgetAmmo);
+                } else {
+                    DBObject ammoObject = (DBObject) dbObject.get("ammo");
+                    for (GadgetStorage gadget : ((Main) MongoDBDataLoader.this.plugin).getGadgets().getGadgets()) {
+                        gadgetAmmo.put(gadget.getIdentifier(), (int) ammoObject.get(gadget.getIdentifier().toLowerCase()));
                     }
                     MongoDBDataLoader.this.ammo.put(uuid, gadgetAmmo);
                 }
@@ -72,6 +72,7 @@ public final class MongoDBDataLoader extends MongoDBLoader implements DataLoader
             this.mongoDB.getObject(new BasicDBObject("player", uuid), this.ammoName, new CallbackHandler<DBObject>() {
                 @Override
                 public void callback(DBObject dbObject) {
+                    if(dbObject == null) createAmmo(uuid);
                     BSONObject ammoObject = (BSONObject) dbObject.get("ammo");
                     ammoObject.put(entry.getKey().toLowerCase(), entry.getValue());
                     dbObject.put("ammo", ammoObject);
@@ -83,17 +84,17 @@ public final class MongoDBDataLoader extends MongoDBLoader implements DataLoader
 
     @Override
     public int getAmmo(String identifier, String uuid) {
-        return this.ammo.get(uuid).get(identifier);
+        return this.ammo.get(uuid)==null?0:this.ammo.get(uuid).get(identifier);
     }
 
     @Override
     public void giveAmmo(String identifier, String uuid, int amount) {
-        if(this.ammo.get(uuid).get(identifier) + amount <= 99999) setAmmo(identifier, uuid, this.ammo.get(uuid).get(identifier) + amount);
+        if(getAmmo(identifier, uuid) + amount <= 99999) setAmmo(identifier, uuid, this.ammo.get(uuid).get(identifier) + amount);
     }
 
     @Override
     public void takeAmmo(String identifier, String uuid, int amount) {
-        if(this.ammo.get(uuid).get(identifier) - amount >= 0) setAmmo(identifier, uuid, this.ammo.get(uuid).get(identifier) - amount);
+        if(getAmmo(identifier, uuid) - amount >= 0) setAmmo(identifier, uuid, this.ammo.get(uuid).get(identifier) - amount);
     }
 
     @Override
@@ -145,8 +146,8 @@ public final class MongoDBDataLoader extends MongoDBLoader implements DataLoader
     }
 
     @Override
-    public void updateQueue(final Player p, final CosmeticsQueue queue) {
-        this.mongoDB.getObject(new BasicDBObject("player", p.getUniqueId().toString()), this.queueName, new CallbackHandler<DBObject>() {
+    public void updateQueue(final String uuid, final CosmeticsQueue queue) {
+        this.mongoDB.getObject(new BasicDBObject("player", uuid), this.queueName, new CallbackHandler<DBObject>() {
             @Override
             public void callback(DBObject dbObject) {
                 BSONObject cosmetics = (BSONObject) dbObject.get("cosmetics");
@@ -165,7 +166,7 @@ public final class MongoDBDataLoader extends MongoDBLoader implements DataLoader
                 cosmetics.put("trail", list.get(11));
                 cosmetics.put("outfit", list.get(12));
                 dbObject.put("cosmetics", cosmetics);
-                MongoDBDataLoader.this.mongoDB.updateObject(dbObject, new BasicDBObject("player", p.getUniqueId().toString()), MongoDBDataLoader.this.queueName);
+                MongoDBDataLoader.this.mongoDB.updateObject(dbObject, new BasicDBObject("player", uuid), MongoDBDataLoader.this.queueName);
             }
         });
     }
@@ -239,7 +240,21 @@ public final class MongoDBDataLoader extends MongoDBLoader implements DataLoader
     }
 
     @Override
-    public void setPetName(Player p, final String name) {
+    public void createPetName(final Player p) {
+        this.mongoDB.getObject(new BasicDBObject("player", p.getUniqueId().toString()), this.stackerName, new CallbackHandler<DBObject>() {
+            @Override
+            public void callback(DBObject dbObject) {
+                if (dbObject == null) {
+                    DBObject object = new BasicDBObject("player", p.getUniqueId().toString());
+                    object.put("PetName", "");
+                    MongoDBDataLoader.this.mongoDB.storeObject(object, MongoDBDataLoader.this.stackerName);
+                }
+            }
+        });
+    }
+
+    @Override
+    public void setPetName(Player p, String name) {
         DBObject object = new BasicDBObject("player", p.getUniqueId().toString());
         object.put("PetName", name);
         this.mongoDB.updateObject(object, new BasicDBObject("player", p.getUniqueId().toString()), this.stackerName);

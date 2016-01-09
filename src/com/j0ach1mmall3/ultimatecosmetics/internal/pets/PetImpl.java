@@ -92,7 +92,7 @@ public final class PetImpl implements Pet {
             this.petStorage.getPlugin().getDataLoader().getPetName(this.player, new CallbackHandler<String>() {
                 @Override
                 public void callback(final String s) {
-                    if(s == null) return;
+                    if(s == null || s.isEmpty()) return;
                     Bukkit.getScheduler().callSyncMethod(PetImpl.this.petStorage.getPlugin(), new Callable<Void>() {
                         @Override
                         public Void call() {

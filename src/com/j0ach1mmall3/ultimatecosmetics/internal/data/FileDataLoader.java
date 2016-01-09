@@ -43,24 +43,24 @@ public final class FileDataLoader extends ConfigLoader implements DataLoader {
         this.ammo.remove(uuid);
         if(gadgetAmmo == null) return;
         for(Map.Entry<String, Integer> entry : gadgetAmmo.entrySet()) {
-            this.config.set("Ammo." + uuid + '.' + entry.getKey(), entry.getValue());
+            if(entry.getKey() != null) this.config.set("Ammo." + uuid + '.' + entry.getKey(), entry.getValue() == null ? 0 : entry.getValue());
         }
         this.customConfig.saveConfig(this.config);
     }
 
     @Override
     public int getAmmo(String identifier, String uuid) {
-        return this.ammo.get(uuid).get(identifier);
+        return this.ammo.get(uuid)==null?0:this.ammo.get(uuid).get(identifier);
     }
 
     @Override
     public void giveAmmo(String identifier, String uuid, int amount) {
-        if(this.ammo.get(uuid).get(identifier) + amount <= 99999) setAmmo(identifier, uuid, this.ammo.get(uuid).get(identifier) + amount);
+        if(getAmmo(identifier, uuid) + amount <= 99999) setAmmo(identifier, uuid, this.ammo.get(uuid).get(identifier) + amount);
     }
 
     @Override
     public void takeAmmo(String identifier, String uuid, int amount) {
-        if(this.ammo.get(uuid).get(identifier) - amount >= 0) setAmmo(identifier, uuid, this.ammo.get(uuid).get(identifier) - amount);
+        if(getAmmo(identifier, uuid) - amount >= 0) setAmmo(identifier, uuid, this.ammo.get(uuid).get(identifier) - amount);
     }
 
     @Override
@@ -84,8 +84,8 @@ public final class FileDataLoader extends ConfigLoader implements DataLoader {
     }
 
     @Override
-    public void updateQueue(Player p, CosmeticsQueue queue) {
-        this.config.set("Queue." + p.getUniqueId(), queue.asList());
+    public void updateQueue(String uuid, CosmeticsQueue queue) {
+        this.config.set("Queue." + uuid, queue.asList());
         this.customConfig.saveConfig(this.config);
     }
 
@@ -120,6 +120,14 @@ public final class FileDataLoader extends ConfigLoader implements DataLoader {
     @Override
     public void getPetName(Player p, CallbackHandler<String> callbackHandler) {
         callbackHandler.callback(this.config.getString("PetNames." + p.getUniqueId()));
+    }
+
+    @Override
+    public void createPetName(Player p) {
+        if(this.customConfig.getKeys("PetNames") == null || !this.customConfig.getKeys("PetNames").contains(p.getUniqueId().toString())) {
+            this.config.set("PetNames." + p.getUniqueId(), "");
+            this.customConfig.saveConfig(this.config);
+        }
     }
 
     @Override

@@ -24,7 +24,7 @@ public interface DataLoader {
 
     void giveBackQueue(Player p);
 
-    void updateQueue(Player p, CosmeticsQueue queue);
+    void updateQueue(String uuid, CosmeticsQueue queue);
 
     void createQueue(Player p);
 
@@ -35,6 +35,8 @@ public interface DataLoader {
     void setStacker(Player p, boolean stacker);
 
     void getPetName(Player p, CallbackHandler<String> callbackHandler);
+
+    void createPetName(Player p);
 
     void setPetName(Player p, String name);
 

@@ -154,6 +154,7 @@ public final class PlayerListener implements Listener {
             public void run() {
                 loader.loadAmmo(uuid);
                 loader.createStacker(p);
+                loader.createPetName(p);
                 loader.createQueue(p);
             }
         }.runTaskAsynchronously(this.plugin);
@@ -205,7 +206,7 @@ public final class PlayerListener implements Listener {
         new BukkitRunnable() {
             @Override
             public void run() {
-                PlayerListener.this.plugin.getDataLoader().updateQueue(p, queue);
+                PlayerListener.this.plugin.getDataLoader().updateQueue(p.getUniqueId().toString(), queue);
                 PlayerListener.this.plugin.getDataLoader().unloadAmmo(p.getUniqueId().toString());
             }
         }.runTaskAsynchronously(this.plugin);
@@ -219,7 +220,7 @@ public final class PlayerListener implements Listener {
         new BukkitRunnable() {
             @Override
             public void run() {
-                PlayerListener.this.plugin.getDataLoader().updateQueue(p, queue);
+                PlayerListener.this.plugin.getDataLoader().updateQueue(p.getUniqueId().toString(), queue);
                 PlayerListener.this.plugin.getDataLoader().unloadAmmo(p.getUniqueId().toString());
             }
         }.runTaskAsynchronously(this.plugin);
