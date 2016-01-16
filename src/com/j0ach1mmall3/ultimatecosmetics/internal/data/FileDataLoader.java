@@ -15,7 +15,7 @@ import java.util.Map;
  * @since 5/11/2015
  */
 public final class FileDataLoader extends ConfigLoader implements DataLoader {
-    private final Map<String, Map<String, Integer>> ammo = new HashMap<>();
+    private final Map<Player, Map<String, Integer>> ammo = new HashMap<>();
 
 
     public FileDataLoader(Main plugin) {
@@ -24,63 +24,101 @@ public final class FileDataLoader extends ConfigLoader implements DataLoader {
 
     @Override
     public void disconnectLoader() {
-        //Nothing needed here
+        // NOP
     }
 
     @Override
-    public void loadAmmo(String uuid) {
-        createAmmo(uuid);
-        Map<String, Integer> gadgetAmmo = new HashMap<>();
-        for (GadgetStorage gadget : ((Main) this.plugin).getGadgets().getGadgets()) {
-            gadgetAmmo.put(gadget.getIdentifier(), this.config.getInt("Ammo." + uuid + '.' + gadget.getIdentifier()));
+    public void loadAmmo(final Player player) {
+        createAmmo(player.getUniqueId().toString());
+        getOfflineAmmo(player.getUniqueId().toString(), new CallbackHandler<Map<String, Integer>>() {
+            @Override
+            public void callback(Map<String, Integer> map) {
+                FileDataLoader.this.ammo.put(player, map);
+            }
+        });
+    }
+
+    @Override
+    public void unloadAmmo(Player player) {
+        if(this.ammo.containsKey(player)) setOfflineAmmo(player.getUniqueId().toString(), this.ammo.get(player));
+        else createAmmo(player.getUniqueId().toString());
+        this.ammo.remove(player);
+    }
+
+    @Override
+    public Map<String, Integer> getAmmo(Player player) {
+        return this.ammo.get(player);
+    }
+
+    @Override
+    public void giveAmmo(String identifier, Player player, int amount) {
+        setAmmo(identifier, player, getAmmo(player).get(identifier) + amount);
+    }
+
+    @Override
+    public void takeAmmo(String identifier, Player player, int amount) {
+        setAmmo(identifier, player, getAmmo(player).get(identifier) - amount);
+    }
+
+    @Override
+    public void setAmmo(String identifier, Player player, int amount) {
+        Map<String, Integer> map = this.ammo.get(player);
+        map.put(identifier, amount);
+        this.ammo.put(player, map);
+    }
+
+    @Override
+    public void getOfflineAmmo(String uuid, CallbackHandler<Map<String, Integer>> callbackHandler) {
+        Map<String, Integer> map = new HashMap<>();
+        for (GadgetStorage gadget : ((Main) this.storage.getPlugin()).getGadgets().getGadgets()) {
+            map.put(gadget.getIdentifier(), this.config.getInt("Ammo." + uuid + '.' + gadget.getIdentifier()));
         }
-        this.ammo.put(uuid, gadgetAmmo);
+        callbackHandler.callback(map);
     }
 
     @Override
-    public void unloadAmmo(String uuid) {
-        Map<String, Integer> gadgetAmmo = this.ammo.get(uuid);
-        this.ammo.remove(uuid);
-        if(gadgetAmmo == null) return;
-        for(Map.Entry<String, Integer> entry : gadgetAmmo.entrySet()) {
-            if(entry.getKey() != null) this.config.set("Ammo." + uuid + '.' + entry.getKey(), entry.getValue() == null ? 0 : entry.getValue());
+    public void giveOfflineAmmo(final String identifier, final String uuid, final int amount) {
+        getOfflineAmmo(uuid, new CallbackHandler<Map<String, Integer>>() {
+            @Override
+            public void callback(Map<String, Integer> map) {
+                map.put(identifier, map.get(identifier) + amount);
+                setOfflineAmmo(uuid, map);
+            }
+        });
+    }
+
+    @Override
+    public void takeOfflineAmmo(final String identifier, final String uuid, final int amount) {
+        getOfflineAmmo(uuid, new CallbackHandler<Map<String, Integer>>() {
+            @Override
+            public void callback(Map<String, Integer> map) {
+                map.put(identifier, map.get(identifier) - amount);
+                setOfflineAmmo(uuid, map);
+            }
+        });
+    }
+
+    @Override
+    public void setOfflineAmmo(String uuid, Map<String, Integer> map) {
+        for(Map.Entry<String, Integer> entry : map.entrySet()) {
+            this.config.set("Ammo." + uuid + '.' + entry.getKey(), entry.getValue());
         }
         this.customConfig.saveConfig(this.config);
     }
 
-    @Override
-    public int getAmmo(String identifier, String uuid) {
-        return this.ammo.get(uuid)==null?0:this.ammo.get(uuid).get(identifier);
-    }
-
-    @Override
-    public void giveAmmo(String identifier, String uuid, int amount) {
-        if(getAmmo(identifier, uuid) + amount <= 99999) setAmmo(identifier, uuid, this.ammo.get(uuid).get(identifier) + amount);
-    }
-
-    @Override
-    public void takeAmmo(String identifier, String uuid, int amount) {
-        if(getAmmo(identifier, uuid) - amount >= 0) setAmmo(identifier, uuid, this.ammo.get(uuid).get(identifier) - amount);
-    }
-
-    @Override
-    public void createAmmo(String uuid) {
+    private void createAmmo(String uuid) {
         if(this.customConfig.getKeys("Ammo") == null || !this.customConfig.getKeys("Ammo").contains(uuid)) {
-            for (GadgetStorage gadget : ((Main) this.plugin).getGadgets().getGadgets()) {
-                this.config.set("Ammo." + uuid + '.' + gadget.getIdentifier(), 0);
+            Map<String, Integer> map = new HashMap<>();
+            for (GadgetStorage gadget : ((Main) this.storage.getPlugin()).getGadgets().getGadgets()) {
+                map.put(gadget.getIdentifier(), 0);
             }
-            this.customConfig.saveConfig(this.config);
+            setOfflineAmmo(uuid, map);
         }
     }
 
     @Override
-    public void setAmmo(String identifier, String uuid, int amount) {
-        this.ammo.get(uuid).put(identifier, amount);
-    }
-
-    @Override
     public void giveBackQueue(Player p) {
-        if(this.customConfig.getKeys("Queue") != null && this.customConfig.getKeys("Queue").contains(p.getUniqueId().toString())) new CosmeticsQueue((Main) this.plugin, this.config.getStringList("Queue." + p.getUniqueId())).give(p);
+        if(this.customConfig.getKeys("Queue") != null && this.customConfig.getKeys("Queue").contains(p.getUniqueId().toString())) new CosmeticsQueue((Main) this.storage.getPlugin(), this.config.getStringList("Queue." + p.getUniqueId())).give(p);
     }
 
     @Override

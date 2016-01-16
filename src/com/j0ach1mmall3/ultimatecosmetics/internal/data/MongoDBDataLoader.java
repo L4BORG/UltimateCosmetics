@@ -21,7 +21,7 @@ import java.util.concurrent.Callable;
  * @since 5/11/2015
  */
 public final class MongoDBDataLoader extends MongoDBLoader implements DataLoader {
-    private final Map<String, Map<String, Integer>> ammo = new HashMap<>();
+    private final Map<Player, Map<String, Integer>> ammo = new HashMap<>();
     private final String ammoName;
     private final String queueName;
     private final String stackerName;
@@ -41,72 +41,113 @@ public final class MongoDBDataLoader extends MongoDBLoader implements DataLoader
     }
 
     @Override
-    public void loadAmmo(final String uuid) {
-        final Map<String, Integer> gadgetAmmo = new HashMap<>();
-        this.mongoDB.getObject(new BasicDBObject("player", uuid), this.ammoName, new CallbackHandler<DBObject>() {
+    public void loadAmmo(final Player player) {
+        createAmmo(player.getUniqueId().toString());
+        getOfflineAmmo(player.getUniqueId().toString(), new CallbackHandler<Map<String, Integer>>() {
             @Override
-            public void callback(DBObject dbObject) {
-                if(dbObject == null) {
-                    createAmmo(uuid);
-                    for (GadgetStorage gadget : ((Main) MongoDBDataLoader.this.plugin).getGadgets().getGadgets()) {
-                        gadgetAmmo.put(gadget.getIdentifier(), 0);
-                    }
-                    MongoDBDataLoader.this.ammo.put(uuid, gadgetAmmo);
-                } else {
-                    DBObject ammoObject = (DBObject) dbObject.get("ammo");
-                    for (GadgetStorage gadget : ((Main) MongoDBDataLoader.this.plugin).getGadgets().getGadgets()) {
-                        gadgetAmmo.put(gadget.getIdentifier(), (int) ammoObject.get(gadget.getIdentifier().toLowerCase()));
-                    }
-                    MongoDBDataLoader.this.ammo.put(uuid, gadgetAmmo);
-                }
+            public void callback(Map<String, Integer> map) {
+                MongoDBDataLoader.this.ammo.put(player, map);
             }
         });
     }
 
     @Override
-    public void unloadAmmo(final String uuid) {
-        Map<String, Integer> gadgetAmmo = this.ammo.get(uuid);
-        this.ammo.remove(uuid);
-        if(gadgetAmmo == null) return;
-        for(final Map.Entry<String, Integer> entry : gadgetAmmo.entrySet()) {
-            this.mongoDB.getObject(new BasicDBObject("player", uuid), this.ammoName, new CallbackHandler<DBObject>() {
-                @Override
-                public void callback(DBObject dbObject) {
-                    if(dbObject == null) createAmmo(uuid);
-                    BSONObject ammoObject = (BSONObject) dbObject.get("ammo");
-                    ammoObject.put(entry.getKey().toLowerCase(), entry.getValue());
-                    dbObject.put("ammo", ammoObject);
-                    MongoDBDataLoader.this.mongoDB.updateObject(dbObject, new BasicDBObject("player", uuid), MongoDBDataLoader.this.ammoName);
+    public void unloadAmmo(Player player) {
+        if(this.ammo.containsKey(player)) setOfflineAmmo(player.getUniqueId().toString(), this.ammo.get(player));
+        else createAmmo(player.getUniqueId().toString());
+        this.ammo.remove(player);
+    }
+
+    @Override
+    public Map<String, Integer> getAmmo(Player player) {
+        return this.ammo.get(player);
+    }
+
+    @Override
+    public void giveAmmo(String identifier, Player player, int amount) {
+        setAmmo(identifier, player, getAmmo(player).get(identifier) + amount);
+    }
+
+    @Override
+    public void takeAmmo(String identifier, Player player, int amount) {
+        setAmmo(identifier, player, getAmmo(player).get(identifier) - amount);
+    }
+
+    @Override
+    public void setAmmo(String identifier, Player player, int amount) {
+        Map<String, Integer> map = this.ammo.get(player);
+        map.put(identifier, amount);
+        this.ammo.put(player, map);
+    }
+
+    @Override
+    public void getOfflineAmmo(String uuid, final CallbackHandler<Map<String, Integer>> callbackHandler) {
+        this.mongoDB.getObject(new BasicDBObject("player", uuid), this.ammoName, new CallbackHandler<DBObject>() {
+            @Override
+            public void callback(DBObject dbObject) {
+                Map<String, Integer> map = new HashMap<>();
+                if(dbObject == null) {
+                    for (GadgetStorage gadget : ((Main) MongoDBDataLoader.this.storage.getPlugin()).getGadgets().getGadgets()) {
+                        map.put(gadget.getIdentifier(), 0);
+                    }
+                } else {
+                    DBObject ammoObject = (DBObject) dbObject.get("ammo");
+                    for (GadgetStorage gadget : ((Main) MongoDBDataLoader.this.storage.getPlugin()).getGadgets().getGadgets()) {
+                        map.put(gadget.getIdentifier(), (int) ammoObject.get(gadget.getIdentifier().toLowerCase()));
+                    }
                 }
-            });
-        }
+                callbackHandler.callback(map);
+            }
+        });
     }
 
     @Override
-    public int getAmmo(String identifier, String uuid) {
-        return this.ammo.get(uuid)==null?0:this.ammo.get(uuid).get(identifier);
+    public void giveOfflineAmmo(final String identifier, final String uuid, final int amount) {
+        getOfflineAmmo(uuid, new CallbackHandler<Map<String, Integer>>() {
+            @Override
+            public void callback(Map<String, Integer> map) {
+                map.put(identifier, map.get(identifier) + amount);
+                setOfflineAmmo(uuid, map);
+            }
+        });
     }
 
     @Override
-    public void giveAmmo(String identifier, String uuid, int amount) {
-        if(getAmmo(identifier, uuid) + amount <= 99999) setAmmo(identifier, uuid, this.ammo.get(uuid).get(identifier) + amount);
+    public void takeOfflineAmmo(final String identifier, final String uuid, final int amount) {
+        getOfflineAmmo(uuid, new CallbackHandler<Map<String, Integer>>() {
+            @Override
+            public void callback(Map<String, Integer> map) {
+                map.put(identifier, map.get(identifier) - amount);
+                setOfflineAmmo(uuid, map);
+            }
+        });
     }
 
     @Override
-    public void takeAmmo(String identifier, String uuid, int amount) {
-        if(getAmmo(identifier, uuid) - amount >= 0) setAmmo(identifier, uuid, this.ammo.get(uuid).get(identifier) - amount);
+    public void setOfflineAmmo(final String uuid, final Map<String, Integer> map) {
+        this.mongoDB.getObject(new BasicDBObject("player", uuid), this.ammoName, new CallbackHandler<DBObject>() {
+            @Override
+            public void callback(DBObject dbObject) {
+                if (dbObject == null) createAmmo(uuid);
+                BSONObject ammoObject = (BSONObject) dbObject.get("ammo");
+                for(Map.Entry<String, Integer> entry : map.entrySet()) {
+                    ammoObject.put(entry.getKey().toLowerCase(), entry.getValue());
+                }
+                dbObject.put("ammo", ammoObject);
+                MongoDBDataLoader.this.mongoDB.updateObject(dbObject, new BasicDBObject("player", uuid), MongoDBDataLoader.this.ammoName);
+            }
+        });
     }
 
-    @Override
-    public void createAmmo(final String uuid) {
+    private void createAmmo(final String uuid) {
         this.mongoDB.getObject(new BasicDBObject("player", uuid), this.ammoName, new CallbackHandler<DBObject>() {
             @Override
             public void callback(DBObject dbObject) {
                 if(dbObject == null) {
                     DBObject object = new BasicDBObject("player", uuid);
                     BSONObject ammoObject = new BasicDBObject("enderbow", 0);
-                    List<GadgetStorage> gadgets = ((Main) MongoDBDataLoader.this.plugin).getGadgets().getGadgets();
-                    for (int i=1;i<gadgets.size();i++) {
+                    List<GadgetStorage> gadgets = ((Main) MongoDBDataLoader.this.storage.getPlugin()).getGadgets().getGadgets();
+                    for (int i = 1;i < gadgets.size();i++) {
                         ammoObject.put(gadgets.get(i).getIdentifier().toLowerCase(), 0);
                     }
                     object.put("ammo", ammoObject);
@@ -114,11 +155,6 @@ public final class MongoDBDataLoader extends MongoDBLoader implements DataLoader
                 }
             }
         });
-    }
-
-    @Override
-    public void setAmmo(String identifier, String uuid, int amount) {
-        this.ammo.get(uuid).put(identifier, amount);
     }
 
     @Override
@@ -132,8 +168,8 @@ public final class MongoDBDataLoader extends MongoDBLoader implements DataLoader
                     for(String s : cosmetics.keySet()) {
                         values.add((String) cosmetics.get(s));
                     }
-                    final CosmeticsQueue queue =  new CosmeticsQueue((Main) MongoDBDataLoader.this.plugin, values);
-                    Bukkit.getScheduler().callSyncMethod(MongoDBDataLoader.this.plugin, new Callable<Void>() {
+                    final CosmeticsQueue queue =  new CosmeticsQueue((Main) MongoDBDataLoader.this.storage.getPlugin(), values);
+                    Bukkit.getScheduler().callSyncMethod(MongoDBDataLoader.this.storage.getPlugin(), new Callable<Void>() {
                         @Override
                         public Void call() {
                             queue.give(p);

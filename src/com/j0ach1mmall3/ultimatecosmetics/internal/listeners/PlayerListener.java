@@ -152,7 +152,7 @@ public final class PlayerListener implements Listener {
         new BukkitRunnable() {
             @Override
             public void run() {
-                loader.loadAmmo(uuid);
+                loader.loadAmmo(p);
                 loader.createStacker(p);
                 loader.createPetName(p);
                 loader.createQueue(p);
@@ -207,7 +207,7 @@ public final class PlayerListener implements Listener {
             @Override
             public void run() {
                 PlayerListener.this.plugin.getDataLoader().updateQueue(p.getUniqueId().toString(), queue);
-                PlayerListener.this.plugin.getDataLoader().unloadAmmo(p.getUniqueId().toString());
+                PlayerListener.this.plugin.getDataLoader().unloadAmmo(p);
             }
         }.runTaskAsynchronously(this.plugin);
     }
@@ -221,7 +221,7 @@ public final class PlayerListener implements Listener {
             @Override
             public void run() {
                 PlayerListener.this.plugin.getDataLoader().updateQueue(p.getUniqueId().toString(), queue);
-                PlayerListener.this.plugin.getDataLoader().unloadAmmo(p.getUniqueId().toString());
+                PlayerListener.this.plugin.getDataLoader().unloadAmmo(p);
             }
         }.runTaskAsynchronously(this.plugin);
     }

@@ -6,6 +6,7 @@ import com.j0ach1mmall3.jlib.integration.profilefetcher.ProfileFetcher;
 import com.j0ach1mmall3.jlib.logging.JLogger;
 import com.j0ach1mmall3.jlib.methods.General;
 import com.j0ach1mmall3.jlib.methods.Parsing;
+import com.j0ach1mmall3.jlib.storage.StorageAction;
 import com.j0ach1mmall3.jlib.storage.database.CallbackHandler;
 import com.j0ach1mmall3.jlib.storage.file.yaml.ConfigLoader;
 import com.j0ach1mmall3.ultimatecosmetics.Main;
@@ -50,6 +51,7 @@ public final class Commands implements CommandExecutor {
     @Override
     public boolean onCommand(final CommandSender sender, Command cmd, String label, String[] args) {
         CosmeticsAPI api = this.plugin.getApi();
+        final DataLoader loader = this.plugin.getDataLoader();
         if ("UltimateCosmetics".equalsIgnoreCase(cmd.getName())) {
             if (args.length == 0) {
                 sender.sendMessage(ChatColor.GRAY + "" + ChatColor.STRIKETHROUGH + "----------------------------------------------------");
@@ -73,7 +75,7 @@ public final class Commands implements CommandExecutor {
                     sender.sendMessage(Placeholders.parse(this.plugin.getLang().getCommandNoPermission()));
                     return true;
                 }
-                new JLogger(this.plugin).dumpDebug(new String[]{"StorageType: " + this.plugin.getStorage().getType().name()}, new ConfigLoader[]{
+                new JLogger(this.plugin).dumpDebug(this.plugin.getDataLoader().getStorage().getActions().toArray(new StorageAction[this.plugin.getDataLoader().getStorage().getActions().size()]), new ConfigLoader[]{
                         this.plugin.getBabies(),
                         this.plugin.getMisc(),
                         this.plugin.getLang(),
@@ -105,8 +107,7 @@ public final class Commands implements CommandExecutor {
             if (checkAmmoRequirements(sender, args, "uc.giveammo")) {
                 return true;
             }
-            String target = General.getPlayerByName(args[0], true).getUniqueId().toString();
-            DataLoader loader = this.plugin.getDataLoader();
+            Player target = General.getPlayerByName(args[0], false);
             int amount = Parsing.parseInt(args[2]);
             loader.giveAmmo(args[1], target, amount);
             sender.sendMessage(ChatColor.GREEN + "Successfully gave " + args[2] + " Ammo for " + args[1] + " to " + args[0] + '!');
@@ -116,8 +117,7 @@ public final class Commands implements CommandExecutor {
             if (checkAmmoRequirements(sender, args, "uc.removeammo")) {
                 return true;
             }
-            String target = General.getPlayerByName(args[0], true).getUniqueId().toString();
-            DataLoader loader = this.plugin.getDataLoader();
+            Player target = General.getPlayerByName(args[0], false);
             int amount = Parsing.parseInt(args[2]);
             loader.takeAmmo(args[1], target, amount);
             sender.sendMessage(ChatColor.GREEN + "Successfully removed " + args[2] + " Ammo for " + args[1] + " from " + args[0] + '!');
@@ -158,7 +158,6 @@ public final class Commands implements CommandExecutor {
                     this.plugin.informPlayerNoPermission(p, this.plugin.getLang().getCommandNoPermission());
                     return true;
                 }
-                final DataLoader loader = this.plugin.getDataLoader();
                 loader.getStacker(p, new CallbackHandler<Boolean>() {
                     @Override
                     public void callback(Boolean b) {

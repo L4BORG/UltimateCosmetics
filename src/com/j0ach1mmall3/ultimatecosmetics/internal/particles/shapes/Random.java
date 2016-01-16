@@ -18,7 +18,6 @@ public final class Random extends BukkitRunnable {
         this.plugin = plugin;
     }
 
-    @SuppressWarnings("deprecation")
     @Override
     public void run() {
         for (Particle particle : this.plugin.getApi().getParticles()) {

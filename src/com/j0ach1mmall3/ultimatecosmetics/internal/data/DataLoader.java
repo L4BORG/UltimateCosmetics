@@ -1,26 +1,35 @@
 package com.j0ach1mmall3.ultimatecosmetics.internal.data;
 
+import com.j0ach1mmall3.jlib.storage.Storage;
 import com.j0ach1mmall3.jlib.storage.database.CallbackHandler;
 import org.bukkit.entity.Player;
+
+import java.util.Map;
 
 /**
  * @author j0ach1mmall3 (business.j0ach1mmall3@gmail.com)
  * @since 5/11/2015
  */
 public interface DataLoader {
-    void loadAmmo(String uuid);
+    void loadAmmo(Player player);
 
-    void unloadAmmo(String uuid);
+    void unloadAmmo(Player player);
 
-    int getAmmo(String identifier, String uuid);
+    Map<String, Integer> getAmmo(Player player);
 
-    void giveAmmo(String identifier, String uuid, int amount);
+    void giveAmmo(String identifier, Player player, int amount);
 
-    void takeAmmo(String identifier, String uuid, int amount);
+    void takeAmmo(String identifier, Player player, int amount);
 
-    void createAmmo(String uuid);
+    void setAmmo(String identifier, Player player, int amount);
 
-    void setAmmo(String identifier, String uuid, int amount);
+    void getOfflineAmmo(String uuid, CallbackHandler<Map<String, Integer>> callbackHandler);
+
+    void giveOfflineAmmo(String identifier, String uuid, int amount);
+
+    void takeOfflineAmmo(String identifier, String uuid, int amount);
+
+    void setOfflineAmmo(String uuid, Map<String, Integer> map);
 
     void giveBackQueue(Player p);
 
@@ -41,4 +50,6 @@ public interface DataLoader {
     void setPetName(Player p, String name);
 
     void disconnectLoader();
+
+    Storage getStorage();
 }

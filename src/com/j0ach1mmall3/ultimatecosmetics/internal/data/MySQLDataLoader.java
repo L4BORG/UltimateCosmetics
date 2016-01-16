@@ -21,7 +21,7 @@ import java.util.concurrent.Callable;
  * @since 5/11/2015
  */
 public final class MySQLDataLoader extends MySQLLoader implements DataLoader {
-    private final Map<String, Map<String, Integer>> ammo = new HashMap<>();
+    private final Map<Player, Map<String, Integer>> ammo = new HashMap<>();
     private final String ammoName;
     private final String queueName;
     private final String stackerName;
@@ -45,8 +45,104 @@ public final class MySQLDataLoader extends MySQLLoader implements DataLoader {
     }
 
     @Override
-    public void loadAmmo(final String uuid) {
-        final Map<String, Integer> gadgetAmmo = new HashMap<>();
+    public void loadAmmo(final Player player) {
+        createAmmo(player.getUniqueId().toString());
+        getOfflineAmmo(player.getUniqueId().toString(), new CallbackHandler<Map<String, Integer>>() {
+            @Override
+            public void callback(Map<String, Integer> map) {
+                MySQLDataLoader.this.ammo.put(player, map);
+            }
+        });
+    }
+
+    @Override
+    public void unloadAmmo(Player player) {
+        if(this.ammo.containsKey(player)) setOfflineAmmo(player.getUniqueId().toString(), this.ammo.get(player));
+        else createAmmo(player.getUniqueId().toString());
+        this.ammo.remove(player);
+    }
+
+    @Override
+    public Map<String, Integer> getAmmo(Player player) {
+        return this.ammo.get(player);
+    }
+
+    @Override
+    public void giveAmmo(String identifier, Player player, int amount) {
+        setAmmo(identifier, player, getAmmo(player).get(identifier) + amount);
+    }
+
+    @Override
+    public void takeAmmo(String identifier, Player player, int amount) {
+        setAmmo(identifier, player, getAmmo(player).get(identifier) - amount);
+    }
+
+    @Override
+    public void setAmmo(String identifier, Player player, int amount) {
+        Map<String, Integer> map = this.ammo.get(player);
+        map.put(identifier, amount);
+        this.ammo.put(player, map);
+    }
+
+    @Override
+    public void getOfflineAmmo(final String uuid, final CallbackHandler<Map<String, Integer>> callbackHandler) {
+        this.mySQL.prepareStatement("SELECT * FROM " + this.ammoName + " WHERE Player = ?", new CallbackHandler<PreparedStatement>() {
+            @Override
+            public void callback(PreparedStatement preparedStatement) {
+                MySQLDataLoader.this.mySQL.setString(preparedStatement, 1, uuid);
+                MySQLDataLoader.this.mySQL.executeQuerry(preparedStatement, new CallbackHandler<ResultSet>() {
+                    @Override
+                    public void callback(ResultSet resultSet) {
+                        Map<String, Integer> map = new HashMap<>();
+                        try {
+                            if(!resultSet.isClosed() && resultSet.next()) {
+                                for (GadgetStorage gadget : ((Main) MySQLDataLoader.this.storage.getPlugin()).getGadgets().getGadgets()) {
+                                    map.put(gadget.getIdentifier(), resultSet.getInt(gadget.getIdentifier()));
+                                }
+                            } else {
+                                createAmmo(uuid);
+                                for (GadgetStorage gadget : ((Main) MySQLDataLoader.this.storage.getPlugin()).getGadgets().getGadgets()) {
+                                    map.put(gadget.getIdentifier(), 0);
+                                }
+                            }
+                        } catch (SQLException e) {
+                            e.printStackTrace();
+                            createAmmo(uuid);
+                            for (GadgetStorage gadget : ((Main) MySQLDataLoader.this.storage.getPlugin()).getGadgets().getGadgets()) {
+                                map.put(gadget.getIdentifier(), 0);
+                            }
+                        }
+                        callbackHandler.callback(map);
+                    }
+                });
+            }
+        });
+    }
+
+    @Override
+    public void giveOfflineAmmo(final String identifier, final String uuid, final int amount) {
+        getOfflineAmmo(uuid, new CallbackHandler<Map<String, Integer>>() {
+            @Override
+            public void callback(Map<String, Integer> map) {
+                map.put(identifier, map.get(identifier) + amount);
+                setOfflineAmmo(uuid, map);
+            }
+        });
+    }
+
+    @Override
+    public void takeOfflineAmmo(final String identifier, final String uuid, final int amount) {
+        getOfflineAmmo(uuid, new CallbackHandler<Map<String, Integer>>() {
+            @Override
+            public void callback(Map<String, Integer> map) {
+                map.put(identifier, map.get(identifier) - amount);
+                setOfflineAmmo(uuid, map);
+            }
+        });
+    }
+
+    @Override
+    public void setOfflineAmmo(final String uuid, final Map<String, Integer> map) {
         this.mySQL.prepareStatement("SELECT * FROM " + this.ammoName + " WHERE Player = ?", new CallbackHandler<PreparedStatement>() {
             @Override
             public void callback(PreparedStatement preparedStatement) {
@@ -56,24 +152,20 @@ public final class MySQLDataLoader extends MySQLLoader implements DataLoader {
                     public void callback(ResultSet resultSet) {
                         try {
                             if(!resultSet.isClosed() && resultSet.next()) {
-                                for (GadgetStorage gadget : ((Main) MySQLDataLoader.this.plugin).getGadgets().getGadgets()) {
-                                    gadgetAmmo.put(gadget.getIdentifier(), resultSet.getInt(gadget.getIdentifier()));
+                                for(final Map.Entry<String, Integer> entry : map.entrySet()) {
+                                    MySQLDataLoader.this.mySQL.prepareStatement("UPDATE " + MySQLDataLoader.this.ammoName + " SET " + entry.getKey() + "=? WHERE Player=?", new CallbackHandler<PreparedStatement>() {
+                                        @Override
+                                        public void callback(PreparedStatement preparedStatement) {
+                                            MySQLDataLoader.this.mySQL.setString(preparedStatement, 1, String.valueOf(entry.getValue()));
+                                            MySQLDataLoader.this.mySQL.setString(preparedStatement, 2, uuid);
+                                            MySQLDataLoader.this.mySQL.execute(preparedStatement);
+                                        }
+                                    });
                                 }
-                                MySQLDataLoader.this.ammo.put(uuid, gadgetAmmo);
-                            } else {
-                                createAmmo(uuid);
-                                for (GadgetStorage gadget : ((Main) MySQLDataLoader.this.plugin).getGadgets().getGadgets()) {
-                                    gadgetAmmo.put(gadget.getIdentifier(), 0);
-                                }
-                                MySQLDataLoader.this.ammo.put(uuid, gadgetAmmo);
-                            }
+                            } else createAmmo(uuid);
                         } catch (SQLException e) {
                             e.printStackTrace();
                             createAmmo(uuid);
-                            for (GadgetStorage gadget : ((Main) MySQLDataLoader.this.plugin).getGadgets().getGadgets()) {
-                                gadgetAmmo.put(gadget.getIdentifier(), 0);
-                            }
-                            MySQLDataLoader.this.ammo.put(uuid, gadgetAmmo);
                         }
                     }
                 });
@@ -81,40 +173,7 @@ public final class MySQLDataLoader extends MySQLLoader implements DataLoader {
         });
     }
 
-    @Override
-    public void unloadAmmo(final String uuid) {
-        Map<String, Integer> gadgetAmmo = this.ammo.get(uuid);
-        this.ammo.remove(uuid);
-        if(gadgetAmmo == null) return;
-        for(final Map.Entry<String, Integer> entry : gadgetAmmo.entrySet()) {
-            this.mySQL.prepareStatement("UPDATE " + this.ammoName + " SET " + entry.getKey() + "=? WHERE Player=?", new CallbackHandler<PreparedStatement>() {
-                @Override
-                public void callback(PreparedStatement preparedStatement) {
-                    MySQLDataLoader.this.mySQL.setString(preparedStatement, 1, String.valueOf(entry.getValue()));
-                    MySQLDataLoader.this.mySQL.setString(preparedStatement, 2, uuid);
-                    MySQLDataLoader.this.mySQL.execute(preparedStatement);
-                }
-            });
-        }
-    }
-
-    @Override
-    public int getAmmo(String identifier, String uuid) {
-        return this.ammo.get(uuid)==null?0:this.ammo.get(uuid).get(identifier);
-    }
-
-    @Override
-    public void giveAmmo(String identifier, String uuid, int amount) {
-        if(getAmmo(identifier, uuid) + amount <= 99999) setAmmo(identifier, uuid, this.ammo.get(uuid).get(identifier) + amount);
-    }
-
-    @Override
-    public void takeAmmo(String identifier, String uuid, int amount) {
-        if(getAmmo(identifier, uuid) - amount >= 0) setAmmo(identifier, uuid, this.ammo.get(uuid).get(identifier) - amount);
-    }
-
-    @Override
-    public void createAmmo(final String uuid) {
+    private void createAmmo(final String uuid) {
         this.mySQL.prepareStatement("SELECT * FROM " + this.ammoName + " WHERE Player = ?", new CallbackHandler<PreparedStatement>() {
             @Override
             public void callback(PreparedStatement preparedStatement) {
@@ -141,11 +200,6 @@ public final class MySQLDataLoader extends MySQLLoader implements DataLoader {
     }
 
     @Override
-    public void setAmmo(String identifier, String uuid, int amount) {
-        this.ammo.get(uuid).put(identifier, amount);
-        }
-
-    @Override
     public void giveBackQueue(final Player p) {
         this.mySQL.prepareStatement("SELECT * FROM " + this.queueName + " WHERE Player = ?", new CallbackHandler<PreparedStatement>() {
             @Override
@@ -156,8 +210,8 @@ public final class MySQLDataLoader extends MySQLLoader implements DataLoader {
                     public void callback(ResultSet resultSet) {
                         try {
                             if(!resultSet.isClosed() && resultSet.next()) {
-                                final CosmeticsQueue queue = new CosmeticsQueue((Main) MySQLDataLoader.this.plugin, Arrays.asList(resultSet.getString("Balloon"), resultSet.getString("Banner"), resultSet.getString("Bowtrail"), resultSet.getString("Gadget"), resultSet.getString("Hat"), resultSet.getString("Hearts"), resultSet.getString("Morph"), resultSet.getString("Mount"), resultSet.getString("Music"), resultSet.getString("Particles"), resultSet.getString("Pet"), resultSet.getString("Trail"), resultSet.getString("Outfit")));
-                                Bukkit.getScheduler().callSyncMethod(MySQLDataLoader.this.plugin, new Callable<Void>() {
+                                final CosmeticsQueue queue = new CosmeticsQueue((Main) MySQLDataLoader.this.storage.getPlugin(), Arrays.asList(resultSet.getString("Balloon"), resultSet.getString("Banner"), resultSet.getString("Bowtrail"), resultSet.getString("Gadget"), resultSet.getString("Hat"), resultSet.getString("Hearts"), resultSet.getString("Morph"), resultSet.getString("Mount"), resultSet.getString("Music"), resultSet.getString("Particles"), resultSet.getString("Pet"), resultSet.getString("Trail"), resultSet.getString("Outfit")));
+                                Bukkit.getScheduler().callSyncMethod(MySQLDataLoader.this.storage.getPlugin(), new Callable<Void>() {
                                     @Override
                                     public Void call() {
                                         queue.give(p);
@@ -225,6 +279,7 @@ public final class MySQLDataLoader extends MySQLLoader implements DataLoader {
                     @Override
                     public void callback(ResultSet resultSet) {
                         try {
+                            if(resultSet.isClosed()) return;
                             resultSet.next();
                             callbackHandler.callback(resultSet.getBoolean("Enabled"));
                         } catch (SQLException e) {
@@ -285,6 +340,7 @@ public final class MySQLDataLoader extends MySQLLoader implements DataLoader {
                     @Override
                     public void callback(ResultSet resultSet) {
                         try {
+                            if(resultSet.isClosed()) return;
                             resultSet.next();
                             callbackHandler.callback(resultSet.getString("PetName"));
                         } catch (SQLException e) {

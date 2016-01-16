@@ -235,7 +235,7 @@ public final class Main extends JavaPlugin {
     public void onDisable() {
         Methods.cleanup(this);
         for(Player p : Bukkit.getOnlinePlayers()) {
-            this.dataLoader.unloadAmmo(p.getUniqueId().toString());
+            this.dataLoader.unloadAmmo(p);
         }
         this.dataLoader.disconnectLoader();
     }
