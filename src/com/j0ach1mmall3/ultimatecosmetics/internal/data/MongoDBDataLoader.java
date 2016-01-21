@@ -92,8 +92,14 @@ public final class MongoDBDataLoader extends MongoDBLoader implements DataLoader
                     }
                 } else {
                     DBObject ammoObject = (DBObject) dbObject.get("ammo");
-                    for (GadgetStorage gadget : ((Main) MongoDBDataLoader.this.storage.getPlugin()).getGadgets().getGadgets()) {
-                        map.put(gadget.getIdentifier(), (int) ammoObject.get(gadget.getIdentifier().toLowerCase()));
+                    if(ammoObject == null) {
+                        for (GadgetStorage gadget : ((Main) MongoDBDataLoader.this.storage.getPlugin()).getGadgets().getGadgets()) {
+                            map.put(gadget.getIdentifier(), 0);
+                        }
+                    } else {
+                        for (GadgetStorage gadget : ((Main) MongoDBDataLoader.this.storage.getPlugin()).getGadgets().getGadgets()) {
+                            map.put(gadget.getIdentifier(), (int) ammoObject.get(gadget.getIdentifier().toLowerCase()));
+                        }
                     }
                 }
                 callbackHandler.callback(map);

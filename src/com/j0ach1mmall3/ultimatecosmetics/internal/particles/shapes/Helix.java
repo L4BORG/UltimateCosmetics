@@ -3,9 +3,13 @@ package com.j0ach1mmall3.ultimatecosmetics.internal.particles.shapes;
 import com.j0ach1mmall3.ultimatecosmetics.Main;
 import com.j0ach1mmall3.ultimatecosmetics.api.cosmetics.Particle;
 import com.j0ach1mmall3.ultimatecosmetics.api.storage.ParticleStorage;
+import org.bukkit.Bukkit;
 import org.bukkit.Effect;
 import org.bukkit.Location;
+import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
+
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author j0ach1mmall3 (business.j0ach1mmall3@gmail.com)
@@ -24,7 +28,10 @@ public final class Helix extends BukkitRunnable {
         for (Particle particle : this.plugin.getApi().getParticles()) {
             final ParticleStorage particleStorage = particle.getParticleStorage();
             if(particleStorage.getShape() == ParticleShape.HELIX) {
-                final Location l = particle.getPlayer().getLocation();
+                Player p = particle.getPlayer();
+                long lastWalked = ((com.j0ach1mmall3.jlib.Main) Bukkit.getPluginManager().getPlugin("JLib")).getJoinListener().getLastWalked(p);
+                if(lastWalked != 0 && TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis() - lastWalked) < 3) return;
+                final Location l = p.getLocation();
                 new BukkitRunnable() {
                     double y = 0;
 
