@@ -1,6 +1,5 @@
 package com.j0ach1mmall3.ultimatecosmetics;
 
-import com.j0ach1mmall3.jlib.integration.MetricsLite;
 import com.j0ach1mmall3.jlib.integration.Placeholders;
 import com.j0ach1mmall3.jlib.integration.updatechecker.AsyncUpdateChecker;
 import com.j0ach1mmall3.jlib.integration.updatechecker.UpdateCheckerResult;
@@ -84,7 +83,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -122,6 +120,7 @@ public final class Main extends JavaPlugin {
 
     @Override
     public void onEnable() {
+        if(this.dataLoader != null) this.dataLoader.disconnectLoader();
         this.config = new Config(this);
         this.api = new CosmeticsAPI(this);
         if (this.config.getLoggingLevel() >= 2)
@@ -145,13 +144,6 @@ public final class Main extends JavaPlugin {
                     }
                 }
             });
-        }
-        try {
-            MetricsLite metricsLite = new MetricsLite(this);
-            metricsLite.start();
-        } catch (IOException e) {
-            General.sendColoredMessage(this, "An error occured while starting MetricsLite!", ChatColor.RED);
-            e.printStackTrace();
         }
         PluginManager pm = getServer().getPluginManager();
         if (pm.getPlugin("LibsDisguises") != null) {
@@ -287,7 +279,6 @@ public final class Main extends JavaPlugin {
         for(Player p : Bukkit.getOnlinePlayers()) {
             this.dataLoader.getCache().unload(p);
         }
-        this.dataLoader.disconnectLoader();
     }
 
     public Map<String, Integer> getDefaultAmmo() {

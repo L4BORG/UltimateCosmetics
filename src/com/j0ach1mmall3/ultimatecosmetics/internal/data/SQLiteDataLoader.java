@@ -1,5 +1,6 @@
 package com.j0ach1mmall3.ultimatecosmetics.internal.data;
 
+import com.j0ach1mmall3.jlib.methods.Parsing;
 import com.j0ach1mmall3.jlib.storage.Cache;
 import com.j0ach1mmall3.jlib.storage.database.CallbackHandler;
 import com.j0ach1mmall3.jlib.storage.database.sqlite.SQLiteLoader;
@@ -35,7 +36,7 @@ public final class SQLiteDataLoader extends SQLiteLoader implements DataLoader {
                     if(results.isEmpty()) map = ((Main) SQLiteDataLoader.this.storage.getPlugin()).getDefaultAmmo();
                     else {
                         for (GadgetStorage gadget : ((Main) SQLiteDataLoader.this.storage.getPlugin()).getGadgets().getGadgets()) {
-                            map.put(gadget.getIdentifier(), (Integer) results.get(0).get(gadget.getIdentifier()));
+                            map.put(gadget.getIdentifier(), Parsing.parseInt((String) results.get(0).get(gadget.getIdentifier())));
                         }
                     }
                     callbackHandler.callback(map);
@@ -51,10 +52,9 @@ public final class SQLiteDataLoader extends SQLiteLoader implements DataLoader {
                     if(b) {
                         for(Map.Entry<String, Integer> entry : map.entrySet()) {
                             Map<Integer, Object> params = new HashMap<>();
-                            params.put(1, entry.getKey());
-                            params.put(2, String.valueOf(entry.getValue()));
-                            params.put(3, player);
-                            SQLiteDataLoader.this.sqLite.execute("UPDATE " + SQLiteDataLoader.this.ammoName + " SET ?=? WHERE Player=?", params);
+                            params.put(1, String.valueOf(entry.getValue()));
+                            params.put(2, player);
+                            SQLiteDataLoader.this.sqLite.execute("UPDATE " + SQLiteDataLoader.this.ammoName + " SET " + entry.getKey() + "=? WHERE Player=?", params);
                         }
                     }
                 }
