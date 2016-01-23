@@ -130,10 +130,6 @@ public final class Lang extends ConfigLoader {
         return this.toggledStacker;
     }
 
-    public String getStackerNotEnabled() {
-        return this.stackerNotEnabled;
-    }
-
     public String getStackedNotEnabled() {
         return this.stackedNotEnabled;
     }

@@ -2,13 +2,13 @@ package com.j0ach1mmall3.ultimatecosmetics.internal.music;
 
 
 import com.j0ach1mmall3.jlib.integration.Placeholders;
+import com.j0ach1mmall3.ultimatecosmetics.Main;
 import com.j0ach1mmall3.ultimatecosmetics.api.CosmeticsAPI;
 import com.j0ach1mmall3.ultimatecosmetics.api.cosmetics.Cosmetic;
 import com.j0ach1mmall3.ultimatecosmetics.api.cosmetics.Music;
 import com.j0ach1mmall3.ultimatecosmetics.api.events.CosmeticGiveEvent;
 import com.j0ach1mmall3.ultimatecosmetics.api.events.CosmeticRemoveEvent;
 import com.j0ach1mmall3.ultimatecosmetics.api.storage.MusicStorage;
-import com.j0ach1mmall3.ultimatecosmetics.internal.config.Lang;
 import com.xxmicloxx.noteblockapi.NBSDecoder;
 import com.xxmicloxx.noteblockapi.RadioSongPlayer;
 import com.xxmicloxx.noteblockapi.Song;
@@ -54,11 +54,11 @@ public final class MusicImpl implements Music {
             Music cosmetic = (Music) event.getCosmetic();
             this.player = cosmetic.getPlayer();
             this.musicStorage = cosmetic.getMusicStorage();
-            com.j0ach1mmall3.ultimatecosmetics.internal.config.Music config = this.musicStorage.getPlugin().getMusic();
-            Lang lang = this.musicStorage.getPlugin().getLang();
+            Main plugin = this.musicStorage.getPlugin();
+            com.j0ach1mmall3.ultimatecosmetics.internal.config.Music config = plugin.getMusic();
             File song = new File(config.getSongsPath(), this.musicStorage.getSongName() + ".nbs");
             if (!song.exists()) {
-                this.musicStorage.getPlugin().informPlayerNoPermission(this.player, Placeholders.parse(lang.getSongNotFound(), this.player));
+                plugin.informPlayerNoPermission(this.player, Placeholders.parse(plugin.getLang().getSongNotFound(), this.player));
                 return;
             }
             Song s = NBSDecoder.parse(song);

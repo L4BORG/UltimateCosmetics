@@ -85,7 +85,8 @@ public final class PetsListener implements Listener {
             e.setCancelled(true);
             if (e.getRightClicked().getUniqueId().equals(pet.getEntity().getUniqueId()) && p.hasPermission("uc.renamepet")) {
                 if (!this.renamingPlayers.contains(p.getName())) {
-                    p.sendMessage(Placeholders.parse(this.plugin.getLang().getRenamePet(), p));
+                    String renamePet = this.plugin.getLang().getRenamePet();
+                    if(!renamePet.isEmpty()) p.sendMessage(Placeholders.parse(renamePet, p));
                     this.renamingPlayers.add(p.getName());
                 }
             }
@@ -102,7 +103,8 @@ public final class PetsListener implements Listener {
                 Pet pet = api.getPet(p);
                 e.setCancelled(true);
                 pet.getEntity().setCustomName(Placeholders.parse(e.getMessage(), p));
-                p.sendMessage(Placeholders.parse(this.plugin.getLang().getSuccessfulRename(), p).replace("%petname%", Placeholders.parse(e.getMessage(), p)));
+                String successfulRename = this.plugin.getLang().getSuccessfulRename();
+                if(!successfulRename.isEmpty()) p.sendMessage(Placeholders.parse(successfulRename, p).replace("%petname%", Placeholders.parse(e.getMessage(), p)));
             }
         }
     }

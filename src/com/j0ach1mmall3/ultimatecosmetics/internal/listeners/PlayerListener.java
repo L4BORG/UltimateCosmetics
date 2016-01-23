@@ -109,15 +109,18 @@ public final class PlayerListener implements Listener {
                                             if (p.getVehicle() != null) p.getVehicle().remove();
                                             if (clicked.getVehicle() != null) return;
                                             p.setPassenger(clicked);
-                                            p.sendMessage(Placeholders.parse(PlayerListener.this.plugin.getMisc().getStackerPrefix(), p) + Placeholders.parse(PlayerListener.this.plugin.getLang().getStackedPlayer(), p).replace("%target%", clicked.getName()));
-                                            clicked.sendMessage(Placeholders.parse(PlayerListener.this.plugin.getMisc().getStackerPrefix(), clicked) + Placeholders.parse(PlayerListener.this.plugin.getLang().getStackedByPlayer(), clicked).replace("%stacker%", p.getName()));
+                                            String stackedPlayer = PlayerListener.this.plugin.getLang().getStackedPlayer();
+                                            if(!stackedPlayer.isEmpty()) p.sendMessage(Placeholders.parse(PlayerListener.this.plugin.getMisc().getStackerPrefix(), p) + Placeholders.parse(stackedPlayer, p).replace("%target%", clicked.getName()));
+                                            String stackedByPlayer = PlayerListener.this.plugin.getLang().getStackedByPlayer();
+                                            if(!stackedByPlayer.isEmpty()) clicked.sendMessage(Placeholders.parse(PlayerListener.this.plugin.getMisc().getStackerPrefix(), clicked) + Placeholders.parse(stackedByPlayer, clicked).replace("%stacker%", p.getName()));
                                         } else PlayerListener.this.plugin.informPlayerNoPermission(p, Placeholders.parse(PlayerListener.this.plugin.getLang().getStackedNotEnabled().replace("{stacked}", clicked.getName()), p));
                                     }
                                 });
                             } else if (!PlayerListener.this.plugin.getMisc().isStackerStackPlayersOnly() && e.getRightClicked() instanceof Creature && e.getRightClicked().getCustomName() == null) {
                                 e.setCancelled(true);
                                 p.setPassenger(e.getRightClicked());
-                                p.sendMessage(Placeholders.parse(PlayerListener.this.plugin.getMisc().getStackerPrefix(), p) + Placeholders.parse(PlayerListener.this.plugin.getLang().getStackedPlayer(), p).replace("%target%", e.getRightClicked().getType().name().replace("_", " ").toLowerCase()));
+                                String stackedPlayer = PlayerListener.this.plugin.getLang().getStackedPlayer();
+                                if(!stackedPlayer.isEmpty()) p.sendMessage(Placeholders.parse(PlayerListener.this.plugin.getMisc().getStackerPrefix(), p) + Placeholders.parse(stackedPlayer, p).replace("%target%", e.getRightClicked().getType().name().replace("_", " ").toLowerCase()));
                             }
                         }
                     }
@@ -152,7 +155,7 @@ public final class PlayerListener implements Listener {
         new BukkitRunnable() {
             @Override
             public void run() {
-                loader.loadAmmo(p);
+                loader.getCache().load(p);
                 loader.createStacker(p);
                 loader.createPetName(p);
                 loader.createQueue(p);
@@ -207,7 +210,7 @@ public final class PlayerListener implements Listener {
             @Override
             public void run() {
                 PlayerListener.this.plugin.getDataLoader().updateQueue(p.getUniqueId().toString(), queue);
-                PlayerListener.this.plugin.getDataLoader().unloadAmmo(p);
+                PlayerListener.this.plugin.getDataLoader().getCache().unload(p);
             }
         }.runTaskAsynchronously(this.plugin);
     }
@@ -221,7 +224,7 @@ public final class PlayerListener implements Listener {
             @Override
             public void run() {
                 PlayerListener.this.plugin.getDataLoader().updateQueue(p.getUniqueId().toString(), queue);
-                PlayerListener.this.plugin.getDataLoader().unloadAmmo(p);
+                PlayerListener.this.plugin.getDataLoader().getCache().unload(p);
             }
         }.runTaskAsynchronously(this.plugin);
     }

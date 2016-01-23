@@ -2,13 +2,13 @@ package com.j0ach1mmall3.ultimatecosmetics.internal.wardrobe;
 
 
 import com.j0ach1mmall3.jlib.integration.Placeholders;
+import com.j0ach1mmall3.ultimatecosmetics.Main;
 import com.j0ach1mmall3.ultimatecosmetics.api.CosmeticsAPI;
 import com.j0ach1mmall3.ultimatecosmetics.api.cosmetics.Cosmetic;
 import com.j0ach1mmall3.ultimatecosmetics.api.cosmetics.Outfit;
 import com.j0ach1mmall3.ultimatecosmetics.api.events.CosmeticGiveEvent;
 import com.j0ach1mmall3.ultimatecosmetics.api.events.CosmeticRemoveEvent;
 import com.j0ach1mmall3.ultimatecosmetics.api.storage.OutfitStorage;
-import com.j0ach1mmall3.ultimatecosmetics.internal.config.Lang;
 import com.j0ach1mmall3.ultimatecosmetics.internal.config.Wardrobe;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -48,19 +48,20 @@ public final class OutfitImpl implements Outfit {
             Outfit cosmetic = (Outfit) event.getCosmetic();
             this.player = cosmetic.getPlayer();
             this.outfitStorage = cosmetic.getOutfitStorage();
-            Wardrobe config = this.outfitStorage.getPlugin().getWardrobe();
-            Lang lang = this.outfitStorage.getPlugin().getLang();
+            Main plugin = this.outfitStorage.getPlugin();
+            Wardrobe config = plugin.getWardrobe();
+            String alreadyOnBody = this.outfitStorage.getPlugin().getLang().getAlreadyOnBody();
             if (config.isCheckOnBody()) {
                 if (this.player.getInventory().getChestplate() != null) {
-                    this.player.sendMessage(Placeholders.parse(lang.getAlreadyOnBody(), this.player).replace("%itemname%", this.player.getInventory().getChestplate().getType().toString().toLowerCase().replace("_", " ")).replace("%armorslot%", "Chestplate"));
+                    plugin.informPlayerNoPermission(this.player, Placeholders.parse(alreadyOnBody, this.player).replace("%itemname%", this.player.getInventory().getChestplate().getType().toString().toLowerCase().replace("_", " ")).replace("%armorslot%", "Chestplate"));
                     return;
                 }
                 if (this.player.getInventory().getLeggings() != null) {
-                    this.player.sendMessage(Placeholders.parse(lang.getAlreadyOnBody(), this.player).replace("%itemname%", this.player.getInventory().getLeggings().getType().toString().toLowerCase().replace("_", " ")).replace("%armorslot%", "Leggings"));
+                    plugin.informPlayerNoPermission(this.player, Placeholders.parse(alreadyOnBody, this.player).replace("%itemname%", this.player.getInventory().getLeggings().getType().toString().toLowerCase().replace("_", " ")).replace("%armorslot%", "Chestplate"));
                     return;
                 }
                 if (this.player.getInventory().getBoots() != null) {
-                    this.player.sendMessage(Placeholders.parse(lang.getAlreadyOnBody(), this.player).replace("%itemname%", this.player.getInventory().getBoots().getType().toString().toLowerCase().replace("_", " ")).replace("%armorslot%", "Boots"));
+                    plugin.informPlayerNoPermission(this.player, Placeholders.parse(alreadyOnBody, this.player).replace("%itemname%", this.player.getInventory().getBoots().getType().toString().toLowerCase().replace("_", " ")).replace("%armorslot%", "Chestplate"));
                     return;
                 }
                 this.player.getInventory().setChestplate(this.outfitStorage.getItem());

@@ -2,16 +2,41 @@ package com.j0ach1mmall3.ultimatecosmetics.internal.listeners;
 
 import com.j0ach1mmall3.jlib.methods.Sounds;
 import com.j0ach1mmall3.ultimatecosmetics.Main;
-import com.j0ach1mmall3.ultimatecosmetics.internal.config.*;
-import com.j0ach1mmall3.ultimatecosmetics.internal.gui.*;
-import org.bukkit.ChatColor;
-import org.bukkit.command.CommandSender;
+import com.j0ach1mmall3.ultimatecosmetics.internal.config.Balloons;
+import com.j0ach1mmall3.ultimatecosmetics.internal.config.Banners;
+import com.j0ach1mmall3.ultimatecosmetics.internal.config.Bowtrails;
+import com.j0ach1mmall3.ultimatecosmetics.internal.config.Config;
+import com.j0ach1mmall3.ultimatecosmetics.internal.config.Fireworks;
+import com.j0ach1mmall3.ultimatecosmetics.internal.config.Gadgets;
+import com.j0ach1mmall3.ultimatecosmetics.internal.config.Hats;
+import com.j0ach1mmall3.ultimatecosmetics.internal.config.Hearts;
+import com.j0ach1mmall3.ultimatecosmetics.internal.config.Morphs;
+import com.j0ach1mmall3.ultimatecosmetics.internal.config.Mounts;
+import com.j0ach1mmall3.ultimatecosmetics.internal.config.Music;
+import com.j0ach1mmall3.ultimatecosmetics.internal.config.Particles;
+import com.j0ach1mmall3.ultimatecosmetics.internal.config.Pets;
+import com.j0ach1mmall3.ultimatecosmetics.internal.config.Trails;
+import com.j0ach1mmall3.ultimatecosmetics.internal.config.Wardrobe;
+import com.j0ach1mmall3.ultimatecosmetics.internal.gui.BalloonsGuiHandler;
+import com.j0ach1mmall3.ultimatecosmetics.internal.gui.BannersGuiHandler;
+import com.j0ach1mmall3.ultimatecosmetics.internal.gui.BowtrailsGuiHandler;
+import com.j0ach1mmall3.ultimatecosmetics.internal.gui.CosmeticsGuiHandler;
+import com.j0ach1mmall3.ultimatecosmetics.internal.gui.FireworksGuiHandler;
+import com.j0ach1mmall3.ultimatecosmetics.internal.gui.GadgetsGuiHandler;
+import com.j0ach1mmall3.ultimatecosmetics.internal.gui.HatsGuiHandler;
+import com.j0ach1mmall3.ultimatecosmetics.internal.gui.HeartsGuiHandler;
+import com.j0ach1mmall3.ultimatecosmetics.internal.gui.MorphsGuiHandler;
+import com.j0ach1mmall3.ultimatecosmetics.internal.gui.MountsGuiHandler;
+import com.j0ach1mmall3.ultimatecosmetics.internal.gui.MusicGuiHandler;
+import com.j0ach1mmall3.ultimatecosmetics.internal.gui.ParticlesGuiHandler;
+import com.j0ach1mmall3.ultimatecosmetics.internal.gui.PetsGuiHandler;
+import com.j0ach1mmall3.ultimatecosmetics.internal.gui.TrailsGuiHandler;
+import com.j0ach1mmall3.ultimatecosmetics.internal.gui.WardrobeGuiHandler;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
-import org.bukkit.event.server.ServerCommandEvent;
 
 /**
  * Created by j0ach1mmall3 on 18:26 20/08/2015 using IntelliJ IDEA.
@@ -24,25 +49,10 @@ public final class CommandsListener implements Listener {
         plugin.getServer().getPluginManager().registerEvents(this, plugin);
     }
 
-    @EventHandler
-    public void onConsoleCommand(ServerCommandEvent e) {
-        String message = e.getCommand();
-        CommandSender sender = e.getSender();
-        if("reload".equalsIgnoreCase(message) || "bukkit:reload".equalsIgnoreCase(message) || message.startsWith("reload ") || message.startsWith("bukkit:reload ")) {
-            sender.sendMessage(ChatColor.RED + "UltimateCosmetics does NOT support reloads! Please restart the server instead!");
-            e.setCancelled(true);
-        }
-    }
-
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
     public void onCommand(PlayerCommandPreprocessEvent e) {
         String message = e.getMessage();
         Player p = e.getPlayer();
-        if("reload".equalsIgnoreCase(message) || "bukkit:reload".equalsIgnoreCase(message) || message.startsWith("reload ") || message.startsWith("bukkit:reload ")) {
-            p.sendMessage(ChatColor.RED + "UltimateCosmetics does NOT support reloads! Please restart the server instead!");
-            e.setCancelled(true);
-            return;
-        }
         //Debug boolean if ever needed
         boolean debug = false;
         if(debug) return;

@@ -155,9 +155,10 @@ public final class GadgetsListener implements Listener {
                 e.setCancelled(true);
                 if (!config.isKeepGadget()) p.setItemInHand(null);
                 p.updateInventory();
+                String lostAmmo = lang.getLostAmmo();
                 if ("Enderbow".equals(gadget.getIdentifier())) {
                     if (p.isInsideVehicle()) {
-                        p.sendMessage(Placeholders.parse(lang.getDismountVehicle(), p));
+                        this.plugin.informPlayerNoPermission(p, lang.getDismountVehicle());
                         p.updateInventory();
                         return;
                     }
@@ -173,13 +174,13 @@ public final class GadgetsListener implements Listener {
                         }
                     }.runTaskLater(this.plugin, 20 * gadget.getCooldown());
                     if (gadget.isUseAmmo() && !p.hasPermission("uc.unlimitedammo")) {
-                        int i = loader.getAmmo(p).get(gadget.getIdentifier());
+                        int i = loader.getCache().get(p).get(gadget.getIdentifier());
                         if (i <= 0) {
-                            p.sendMessage(Placeholders.parse(lang.getNotEnoughAmmo(), p).replace("%ammoname%", gadget.getAmmoName()));
+                            this.plugin.informPlayerNoPermission(p, Placeholders.parse(lang.getNotEnoughAmmo(), p).replace("%ammoname%", gadget.getAmmoName()));
                             return;
                         } else {
                             loader.takeAmmo(gadget.getIdentifier(), p, 1);
-                            p.sendMessage(Placeholders.parse(lang.getLostAmmo(), p).replace("%ammoleft%", String.valueOf(i - 1)).replace("%ammoname%", gadget.getAmmoName()));
+                            if(!lostAmmo.isEmpty()) p.sendMessage(Placeholders.parse(lostAmmo, p).replace("%ammoleft%", String.valueOf(i - 1)).replace("%ammoname%", gadget.getAmmoName()));
                         }
                     }
                     Sounds.broadcastSound(Sound.SHOOT_ARROW, p.getLocation());
@@ -189,7 +190,7 @@ public final class GadgetsListener implements Listener {
                 }
                 if ("EtherealPearl".equals(gadget.getIdentifier())) {
                     if (p.isInsideVehicle()) {
-                        p.sendMessage(Placeholders.parse(lang.getDismountVehicle(), p));
+                        this.plugin.informPlayerNoPermission(p, lang.getDismountVehicle());
                         p.updateInventory();
                         return;
                     }
@@ -205,13 +206,13 @@ public final class GadgetsListener implements Listener {
                         }
                     }.runTaskLater(this.plugin, 20 * gadget.getCooldown());
                     if (gadget.isUseAmmo() && !p.hasPermission("uc.unlimitedammo")) {
-                        int i = loader.getAmmo(p).get(gadget.getIdentifier());
+                        int i = loader.getCache().get(p).get(gadget.getIdentifier());
                         if (i <= 0) {
-                            p.sendMessage(Placeholders.parse(lang.getNotEnoughAmmo(), p).replace("%ammoname%", gadget.getAmmoName()));
+                            this.plugin.informPlayerNoPermission(p, Placeholders.parse(lang.getNotEnoughAmmo(), p).replace("%ammoname%", gadget.getAmmoName()));
                             return;
                         } else {
                             loader.takeAmmo(gadget.getIdentifier(), p, 1);
-                            p.sendMessage(Placeholders.parse(lang.getLostAmmo(), p).replace("%ammoleft%", String.valueOf(i - 1)).replace("%ammoname%", gadget.getAmmoName()));
+                            if(!lostAmmo.isEmpty()) p.sendMessage(Placeholders.parse(lostAmmo, p).replace("%ammoleft%", String.valueOf(i - 1)).replace("%ammoname%", gadget.getAmmoName()));
                         }
                     }
                     Sounds.broadcastSound(Sound.WITHER_SHOOT, p.getLocation());
@@ -235,13 +236,13 @@ public final class GadgetsListener implements Listener {
                         }
                     }.runTaskLater(this.plugin, 20 * gadget.getCooldown());
                     if (gadget.isUseAmmo() && !p.hasPermission("uc.unlimitedammo")) {
-                        int i = loader.getAmmo(p).get(gadget.getIdentifier());
+                        int i = loader.getCache().get(p).get(gadget.getIdentifier());
                         if (i <= 0) {
-                            p.sendMessage(Placeholders.parse(lang.getNotEnoughAmmo(), p).replace("%ammoname%", gadget.getAmmoName()));
+                            this.plugin.informPlayerNoPermission(p, Placeholders.parse(lang.getNotEnoughAmmo(), p).replace("%ammoname%", gadget.getAmmoName()));
                             return;
                         } else {
                             loader.takeAmmo(gadget.getIdentifier(), p, 1);
-                            p.sendMessage(Placeholders.parse(lang.getLostAmmo(), p).replace("%ammoleft%", String.valueOf(i - 1)).replace("%ammoname%", gadget.getAmmoName()));
+                            if(!lostAmmo.isEmpty()) p.sendMessage(Placeholders.parse(lostAmmo, p).replace("%ammoleft%", String.valueOf(i - 1)).replace("%ammoname%", gadget.getAmmoName()));
                         }
                     }
                     Snowball snow = p.launchProjectile(Snowball.class);
@@ -251,7 +252,7 @@ public final class GadgetsListener implements Listener {
                 }
                 if ("FlyingPig".equals(gadget.getIdentifier())) {
                     if (p.isInsideVehicle()) {
-                        p.sendMessage(Placeholders.parse(lang.getDismountVehicle(), p));
+                        this.plugin.informPlayerNoPermission(p, lang.getDismountVehicle());
                         p.updateInventory();
                         return;
                     }
@@ -267,13 +268,13 @@ public final class GadgetsListener implements Listener {
                         }
                     }.runTaskLater(this.plugin, 20 * gadget.getCooldown());
                     if (gadget.isUseAmmo() && !p.hasPermission("uc.unlimitedammo")) {
-                        int i = loader.getAmmo(p).get(gadget.getIdentifier());
+                        int i = loader.getCache().get(p).get(gadget.getIdentifier());
                         if (i <= 0) {
-                            p.sendMessage(Placeholders.parse(lang.getNotEnoughAmmo(), p).replace("%ammoname%", gadget.getAmmoName()));
+                            this.plugin.informPlayerNoPermission(p, Placeholders.parse(lang.getNotEnoughAmmo(), p).replace("%ammoname%", gadget.getAmmoName()));
                             return;
                         } else {
                             loader.takeAmmo(gadget.getIdentifier(), p, 1);
-                            p.sendMessage(Placeholders.parse(lang.getLostAmmo(), p).replace("%ammoleft%", String.valueOf(i - 1)).replace("%ammoname%", gadget.getAmmoName()));
+                            if(!lostAmmo.isEmpty()) p.sendMessage(Placeholders.parse(lostAmmo, p).replace("%ammoleft%", String.valueOf(i - 1)).replace("%ammoname%", gadget.getAmmoName()));
                         }
                     }
                     Location l = p.getLocation();
@@ -305,13 +306,13 @@ public final class GadgetsListener implements Listener {
                         }
                     }.runTaskLater(this.plugin, 20 * gadget.getCooldown());
                     if (gadget.isUseAmmo() && !p.hasPermission("uc.unlimitedammo")) {
-                        int i = loader.getAmmo(p).get(gadget.getIdentifier());
+                        int i = loader.getCache().get(p).get(gadget.getIdentifier());
                         if (i <= 0) {
-                            p.sendMessage(Placeholders.parse(lang.getNotEnoughAmmo(), p).replace("%ammoname%", gadget.getAmmoName()));
+                            this.plugin.informPlayerNoPermission(p, Placeholders.parse(lang.getNotEnoughAmmo(), p).replace("%ammoname%", gadget.getAmmoName()));
                             return;
                         } else {
                             loader.takeAmmo(gadget.getIdentifier(), p, 1);
-                            p.sendMessage(Placeholders.parse(lang.getLostAmmo(), p).replace("%ammoleft%", String.valueOf(i - 1)).replace("%ammoname%", gadget.getAmmoName()));
+                            if(!lostAmmo.isEmpty()) p.sendMessage(Placeholders.parse(lostAmmo, p).replace("%ammoleft%", String.valueOf(i - 1)).replace("%ammoname%", gadget.getAmmoName()));
                         }
                     }
                     Location l = p.getEyeLocation();
@@ -341,13 +342,13 @@ public final class GadgetsListener implements Listener {
                         }
                     }.runTaskLater(this.plugin, 20 * gadget.getCooldown());
                     if (gadget.isUseAmmo() && !p.hasPermission("uc.unlimitedammo")) {
-                        int i = loader.getAmmo(p).get(gadget.getIdentifier());
+                        int i = loader.getCache().get(p).get(gadget.getIdentifier());
                         if (i <= 0) {
-                            p.sendMessage(Placeholders.parse(lang.getNotEnoughAmmo(), p).replace("%ammoname%", gadget.getAmmoName()));
+                            this.plugin.informPlayerNoPermission(p, Placeholders.parse(lang.getNotEnoughAmmo(), p).replace("%ammoname%", gadget.getAmmoName()));
                             return;
                         } else {
                             loader.takeAmmo(gadget.getIdentifier(), p, 1);
-                            p.sendMessage(Placeholders.parse(lang.getLostAmmo(), p).replace("%ammoleft%", String.valueOf(i - 1)).replace("%ammoname%", gadget.getAmmoName()));
+                            if(!lostAmmo.isEmpty()) p.sendMessage(Placeholders.parse(lostAmmo, p).replace("%ammoleft%", String.valueOf(i - 1)).replace("%ammoname%", gadget.getAmmoName()));
                         }
                     }
                     Location l = p.getEyeLocation();
@@ -385,13 +386,13 @@ public final class GadgetsListener implements Listener {
                         }
                     }.runTaskLater(this.plugin, 20 * gadget.getCooldown());
                     if (gadget.isUseAmmo() && !p.hasPermission("uc.unlimitedammo")) {
-                        int i = loader.getAmmo(p).get(gadget.getIdentifier());
+                        int i = loader.getCache().get(p).get(gadget.getIdentifier());
                         if (i <= 0) {
-                            p.sendMessage(Placeholders.parse(lang.getNotEnoughAmmo(), p).replace("%ammoname%", gadget.getAmmoName()));
+                            this.plugin.informPlayerNoPermission(p, Placeholders.parse(lang.getNotEnoughAmmo(), p).replace("%ammoname%", gadget.getAmmoName()));
                             return;
                         } else {
                             loader.takeAmmo(gadget.getIdentifier(), p, 1);
-                            p.sendMessage(Placeholders.parse(lang.getLostAmmo(), p).replace("%ammoleft%", String.valueOf(i - 1)).replace("%ammoname%", gadget.getAmmoName()));
+                            if(!lostAmmo.isEmpty()) p.sendMessage(Placeholders.parse(lostAmmo, p).replace("%ammoleft%", String.valueOf(i - 1)).replace("%ammoname%", gadget.getAmmoName()));
                         }
                     }
                     Vector vec = p.getLocation().getDirection();
@@ -428,13 +429,13 @@ public final class GadgetsListener implements Listener {
                         }
                     }.runTaskLater(this.plugin, 20 * gadget.getCooldown());
                     if (gadget.isUseAmmo() && !p.hasPermission("uc.unlimitedammo")) {
-                        int i = loader.getAmmo(p).get(gadget.getIdentifier());
+                        int i = loader.getCache().get(p).get(gadget.getIdentifier());
                         if (i <= 0) {
-                            p.sendMessage(Placeholders.parse(lang.getNotEnoughAmmo(), p).replace("%ammoname%", gadget.getAmmoName()));
+                            this.plugin.informPlayerNoPermission(p, Placeholders.parse(lang.getNotEnoughAmmo(), p).replace("%ammoname%", gadget.getAmmoName()));
                             return;
                         } else {
                             loader.takeAmmo(gadget.getIdentifier(), p, 1);
-                            p.sendMessage(Placeholders.parse(lang.getLostAmmo(), p).replace("%ammoleft%", String.valueOf(i - 1)).replace("%ammoname%", gadget.getAmmoName()));
+                            if(!lostAmmo.isEmpty()) p.sendMessage(Placeholders.parse(lostAmmo, p).replace("%ammoleft%", String.valueOf(i - 1)).replace("%ammoname%", gadget.getAmmoName()));
                         }
                     }
                     Map<Material, Byte> map1 = new HashMap<>();
@@ -470,7 +471,7 @@ public final class GadgetsListener implements Listener {
                 }
                 if ("Rocket".equals(gadget.getIdentifier())) {
                     if (p.isInsideVehicle()) {
-                        p.sendMessage(Placeholders.parse(lang.getDismountVehicle(), p));
+                        this.plugin.informPlayerNoPermission(p, lang.getDismountVehicle());
                         p.updateInventory();
                         return;
                     }
@@ -486,13 +487,13 @@ public final class GadgetsListener implements Listener {
                         }
                     }.runTaskLater(this.plugin, 20 * gadget.getCooldown());
                     if (gadget.isUseAmmo() && !p.hasPermission("uc.unlimitedammo")) {
-                        int i = loader.getAmmo(p).get(gadget.getIdentifier());
+                        int i = loader.getCache().get(p).get(gadget.getIdentifier());
                         if (i <= 0) {
-                            p.sendMessage(Placeholders.parse(lang.getNotEnoughAmmo(), p).replace("%ammoname%", gadget.getAmmoName()));
+                            this.plugin.informPlayerNoPermission(p, Placeholders.parse(lang.getNotEnoughAmmo(), p).replace("%ammoname%", gadget.getAmmoName()));
                             return;
                         } else {
                             loader.takeAmmo(gadget.getIdentifier(), p, 1);
-                            p.sendMessage(Placeholders.parse(lang.getLostAmmo(), p).replace("%ammoleft%", String.valueOf(i - 1)).replace("%ammoname%", gadget.getAmmoName()));
+                            if(!lostAmmo.isEmpty()) p.sendMessage(Placeholders.parse(lostAmmo, p).replace("%ammoleft%", String.valueOf(i - 1)).replace("%ammoname%", gadget.getAmmoName()));
                         }
                     }
                     new GadgetsListener.RocketRunnable(config, p, gadget).runTaskTimer(this.plugin, 0L, 20L);
@@ -511,13 +512,13 @@ public final class GadgetsListener implements Listener {
                         }
                     }.runTaskLater(this.plugin, 20 * gadget.getCooldown());
                     if (gadget.isUseAmmo() && !p.hasPermission("uc.unlimitedammo")) {
-                        int i = loader.getAmmo(p).get(gadget.getIdentifier());
+                        int i = loader.getCache().get(p).get(gadget.getIdentifier());
                         if (i <= 0) {
-                            p.sendMessage(Placeholders.parse(lang.getNotEnoughAmmo(), p).replace("%ammoname%", gadget.getAmmoName()));
+                            this.plugin.informPlayerNoPermission(p, Placeholders.parse(lang.getNotEnoughAmmo(), p).replace("%ammoname%", gadget.getAmmoName()));
                             return;
                         } else {
                             loader.takeAmmo(gadget.getIdentifier(), p, 1);
-                            p.sendMessage(Placeholders.parse(lang.getLostAmmo(), p).replace("%ammoleft%", String.valueOf(i - 1)).replace("%ammoname%", gadget.getAmmoName()));
+                            if(!lostAmmo.isEmpty()) p.sendMessage(Placeholders.parse(lostAmmo, p).replace("%ammoleft%", String.valueOf(i - 1)).replace("%ammoname%", gadget.getAmmoName()));
                         }
                     }
                     Sounds.broadcastSound(Sound.CHICKEN_EGG_POP, p.getLocation());
@@ -552,13 +553,13 @@ public final class GadgetsListener implements Listener {
                     if (this.fishingPlayers.containsKey(p.getName()))
                         this.fishingPlayers.get(p.getName()).remove();
                     if (gadget.isUseAmmo() && !p.hasPermission("uc.unlimitedammo")) {
-                        int i = loader.getAmmo(p).get(gadget.getIdentifier());
+                        int i = loader.getCache().get(p).get(gadget.getIdentifier());
                         if (i <= 0) {
-                            p.sendMessage(Placeholders.parse(lang.getNotEnoughAmmo(), p).replace("%ammoname%", gadget.getAmmoName()));
+                            this.plugin.informPlayerNoPermission(p, Placeholders.parse(lang.getNotEnoughAmmo(), p).replace("%ammoname%", gadget.getAmmoName()));
                             return;
                         } else {
                             loader.takeAmmo(gadget.getIdentifier(), p, 1);
-                            p.sendMessage(Placeholders.parse(lang.getLostAmmo(), p).replace("%ammoleft%", String.valueOf(i - 1)).replace("%ammoname%", gadget.getAmmoName()));
+                            if(!lostAmmo.isEmpty()) p.sendMessage(Placeholders.parse(lostAmmo, p).replace("%ammoleft%", String.valueOf(i - 1)).replace("%ammoname%", gadget.getAmmoName()));
                         }
                     }
                     Sounds.broadcastSound(Sound.SHOOT_ARROW, p.getLocation());
@@ -581,13 +582,13 @@ public final class GadgetsListener implements Listener {
                         }
                     }.runTaskLater(this.plugin, 20 * gadget.getCooldown());
                     if (gadget.isUseAmmo() && !p.hasPermission("uc.unlimitedammo")) {
-                        int i = loader.getAmmo(p).get(gadget.getIdentifier());
+                        int i = loader.getCache().get(p).get(gadget.getIdentifier());
                         if (i <= 0) {
-                            p.sendMessage(Placeholders.parse(lang.getNotEnoughAmmo(), p).replace("%ammoname%", gadget.getAmmoName()));
+                            this.plugin.informPlayerNoPermission(p, Placeholders.parse(lang.getNotEnoughAmmo(), p).replace("%ammoname%", gadget.getAmmoName()));
                             return;
                         } else {
                             loader.takeAmmo(gadget.getIdentifier(), p, 1);
-                            p.sendMessage(Placeholders.parse(lang.getLostAmmo(), p).replace("%ammoleft%", String.valueOf(i - 1)).replace("%ammoname%", gadget.getAmmoName()));
+                            if(!lostAmmo.isEmpty()) p.sendMessage(Placeholders.parse(lostAmmo, p).replace("%ammoleft%", String.valueOf(i - 1)).replace("%ammoname%", gadget.getAmmoName()));
                         }
                     }
                     p.getWorld().playEffect(p.getLocation(), Effect.EXPLOSION_HUGE, 0);
@@ -616,13 +617,13 @@ public final class GadgetsListener implements Listener {
                         }
                     }.runTaskLater(this.plugin, 20 * gadget.getCooldown());
                     if (gadget.isUseAmmo() && !p.hasPermission("uc.unlimitedammo")) {
-                        int i = loader.getAmmo(p).get(gadget.getIdentifier());
+                        int i = loader.getCache().get(p).get(gadget.getIdentifier());
                         if (i <= 0) {
-                            p.sendMessage(Placeholders.parse(lang.getNotEnoughAmmo(), p).replace("%ammoname%", gadget.getAmmoName()));
+                            this.plugin.informPlayerNoPermission(p, Placeholders.parse(lang.getNotEnoughAmmo(), p).replace("%ammoname%", gadget.getAmmoName()));
                             return;
                         } else {
                             loader.takeAmmo(gadget.getIdentifier(), p, 1);
-                            p.sendMessage(Placeholders.parse(lang.getLostAmmo(), p).replace("%ammoleft%", String.valueOf(i - 1)).replace("%ammoname%", gadget.getAmmoName()));
+                            if(!lostAmmo.isEmpty()) p.sendMessage(Placeholders.parse(lostAmmo, p).replace("%ammoleft%", String.valueOf(i - 1)).replace("%ammoname%", gadget.getAmmoName()));
                         }
                     }
                     for (int a = 0; a < config.getIntValue(gadget.getIdentifier(), "Amount"); a++) {
@@ -652,13 +653,13 @@ public final class GadgetsListener implements Listener {
                         }
                     }.runTaskLater(this.plugin, 20 * gadget.getCooldown());
                     if (gadget.isUseAmmo() && !p.hasPermission("uc.unlimitedammo")) {
-                        int i = loader.getAmmo(p).get(gadget.getIdentifier());
+                        int i = loader.getCache().get(p).get(gadget.getIdentifier());
                         if (i <= 0) {
-                            p.sendMessage(Placeholders.parse(lang.getNotEnoughAmmo(), p).replace("%ammoname%", gadget.getAmmoName()));
+                            this.plugin.informPlayerNoPermission(p, Placeholders.parse(lang.getNotEnoughAmmo(), p).replace("%ammoname%", gadget.getAmmoName()));
                             return;
                         } else {
                             loader.takeAmmo(gadget.getIdentifier(), p, 1);
-                            p.sendMessage(Placeholders.parse(lang.getLostAmmo(), p).replace("%ammoleft%", String.valueOf(i - 1)).replace("%ammoname%", gadget.getAmmoName()));
+                            if(!lostAmmo.isEmpty()) p.sendMessage(Placeholders.parse(lostAmmo, p).replace("%ammoleft%", String.valueOf(i - 1)).replace("%ammoname%", gadget.getAmmoName()));
                         }
                     }
                     for (int a = 0; a < 5; a++) {
@@ -681,13 +682,13 @@ public final class GadgetsListener implements Listener {
                         }
                     }.runTaskLater(this.plugin, 20 * gadget.getCooldown());
                     if (gadget.isUseAmmo() && !p.hasPermission("uc.unlimitedammo")) {
-                        int i = loader.getAmmo(p).get(gadget.getIdentifier());
+                        int i = loader.getCache().get(p).get(gadget.getIdentifier());
                         if (i <= 0) {
-                            p.sendMessage(Placeholders.parse(lang.getNotEnoughAmmo(), p).replace("%ammoname%", gadget.getAmmoName()));
+                            this.plugin.informPlayerNoPermission(p, Placeholders.parse(lang.getNotEnoughAmmo(), p).replace("%ammoname%", gadget.getAmmoName()));
                             return;
                         } else {
                             loader.takeAmmo(gadget.getIdentifier(), p, 1);
-                            p.sendMessage(Placeholders.parse(lang.getLostAmmo(), p).replace("%ammoleft%", String.valueOf(i - 1)).replace("%ammoname%", gadget.getAmmoName()));
+                            if(!lostAmmo.isEmpty()) p.sendMessage(Placeholders.parse(lostAmmo, p).replace("%ammoleft%", String.valueOf(i - 1)).replace("%ammoname%", gadget.getAmmoName()));
                         }
                     }
                     ItemStack ci = gadget.getItem().clone();
@@ -715,13 +716,13 @@ public final class GadgetsListener implements Listener {
                         }
                     }.runTaskLater(this.plugin, 20 * gadget.getCooldown());
                     if (gadget.isUseAmmo() && !p.hasPermission("uc.unlimitedammo")) {
-                        int i = loader.getAmmo(p).get(gadget.getIdentifier());
+                        int i = loader.getCache().get(p).get(gadget.getIdentifier());
                         if (i <= 0) {
-                            p.sendMessage(Placeholders.parse(lang.getNotEnoughAmmo(), p).replace("%ammoname%", gadget.getAmmoName()));
+                            this.plugin.informPlayerNoPermission(p, Placeholders.parse(lang.getNotEnoughAmmo(), p).replace("%ammoname%", gadget.getAmmoName()));
                             return;
                         } else {
                             loader.takeAmmo(gadget.getIdentifier(), p, 1);
-                            p.sendMessage(Placeholders.parse(lang.getLostAmmo(), p).replace("%ammoleft%", String.valueOf(i - 1)).replace("%ammoname%", gadget.getAmmoName()));
+                            if(!lostAmmo.isEmpty()) p.sendMessage(Placeholders.parse(lostAmmo, p).replace("%ammoleft%", String.valueOf(i - 1)).replace("%ammoname%", gadget.getAmmoName()));
                         }
                     }
                     ItemStack ci = gadget.getItem().clone();
@@ -749,13 +750,13 @@ public final class GadgetsListener implements Listener {
                         }
                     }.runTaskLater(this.plugin, 20 * gadget.getCooldown());
                     if (gadget.isUseAmmo() && !p.hasPermission("uc.unlimitedammo")) {
-                        int i = loader.getAmmo(p).get(gadget.getIdentifier());
+                        int i = loader.getCache().get(p).get(gadget.getIdentifier());
                         if (i <= 0) {
-                            p.sendMessage(Placeholders.parse(lang.getNotEnoughAmmo(), p).replace("%ammoname%", gadget.getAmmoName()));
+                            this.plugin.informPlayerNoPermission(p, Placeholders.parse(lang.getNotEnoughAmmo(), p).replace("%ammoname%", gadget.getAmmoName()));
                             return;
                         } else {
                             loader.takeAmmo(gadget.getIdentifier(), p, 1);
-                            p.sendMessage(Placeholders.parse(lang.getLostAmmo(), p).replace("%ammoleft%", String.valueOf(i - 1)).replace("%ammoname%", gadget.getAmmoName()));
+                            if(!lostAmmo.isEmpty()) p.sendMessage(Placeholders.parse(lostAmmo, p).replace("%ammoleft%", String.valueOf(i - 1)).replace("%ammoname%", gadget.getAmmoName()));
                         }
                     }
                     this.firePlayers.add(p.getName());
@@ -782,13 +783,13 @@ public final class GadgetsListener implements Listener {
                         }
                     }.runTaskLater(this.plugin, 20 * gadget.getCooldown());
                     if (gadget.isUseAmmo() && !p.hasPermission("uc.unlimitedammo")) {
-                        int i = loader.getAmmo(p).get(gadget.getIdentifier());
+                        int i = loader.getCache().get(p).get(gadget.getIdentifier());
                         if (i <= 0) {
-                            p.sendMessage(Placeholders.parse(lang.getNotEnoughAmmo(), p).replace("%ammoname%", gadget.getAmmoName()));
+                            this.plugin.informPlayerNoPermission(p, Placeholders.parse(lang.getNotEnoughAmmo(), p).replace("%ammoname%", gadget.getAmmoName()));
                             return;
                         } else {
                             loader.takeAmmo(gadget.getIdentifier(), p, 1);
-                            p.sendMessage(Placeholders.parse(lang.getLostAmmo(), p).replace("%ammoleft%", String.valueOf(i - 1)).replace("%ammoname%", gadget.getAmmoName()));
+                            if(!lostAmmo.isEmpty()) p.sendMessage(Placeholders.parse(lostAmmo, p).replace("%ammoleft%", String.valueOf(i - 1)).replace("%ammoname%", gadget.getAmmoName()));
                         }
                     }
                     this.diamondShowerPlayers.add(p.getName());
@@ -813,13 +814,13 @@ public final class GadgetsListener implements Listener {
                         }
                     }.runTaskLater(this.plugin, 20 * gadget.getCooldown());
                     if (gadget.isUseAmmo() && !p.hasPermission("uc.unlimitedammo")) {
-                        int i = loader.getAmmo(p).get(gadget.getIdentifier());
+                        int i = loader.getCache().get(p).get(gadget.getIdentifier());
                         if (i <= 0) {
-                            p.sendMessage(Placeholders.parse(lang.getNotEnoughAmmo(), p).replace("%ammoname%", gadget.getAmmoName()));
+                            this.plugin.informPlayerNoPermission(p, Placeholders.parse(lang.getNotEnoughAmmo(), p).replace("%ammoname%", gadget.getAmmoName()));
                             return;
                         } else {
                             loader.takeAmmo(gadget.getIdentifier(), p, 1);
-                            p.sendMessage(Placeholders.parse(lang.getLostAmmo(), p).replace("%ammoleft%", String.valueOf(i - 1)).replace("%ammoname%", gadget.getAmmoName()));
+                            if(!lostAmmo.isEmpty()) p.sendMessage(Placeholders.parse(lostAmmo, p).replace("%ammoleft%", String.valueOf(i - 1)).replace("%ammoname%", gadget.getAmmoName()));
                         }
                     }
                     ItemStack ci = gadget.getItem().clone();
@@ -845,13 +846,13 @@ public final class GadgetsListener implements Listener {
                         }
                     }.runTaskLater(this.plugin, 20 * gadget.getCooldown());
                     if (gadget.isUseAmmo() && !p.hasPermission("uc.unlimitedammo")) {
-                        int i = loader.getAmmo(p).get(gadget.getIdentifier());
+                        int i = loader.getCache().get(p).get(gadget.getIdentifier());
                         if (i <= 0) {
-                            p.sendMessage(Placeholders.parse(lang.getNotEnoughAmmo(), p).replace("%ammoname%", gadget.getAmmoName()));
+                            this.plugin.informPlayerNoPermission(p, Placeholders.parse(lang.getNotEnoughAmmo(), p).replace("%ammoname%", gadget.getAmmoName()));
                             return;
                         } else {
                             loader.takeAmmo(gadget.getIdentifier(), p, 1);
-                            p.sendMessage(Placeholders.parse(lang.getLostAmmo(), p).replace("%ammoleft%", String.valueOf(i - 1)).replace("%ammoname%", gadget.getAmmoName()));
+                            if(!lostAmmo.isEmpty()) p.sendMessage(Placeholders.parse(lostAmmo, p).replace("%ammoleft%", String.valueOf(i - 1)).replace("%ammoname%", gadget.getAmmoName()));
                         }
                     }
                     this.paintTrailPlayers.add(p.getName());

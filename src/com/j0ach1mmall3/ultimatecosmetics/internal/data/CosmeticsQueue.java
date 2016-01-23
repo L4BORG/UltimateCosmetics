@@ -38,6 +38,7 @@ import java.util.List;
 /**
  * Created by j0ach1mmall3 on 8:45 1/11/2015 using IntelliJ IDEA.
  */
+@SuppressWarnings("deprecation")
 public final class CosmeticsQueue {
     private final Main plugin;
     private final BalloonStorage balloon;

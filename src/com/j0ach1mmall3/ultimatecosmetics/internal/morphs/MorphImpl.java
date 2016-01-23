@@ -1,6 +1,7 @@
 package com.j0ach1mmall3.ultimatecosmetics.internal.morphs;
 
 import com.j0ach1mmall3.jlib.integration.Placeholders;
+import com.j0ach1mmall3.ultimatecosmetics.Main;
 import com.j0ach1mmall3.ultimatecosmetics.api.CosmeticsAPI;
 import com.j0ach1mmall3.ultimatecosmetics.api.cosmetics.Cosmetic;
 import com.j0ach1mmall3.ultimatecosmetics.api.cosmetics.Morph;
@@ -37,7 +38,8 @@ public final class MorphImpl implements Morph {
 
     @Override
     public void give() {
-        CosmeticsAPI api = this.morphStorage.getPlugin().getApi();
+        Main plugin = this.morphStorage.getPlugin();
+        CosmeticsAPI api = plugin.getApi();
         if (api.hasMorph(this.player)) {
             api.getMorph(this.player).remove();
             give();
@@ -49,11 +51,11 @@ public final class MorphImpl implements Morph {
             this.player = cosmetic.getPlayer();
             this.morphStorage = cosmetic.getMorphStorage();
             if (this.morphStorage.getPlugin().getMorphs().isEnableAbilities()) {
-                if (this.player.getInventory().getItem(this.morphStorage.getPlugin().getMorphs().getAbilitySlot()) != null && this.morphStorage.getPlugin().getMorphs().isCheckInSlot()) {
-                    this.player.sendMessage(Placeholders.parse(this.morphStorage.getPlugin().getLang().getAlreadyInAbilitySlot(), this.player));
+                if (this.player.getInventory().getItem(plugin.getMorphs().getAbilitySlot()) != null && plugin.getMorphs().isCheckInSlot()) {
+                    plugin.informPlayerNoPermission(this.player, Placeholders.parse(plugin.getLang().getAlreadyInAbilitySlot(), this.player));
                     return;
                 } else {
-                    this.player.getInventory().setItem(this.morphStorage.getPlugin().getMorphs().getAbilitySlot(), this.morphStorage.getAbilityItem());
+                    this.player.getInventory().setItem(plugin.getMorphs().getAbilitySlot(), this.morphStorage.getAbilityItem());
                 }
             }
             MobDisguise md = new MobDisguise(DisguiseType.valueOf(this.morphStorage.getMorphType()));

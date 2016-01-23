@@ -1,6 +1,5 @@
 package com.j0ach1mmall3.ultimatecosmetics.internal.commands;
 
-import com.j0ach1mmall3.jlib.integration.Placeholders;
 import com.j0ach1mmall3.jlib.integration.profilefetcher.PlayerProfile;
 import com.j0ach1mmall3.jlib.integration.profilefetcher.ProfileFetcher;
 import com.j0ach1mmall3.jlib.logging.JLogger;
@@ -63,7 +62,7 @@ public final class Commands implements CommandExecutor {
             }
             if ("reload".equalsIgnoreCase(args[0])) {
                 if (!sender.hasPermission("uc.reload")) {
-                    sender.sendMessage(Placeholders.parse(this.plugin.getLang().getCommandNoPermission()));
+                    this.plugin.informPlayerNoPermission(sender, this.plugin.getLang().getCommandNoPermission());
                     return true;
                 }
                 this.plugin.reload();
@@ -72,7 +71,7 @@ public final class Commands implements CommandExecutor {
             }
             if("debug".equalsIgnoreCase(args[0])) {
                 if (!sender.hasPermission("uc.debug")) {
-                    sender.sendMessage(Placeholders.parse(this.plugin.getLang().getCommandNoPermission()));
+                    this.plugin.informPlayerNoPermission(sender, this.plugin.getLang().getCommandNoPermission());
                     return true;
                 }
                 new JLogger(this.plugin).dumpDebug(this.plugin.getDataLoader().getStorage().getActions().toArray(new StorageAction[this.plugin.getDataLoader().getStorage().getActions().size()]), new ConfigLoader[]{
@@ -161,7 +160,8 @@ public final class Commands implements CommandExecutor {
                 loader.getStacker(p, new CallbackHandler<Boolean>() {
                     @Override
                     public void callback(Boolean b) {
-                        p.sendMessage(Commands.this.plugin.getLang().getToggledStacker().replace("{statuscolor}", (b ? ChatColor.RED : ChatColor.GREEN).toString()));
+                        String toggledStacker = Commands.this.plugin.getLang().getToggledStacker();
+                        if(!toggledStacker.isEmpty()) p.sendMessage(toggledStacker.replace("{statuscolor}", (b ? ChatColor.RED : ChatColor.GREEN).toString()));
                         loader.setStacker(p, !b);
                     }
                 });

@@ -1,5 +1,6 @@
 package com.j0ach1mmall3.ultimatecosmetics.internal.data;
 
+import com.j0ach1mmall3.jlib.storage.Cache;
 import com.j0ach1mmall3.jlib.storage.Storage;
 import com.j0ach1mmall3.jlib.storage.database.CallbackHandler;
 import org.bukkit.entity.Player;
@@ -11,25 +12,12 @@ import java.util.Map;
  * @since 5/11/2015
  */
 public interface DataLoader {
-    void loadAmmo(Player player);
 
-    void unloadAmmo(Player player);
-
-    Map<String, Integer> getAmmo(Player player);
+    Cache<Map<String, Integer>> getCache();
 
     void giveAmmo(String identifier, Player player, int amount);
 
     void takeAmmo(String identifier, Player player, int amount);
-
-    void setAmmo(String identifier, Player player, int amount);
-
-    void getOfflineAmmo(String uuid, CallbackHandler<Map<String, Integer>> callbackHandler);
-
-    void giveOfflineAmmo(String identifier, String uuid, int amount);
-
-    void takeOfflineAmmo(String identifier, String uuid, int amount);
-
-    void setOfflineAmmo(String uuid, Map<String, Integer> map);
 
     void giveBackQueue(Player p);
 

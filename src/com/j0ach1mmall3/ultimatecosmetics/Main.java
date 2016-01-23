@@ -10,22 +10,67 @@ import com.j0ach1mmall3.jlib.methods.ReflectionAPI;
 import com.j0ach1mmall3.jlib.storage.database.CallbackHandler;
 import com.j0ach1mmall3.jlib.storage.file.yaml.StorageConfigLoader;
 import com.j0ach1mmall3.ultimatecosmetics.api.CosmeticsAPI;
+import com.j0ach1mmall3.ultimatecosmetics.api.storage.GadgetStorage;
 import com.j0ach1mmall3.ultimatecosmetics.internal.Methods;
 import com.j0ach1mmall3.ultimatecosmetics.internal.balloons.BalloonsListener;
 import com.j0ach1mmall3.ultimatecosmetics.internal.banners.BannersListener;
 import com.j0ach1mmall3.ultimatecosmetics.internal.bowtrails.BowtrailsListener;
 import com.j0ach1mmall3.ultimatecosmetics.internal.commands.Commands;
-import com.j0ach1mmall3.ultimatecosmetics.internal.config.*;
-import com.j0ach1mmall3.ultimatecosmetics.internal.data.*;
+import com.j0ach1mmall3.ultimatecosmetics.internal.config.Balloons;
+import com.j0ach1mmall3.ultimatecosmetics.internal.config.Banners;
+import com.j0ach1mmall3.ultimatecosmetics.internal.config.Bowtrails;
+import com.j0ach1mmall3.ultimatecosmetics.internal.config.Config;
+import com.j0ach1mmall3.ultimatecosmetics.internal.config.Fireworks;
+import com.j0ach1mmall3.ultimatecosmetics.internal.config.Gadgets;
+import com.j0ach1mmall3.ultimatecosmetics.internal.config.Hats;
+import com.j0ach1mmall3.ultimatecosmetics.internal.config.Hearts;
+import com.j0ach1mmall3.ultimatecosmetics.internal.config.Lang;
+import com.j0ach1mmall3.ultimatecosmetics.internal.config.Misc;
+import com.j0ach1mmall3.ultimatecosmetics.internal.config.Morphs;
+import com.j0ach1mmall3.ultimatecosmetics.internal.config.Mounts;
+import com.j0ach1mmall3.ultimatecosmetics.internal.config.Music;
+import com.j0ach1mmall3.ultimatecosmetics.internal.config.Particles;
+import com.j0ach1mmall3.ultimatecosmetics.internal.config.Pets;
+import com.j0ach1mmall3.ultimatecosmetics.internal.config.Trails;
+import com.j0ach1mmall3.ultimatecosmetics.internal.config.Wardrobe;
+import com.j0ach1mmall3.ultimatecosmetics.internal.data.DataLoader;
+import com.j0ach1mmall3.ultimatecosmetics.internal.data.FileDataLoader;
+import com.j0ach1mmall3.ultimatecosmetics.internal.data.MongoDBDataLoader;
+import com.j0ach1mmall3.ultimatecosmetics.internal.data.MySQLDataLoader;
+import com.j0ach1mmall3.ultimatecosmetics.internal.data.SQLiteDataLoader;
 import com.j0ach1mmall3.ultimatecosmetics.internal.gadgets.GadgetsListener;
-import com.j0ach1mmall3.ultimatecosmetics.internal.gui.*;
+import com.j0ach1mmall3.ultimatecosmetics.internal.gui.BalloonsGuiHandler;
+import com.j0ach1mmall3.ultimatecosmetics.internal.gui.BannersGuiHandler;
+import com.j0ach1mmall3.ultimatecosmetics.internal.gui.BowtrailsGuiHandler;
+import com.j0ach1mmall3.ultimatecosmetics.internal.gui.CosmeticsGuiHandler;
+import com.j0ach1mmall3.ultimatecosmetics.internal.gui.FireworksGuiHandler;
+import com.j0ach1mmall3.ultimatecosmetics.internal.gui.GadgetsGuiHandler;
+import com.j0ach1mmall3.ultimatecosmetics.internal.gui.HatsGuiHandler;
+import com.j0ach1mmall3.ultimatecosmetics.internal.gui.HeartsGuiHandler;
+import com.j0ach1mmall3.ultimatecosmetics.internal.gui.MorphsGuiHandler;
+import com.j0ach1mmall3.ultimatecosmetics.internal.gui.MountsGuiHandler;
+import com.j0ach1mmall3.ultimatecosmetics.internal.gui.MusicGuiHandler;
+import com.j0ach1mmall3.ultimatecosmetics.internal.gui.ParticlesGuiHandler;
+import com.j0ach1mmall3.ultimatecosmetics.internal.gui.PetsGuiHandler;
+import com.j0ach1mmall3.ultimatecosmetics.internal.gui.TrailsGuiHandler;
+import com.j0ach1mmall3.ultimatecosmetics.internal.gui.WardrobeGuiHandler;
 import com.j0ach1mmall3.ultimatecosmetics.internal.hats.HatsListener;
 import com.j0ach1mmall3.ultimatecosmetics.internal.hearts.HeartsListener;
-import com.j0ach1mmall3.ultimatecosmetics.internal.listeners.*;
+import com.j0ach1mmall3.ultimatecosmetics.internal.listeners.CommandsListener;
+import com.j0ach1mmall3.ultimatecosmetics.internal.listeners.EntityListener;
+import com.j0ach1mmall3.ultimatecosmetics.internal.listeners.PlayerListener;
+import com.j0ach1mmall3.ultimatecosmetics.internal.listeners.ProtocolLibListener;
+import com.j0ach1mmall3.ultimatecosmetics.internal.listeners.ProtocolListener;
 import com.j0ach1mmall3.ultimatecosmetics.internal.morphs.MorphsListener;
 import com.j0ach1mmall3.ultimatecosmetics.internal.mounts.MountsListener;
 import com.j0ach1mmall3.ultimatecosmetics.internal.music.MusicListener;
-import com.j0ach1mmall3.ultimatecosmetics.internal.particles.shapes.*;
+import com.j0ach1mmall3.ultimatecosmetics.internal.particles.shapes.Cross;
+import com.j0ach1mmall3.ultimatecosmetics.internal.particles.shapes.Dome;
+import com.j0ach1mmall3.ultimatecosmetics.internal.particles.shapes.Halo;
+import com.j0ach1mmall3.ultimatecosmetics.internal.particles.shapes.Helix;
+import com.j0ach1mmall3.ultimatecosmetics.internal.particles.shapes.Random;
+import com.j0ach1mmall3.ultimatecosmetics.internal.particles.shapes.Sphere;
+import com.j0ach1mmall3.ultimatecosmetics.internal.particles.shapes.Trail;
 import com.j0ach1mmall3.ultimatecosmetics.internal.pets.PetsListener;
 import com.j0ach1mmall3.ultimatecosmetics.internal.trails.TrailsListener;
 import com.j0ach1mmall3.ultimatecosmetics.internal.wardrobe.WardrobeListener;
@@ -40,6 +85,8 @@ import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by j0ach1mmall3 on 20:26 17/08/2015 using IntelliJ IDEA.
@@ -228,6 +275,9 @@ public final class Main extends JavaPlugin {
         new PetsGuiHandler(this);
         new TrailsGuiHandler(this);
         new WardrobeGuiHandler(this);
+        for(Player p : Bukkit.getOnlinePlayers()) {
+            this.dataLoader.getCache().load(p);
+        }
         if (this.config.getLoggingLevel() >= 1) General.sendColoredMessage(this, "Done!", ChatColor.GREEN);
     }
 
@@ -235,9 +285,17 @@ public final class Main extends JavaPlugin {
     public void onDisable() {
         Methods.cleanup(this);
         for(Player p : Bukkit.getOnlinePlayers()) {
-            this.dataLoader.unloadAmmo(p);
+            this.dataLoader.getCache().unload(p);
         }
         this.dataLoader.disconnectLoader();
+    }
+
+    public Map<String, Integer> getDefaultAmmo() {
+        Map<String, Integer> ammo = new HashMap<>();
+        for (GadgetStorage gadget : this.gadgets.getGadgets()) {
+            ammo.put(gadget.getIdentifier(), 0);
+        }
+        return ammo;
     }
 
     public void reload() {
@@ -262,19 +320,22 @@ public final class Main extends JavaPlugin {
     }
 
     public void informPlayerNoPermission(CommandSender s, String message) {
+        if(message.isEmpty()) return;
         if (s instanceof Player) {
             Player p = (Player) s;
             p.sendMessage(Placeholders.parse(message, p));
             Notes.playNote(p, Instrument.BASS_DRUM, Note.Tone.A);
-        } else s.sendMessage(Placeholders.parse(this.lang.getNotEnabled(), null));
+        } else s.sendMessage(Placeholders.parse(message, null));
     }
 
     public void informPlayerNotEnabled(CommandSender s) {
+        String notEnabled = this.lang.getNotEnabled();
+        if(notEnabled.isEmpty()) return;
         if (s instanceof Player) {
             Player p = (Player) s;
-            p.sendMessage(Placeholders.parse(this.lang.getNotEnabled(), p));
+            p.sendMessage(Placeholders.parse(notEnabled, p));
             Notes.playNote(p, Instrument.BASS_DRUM, Note.Tone.A);
-        } else s.sendMessage(Placeholders.parse(this.lang.getNotEnabled(), null));
+        } else s.sendMessage(Placeholders.parse(notEnabled, null));
     }
 
     public boolean isLibsDisguises() {

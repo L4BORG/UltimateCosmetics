@@ -1,6 +1,7 @@
 package com.j0ach1mmall3.ultimatecosmetics.internal.gadgets;
 
 import com.j0ach1mmall3.jlib.integration.Placeholders;
+import com.j0ach1mmall3.ultimatecosmetics.Main;
 import com.j0ach1mmall3.ultimatecosmetics.api.CosmeticsAPI;
 import com.j0ach1mmall3.ultimatecosmetics.api.cosmetics.Cosmetic;
 import com.j0ach1mmall3.ultimatecosmetics.api.cosmetics.Gadget;
@@ -33,15 +34,16 @@ public final class GadgetImpl implements Gadget {
 
     @Override
     public void give() {
-        CosmeticsAPI api = this.gadgetStorage.getPlugin().getApi();
+        Main plugin = this.gadgetStorage.getPlugin();
+        CosmeticsAPI api = plugin.getApi();
         if (api.hasGadget(this.player)) {
-            this.player.getInventory().setItem(this.gadgetStorage.getPlugin().getGadgets().getGadgetSlot(), null);
+            this.player.getInventory().setItem(plugin.getGadgets().getGadgetSlot(), null);
             give();
         } else {
-            if (this.player.getInventory().getItem(this.gadgetStorage.getPlugin().getGadgets().getGadgetSlot()) != null && this.gadgetStorage.getPlugin().getGadgets().isCheckInSlot()) {
-                this.player.sendMessage(Placeholders.parse(this.gadgetStorage.getPlugin().getLang().getAlreadyInGadgetsSlot(), this.player));
+            if (this.player.getInventory().getItem(plugin.getGadgets().getGadgetSlot()) != null && this.gadgetStorage.getPlugin().getGadgets().isCheckInSlot()) {
+                plugin.informPlayerNoPermission(this.player, Placeholders.parse(plugin.getLang().getAlreadyInGadgetsSlot(), this.player));
             } else {
-                this.player.getInventory().setItem(this.gadgetStorage.getPlugin().getGadgets().getGadgetSlot(), this.gadgetStorage.getItem());
+                this.player.getInventory().setItem(plugin.getGadgets().getGadgetSlot(), this.gadgetStorage.getItem());
             }
         }
     }

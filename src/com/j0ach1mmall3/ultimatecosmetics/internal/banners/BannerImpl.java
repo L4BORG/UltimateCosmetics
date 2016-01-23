@@ -2,6 +2,7 @@ package com.j0ach1mmall3.ultimatecosmetics.internal.banners;
 
 
 import com.j0ach1mmall3.jlib.integration.Placeholders;
+import com.j0ach1mmall3.ultimatecosmetics.Main;
 import com.j0ach1mmall3.ultimatecosmetics.api.CosmeticsAPI;
 import com.j0ach1mmall3.ultimatecosmetics.api.cosmetics.Banner;
 import com.j0ach1mmall3.ultimatecosmetics.api.cosmetics.Cosmetic;
@@ -37,9 +38,10 @@ public final class BannerImpl implements Banner {
 
     @Override
     public void give() {
-        Banners config = this.bannerStorage.getPlugin().getBanners();
-        Lang lang = this.bannerStorage.getPlugin().getLang();
-        CosmeticsAPI api = this.bannerStorage.getPlugin().getApi();
+        Main plugin = this.bannerStorage.getPlugin();
+        Banners config = plugin.getBanners();
+        Lang lang = plugin.getLang();
+        CosmeticsAPI api = plugin.getApi();
         if (api.hasBanner(this.player)) {
             api.getBanner(this.player).remove();
             give();
@@ -51,7 +53,7 @@ public final class BannerImpl implements Banner {
             this.player = cosmetic.getPlayer();
             this.bannerStorage = cosmetic.getBannerStorage();
             if (this.player.getInventory().getHelmet() != null && config.isCheckOnHead()) {
-                this.player.sendMessage(Placeholders.parse(lang.getAlreadyOnHead(), this.player).replace("%itemname%", this.player.getInventory().getHelmet().getType().toString().toLowerCase().replace("_", " ")));
+                plugin.informPlayerNoPermission(this.player, Placeholders.parse(lang.getAlreadyOnHead(), this.player).replace("%itemname%", this.player.getInventory().getHelmet().getType().toString().toLowerCase().replace("_", " ")));
             } else {
                 this.player.getInventory().setHelmet(this.bannerStorage.getItem());
                 api.addBanner(this);
