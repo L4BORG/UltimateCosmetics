@@ -56,7 +56,7 @@ public final class MySQLDataLoader extends MySQLLoader implements DataLoader {
                             params.put(2, player);
                             MySQLDataLoader.this.mySQL.execute("UPDATE " + MySQLDataLoader.this.ammoName + " SET " + entry.getKey() + "=? WHERE Player=?", params);
                         }
-                    }
+                    } else createOffline(player);
                 }
             });
         }

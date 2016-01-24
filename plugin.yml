@@ -1,6 +1,6 @@
 name: UltimateCosmetics
 main: com.j0ach1mmall3.ultimatecosmetics.Main
-version: 3.10.2
+version: 3.10.3
 author: j0ach1mmall3
 description: Featuring over 15 different Cosmetics Types, endless possibilities!
 depend: [JLib]

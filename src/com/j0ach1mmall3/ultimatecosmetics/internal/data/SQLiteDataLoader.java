@@ -56,7 +56,7 @@ public final class SQLiteDataLoader extends SQLiteLoader implements DataLoader {
                             params.put(2, player);
                             SQLiteDataLoader.this.sqLite.execute("UPDATE " + SQLiteDataLoader.this.ammoName + " SET " + entry.getKey() + "=? WHERE Player=?", params);
                         }
-                    }
+                    } else createOffline(player);
                 }
             });
         }
