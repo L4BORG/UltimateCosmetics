@@ -47,7 +47,7 @@ public final class Dome extends BukkitRunnable {
                         if (this.t > 3.5) this.cancel();
                     }
 
-                }.runTaskTimer(this.plugin, 0, 1);
+                }.runTaskTimerAsynchronously(this.plugin, 0, 1);
             }
         }
     }

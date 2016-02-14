@@ -28,6 +28,7 @@ public final class FileDataLoader extends ConfigLoader implements DataLoader {
 
         @Override
         public void setOffline(String player, Map<String, Integer> map) {
+            if(map == null) return;
             for(Map.Entry<String, Integer> entry : map.entrySet()) {
                 FileDataLoader.this.config.set("Ammo." + player + '.' + entry.getKey(), entry.getValue());
             }

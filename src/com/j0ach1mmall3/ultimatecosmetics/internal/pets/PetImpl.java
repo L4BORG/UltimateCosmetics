@@ -77,7 +77,7 @@ public final class PetImpl implements Pet {
             Creature entity = (Creature) this.player.getWorld().spawnEntity(this.player.getLocation(), petType.getType());
             PetReflection.removeGoalSelectors(entity);
             PetReflection.addGoalSelectors(entity);
-            entity.teleport(this.player);
+            entity.teleport(this.player.getLocation().getWorld().getHighestBlockAt(this.player.getLocation()).getLocation());
             entity.setTarget(this.player);
             entity.setCanPickupItems(false);
             for (String petData : this.petStorage.getPetData()) {

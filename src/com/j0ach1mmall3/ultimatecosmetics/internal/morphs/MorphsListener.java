@@ -154,7 +154,7 @@ public final class MorphsListener implements Listener {
         final Player p = e.getPlayer();
         Morphs config = this.plugin.getMorphs();
         Lang lang = this.plugin.getLang();
-        if (this.plugin.isLibsDisguises() && config.isAbilityItem(p.getItemInHand())) {
+        if (config.isEnabled() && config.isAbilityItem(p.getItemInHand())) {
             MorphStorage morph = this.plugin.getMorphs().getMorphByAbilityItem(p.getItemInHand());
             if (e.getAction() != Action.PHYSICAL) e.setCancelled(true);
             if (this.cooldownPlayers.get(p.getName()) != null && this.cooldownPlayers.get(p.getName()).split(":")[0].equals(morph.getIdentifier())) {

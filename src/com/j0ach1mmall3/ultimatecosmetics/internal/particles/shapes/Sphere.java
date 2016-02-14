@@ -47,7 +47,7 @@ public final class Sphere extends BukkitRunnable {
                         if (this.phi > Math.PI) this.cancel();
                     }
 
-                }.runTaskTimer(this.plugin, 0, 1);
+                }.runTaskTimerAsynchronously(this.plugin, 0, 1);
             }
         }
     }

@@ -45,7 +45,7 @@ public final class Helix extends BukkitRunnable {
                         if (this.y > 12) this.cancel();
                     }
 
-                }.runTaskTimer(this.plugin, 0, 1);
+                }.runTaskTimerAsynchronously(this.plugin, 0, 1);
             }
         }
     }

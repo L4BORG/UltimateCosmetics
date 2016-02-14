@@ -46,6 +46,7 @@ public final class MySQLDataLoader extends MySQLLoader implements DataLoader {
 
         @Override
         public void setOffline(final String player, final Map<String, Integer> map) {
+            if(map == null) return;
             this.existsOffline(player, new CallbackHandler<Boolean>() {
                 @Override
                 public void callback(Boolean b) {

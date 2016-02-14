@@ -46,7 +46,7 @@ public final class Cross extends BukkitRunnable {
                         if (this.y > 6) this.cancel();
                     }
 
-                }.runTaskTimer(this.plugin, 0, 1);
+                }.runTaskTimerAsynchronously(this.plugin, 0, 1);
             }
         }
     }

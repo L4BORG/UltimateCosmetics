@@ -13,19 +13,23 @@ import com.j0ach1mmall3.ultimatecosmetics.internal.config.Lang;
 import com.j0ach1mmall3.ultimatecosmetics.internal.data.DataLoader;
 import org.bukkit.*;
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.entity.*;
+import org.bukkit.event.hanging.HangingBreakByEntityEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryPickupItemEvent;
 import org.bukkit.event.player.*;
 import org.bukkit.event.vehicle.VehicleExitEvent;
+import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.FireworkMeta;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.material.MaterialData;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.potion.PotionEffect;
@@ -42,7 +46,7 @@ import java.util.*;
 public final class GadgetsListener implements Listener {
     private final Main plugin;
     private final Collection<Entity> entitiesQueue = new ArrayList<>();
-    private final Map<Location, Map<Material, Byte>> blockQueue = new HashMap<>();
+    private final Map<Location, MaterialData> blockQueue = new HashMap<>();
     private final Collection<String> firePlayers = new ArrayList<>();
     private final Collection<String> diamondShowerPlayers = new ArrayList<>();
     private final Collection<String> paintTrailPlayers = new ArrayList<>();
@@ -106,20 +110,8 @@ public final class GadgetsListener implements Listener {
     public void onPlayerMove(PlayerMoveEvent e) {
         Player p = e.getPlayer();
         if (this.firePlayers.contains(p.getName())) {
-            final Location l = p.getLocation();
-            if (l.getBlock().getType() == Material.AIR) {
-                for(Player online : Bukkit.getOnlinePlayers()) {
-                    online.sendBlockChange(l, Material.FIRE, (byte) 0);
-                }
-                new BukkitRunnable() {
-                    @Override
-                    public void run() {
-                        for(Player online : Bukkit.getOnlinePlayers()) {
-                            online.sendBlockChange(l, Material.AIR, (byte) 0);
-                        }
-                    }
-                }.runTaskLater(this.plugin, 20 * this.plugin.getGadgets().getIntValue("FireTrail", "RemoveDelay"));
-            }
+            Block b = p.getLocation().getBlock();
+            if (b.getType() == Material.AIR) setFakeBlock(b, new MaterialData(Material.FIRE, (byte) 0), this.plugin.getGadgets().getIntValue("FireTrail", "RemoveDelay"));
             return;
         }
         if (this.paintTrailPlayers.contains(p.getName())) {
@@ -144,13 +136,13 @@ public final class GadgetsListener implements Listener {
     @EventHandler
     public void onInteract(PlayerInteractEvent e) {
         final Player p = e.getPlayer();
-        final Gadgets config = this.plugin.getGadgets();
+        Gadgets config = this.plugin.getGadgets();
         DataLoader loader = this.plugin.getDataLoader();
         Lang lang = this.plugin.getLang();
         CosmeticsAPI api = this.plugin.getApi();
         String uuid = p.getUniqueId().toString();
         if (api.isGadget(p.getItemInHand())) {
-            final GadgetStorage gadget = api.getGadgetByItemStack(p.getItemInHand());
+            GadgetStorage gadget = api.getGadgetByItemStack(p.getItemInHand());
             if (e.getAction() != Action.PHYSICAL) {
                 e.setCancelled(true);
                 if (!config.isKeepGadget()) p.setItemInHand(null);
@@ -365,7 +357,8 @@ public final class GadgetsListener implements Listener {
                         new BukkitRunnable() {
                             @Override
                             public void run() {
-                                cat.getWorld().createExplosion(cat.getLocation().getX(), cat.getLocation().getY(), cat.getLocation().getZ(), config.getIntValue(gadget.getIdentifier(), "ExplosionPower"), false, false);
+                                cat.getWorld().playEffect(cat.getLocation(), Effect.EXPLOSION_HUGE, 0);
+                                Sounds.broadcastSound(Sound.EXPLODE, cat.getLocation());
                                 cat.remove();
                                 GadgetsListener.this.entitiesQueue.remove(cat);
                             }
@@ -410,9 +403,9 @@ public final class GadgetsListener implements Listener {
                     }
                 }
                 if ("CryoTube".equals(gadget.getIdentifier())) {
-                    final Location l1 = p.getLocation();
-                    final Location l2 = new Location(l1.getWorld(), l1.getX(), l1.getY() + 1.0, l1.getZ());
-                    if (l1.getBlock().getType() != Material.AIR || l2.getBlock().getType() != Material.AIR) {
+                    Block b1 = p.getLocation().getBlock();
+                    Block b2 = p.getLocation().getBlock().getRelative(BlockFace.UP);
+                    if (b1.getType() != Material.AIR || b2.getType() != Material.AIR) {
                         this.plugin.informPlayerNoPermission(p, lang.getNotEnoughSpace());
                         p.updateInventory();
                         return;
@@ -438,35 +431,16 @@ public final class GadgetsListener implements Listener {
                             if(!lostAmmo.isEmpty()) p.sendMessage(Placeholders.parse(lostAmmo, p).replace("%ammoleft%", String.valueOf(i - 1)).replace("%ammoname%", gadget.getAmmoName()));
                         }
                     }
-                    Map<Material, Byte> map1 = new HashMap<>();
-                    final Block b1 = l1.getBlock();
-                    map1.put(Material.AIR, (byte) 0);
-                    this.blockQueue.put(l1, map1);
-                    b1.setType(Material.ICE);
-                    b1.setMetadata("CryoTube", new FixedMetadataValue(this.plugin, p.getName()));
-                    Map<Material, Byte> map2 = new HashMap<>();
-                    final Block b2 = l2.getBlock();
-                    map2.put(Material.AIR, (byte) 0);
-                    this.blockQueue.put(l2, map2);
-                    b2.setType(Material.ICE);
-                    b2.setMetadata("CryoTube", new FixedMetadataValue(this.plugin, p.getName()));
-                    Sounds.broadcastSound(Sound.GLASS, l1);
-                    new BukkitRunnable() {
-                        @Override
-                        public void run() {
-                            b1.setType(Material.AIR);
-                            b2.setType(Material.AIR);
-                            GadgetsListener.this.blockQueue.remove(l1);
-                            GadgetsListener.this.blockQueue.remove(l2);
-                        }
-                    }.runTaskLater(this.plugin, config.getIntValue(gadget.getIdentifier(), "RemoveDelay") * 20);
+                    setFakeBlock(b1, new MaterialData(Material.ICE, (byte) 0), config.getIntValue(gadget.getIdentifier(), "RemoveDelay"));
+                    setFakeBlock(b2, new MaterialData(Material.ICE, (byte) 0), config.getIntValue(gadget.getIdentifier(), "RemoveDelay"));
+                    Sounds.broadcastSound(Sound.GLASS, b1.getLocation());
                     for (Player online : Bukkit.getOnlinePlayers()) {
                         if (ReflectionAPI.verBiggerThan(1, 8))
-                            online.spigot().playEffect(l1, Effect.STEP_SOUND, 79, 79, 0.7f, 0.7f, 0.7f, 2.0F, 10, 100);
-                        else p.playEffect(l1, Effect.STEP_SOUND, Material.ICE);
+                            online.spigot().playEffect(b1.getLocation(), Effect.STEP_SOUND, 79, 79, 0.7f, 0.7f, 0.7f, 2.0F, 10, 100);
+                        else p.playEffect(b1.getLocation(), Effect.STEP_SOUND, Material.ICE);
                         if (ReflectionAPI.verBiggerThan(1, 8))
-                            online.spigot().playEffect(l2, Effect.STEP_SOUND, 79, 79, 0.7f, 0.7f, 0.7f, 2.0F, 10, 100);
-                        else p.playEffect(l2, Effect.STEP_SOUND, Material.ICE);
+                            online.spigot().playEffect(b2.getLocation(), Effect.STEP_SOUND, 79, 79, 0.7f, 0.7f, 0.7f, 2.0F, 10, 100);
+                        else p.playEffect(b2.getLocation(), Effect.STEP_SOUND, Material.ICE);
                     }
                 }
                 if ("Rocket".equals(gadget.getIdentifier())) {
@@ -921,6 +895,20 @@ public final class GadgetsListener implements Listener {
     }
 
     @EventHandler
+    public void onHangingBreakByEntity(HangingBreakByEntityEvent e) {
+        Entity ent = e.getRemover();
+        if(ent instanceof InventoryHolder) {
+            if(this.plugin.getApi().hasGadget((InventoryHolder) ent)) e.setCancelled(true);
+        }
+    }
+
+    @EventHandler
+    public void onPlayerInteractEntity(PlayerInteractEntityEvent e) {
+        Entity ent = e.getRightClicked();
+        if((ent instanceof Painting || ent instanceof ItemFrame) && this.plugin.getApi().hasGadget(e.getPlayer())) e.setCancelled(true);
+    }
+
+    @EventHandler
     public void onEntityDamageByEntity(EntityDamageByEntityEvent e) {
         if (e.getDamager().hasMetadata("Enderbow") || e.getDamager().hasMetadata("SlimeVasion"))
             e.setCancelled(true);
@@ -1013,7 +1001,7 @@ public final class GadgetsListener implements Listener {
     @EventHandler
     public void onPlayerQuit(PlayerQuitEvent e) {
         Player p = e.getPlayer();
-        for(Entity ent : p.getNearbyEntities(20.0, 20.0, 20.0)) {
+        for(Entity ent : p.getNearbyEntities(5.0, 5.0, 5.0)) {
             if(this.isEntity(ent)) ent.remove();
         }
     }
@@ -1021,7 +1009,7 @@ public final class GadgetsListener implements Listener {
     @EventHandler
     public void onPlayerKick(PlayerKickEvent e) {
         Player p = e.getPlayer();
-        for(Entity ent : p.getNearbyEntities(20.0, 20.0, 20.0)) {
+        for(Entity ent : p.getNearbyEntities(5.0, 5.0, 5.0)) {
             if(this.isEntity(ent)) ent.remove();
         }
     }
@@ -1029,7 +1017,7 @@ public final class GadgetsListener implements Listener {
     @EventHandler
     public void onTeleport(PlayerTeleportEvent e) {
         Player p = e.getPlayer();
-        for(Entity ent : p.getNearbyEntities(20.0, 20.0, 20.0)) {
+        for(Entity ent : p.getNearbyEntities(5.0, 5.0, 5.0)) {
             if(this.isEntity(ent)) ent.remove();
         }
     }
@@ -1050,25 +1038,15 @@ public final class GadgetsListener implements Listener {
     }
 
     @SuppressWarnings("deprecation")
-    private void setRandomClay(final Block block, int delay, Plugin plugin) {
-        if (block.getType() == Material.AIR || block.getTypeId() == 166)
+    private void setRandomClay(Block block, int delay, Plugin plugin) {
+        if (block.getType() == Material.AIR || block.getTypeId() == 166 || block.getType() == Material.WALL_SIGN || block.getType() == Material.SIGN_POST)
             return;
-        final Material mat = block.getType();
-        final byte data = block.getData();
         for (Player p : Bukkit.getOnlinePlayers()) {
-            p.sendBlockChange(block.getLocation(), Material.STAINED_CLAY, (byte) Random.getInt(15));
             if (ReflectionAPI.verBiggerThan(1, 8))
                 p.spigot().playEffect(block.getLocation(), Effect.MAGIC_CRIT, 0, 0, 0.7f, 0.7f, 0.7f, 2.0F, 10, 100);
             else p.playEffect(block.getLocation(), Effect.MAGIC_CRIT, 0);
         }
-        new BukkitRunnable() {
-            @Override
-            public void run() {
-                for (Player p : Bukkit.getOnlinePlayers()) {
-                    p.sendBlockChange(block.getLocation(), mat, data);
-                }
-            }
-        }.runTaskLater(plugin, delay * 20);
+        setFakeBlock(block, new MaterialData(Material.STAINED_CLAY, (byte) Random.getInt(15)), delay);
     }
 
     private void pullEntityToLocation(Entity p, Location l) {
@@ -1181,14 +1159,11 @@ public final class GadgetsListener implements Listener {
         for(Entity ent : this.entitiesQueue) {
             ent.remove();
         }
-        for (Map.Entry<Location, Map<Material, Byte>> locationHashMapEntry : this.blockQueue.entrySet()) {
+        for (Map.Entry<Location, MaterialData> locationHashMapEntry : this.blockQueue.entrySet()) {
             Block block = locationHashMapEntry.getKey().getWorld().getBlockAt(locationHashMapEntry.getKey());
-            for (Material m : locationHashMapEntry.getValue().keySet()) {
-                for(Player p : Bukkit.getOnlinePlayers()) {
-                    p.sendBlockChange(locationHashMapEntry.getKey(), m, locationHashMapEntry.getValue().get(m));
-                }
-                block.setType(m);
-                block.setData(locationHashMapEntry.getValue().get(m));
+            MaterialData m = locationHashMapEntry.getValue();
+            for(Player p : Bukkit.getOnlinePlayers()) {
+                p.sendBlockChange(locationHashMapEntry.getKey(), m.getItemType(), m.getData());
             }
         }
     }
@@ -1200,6 +1175,24 @@ public final class GadgetsListener implements Listener {
             if (ent.getUniqueId().equals(e.getUniqueId())) return true;
         }
         return false;
+    }
+
+    @SuppressWarnings("deprecation")
+    private void setFakeBlock(final Block block, MaterialData materialData, int secDelay) {
+        final Material mat = block.getType();
+        final byte data = block.getData();
+        this.blockQueue.put(block.getLocation(), new MaterialData(mat, data));
+        for (Player p : Bukkit.getOnlinePlayers()) {
+            p.sendBlockChange(block.getLocation(), materialData.getItemType(), materialData.getData());
+        }
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                for (Player p : Bukkit.getOnlinePlayers()) {
+                    p.sendBlockChange(block.getLocation(), mat, data);
+                }
+            }
+        }.runTaskLater(this.plugin, secDelay * 20);
     }
 
     private static final class RocketRunnable extends BukkitRunnable {

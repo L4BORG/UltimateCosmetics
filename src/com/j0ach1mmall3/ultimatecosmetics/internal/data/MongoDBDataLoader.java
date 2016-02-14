@@ -46,6 +46,7 @@ public final class MongoDBDataLoader extends MongoDBLoader implements DataLoader
 
         @Override
         public void setOffline(final String player, final Map<String, Integer> map) {
+            if(map == null) return;
             MongoDBDataLoader.this.mongoDB.getObject(new BasicDBObject("player", player), MongoDBDataLoader.this.ammoName, new CallbackHandler<DBObject>() {
                 @Override
                 public void callback(DBObject dbObject) {

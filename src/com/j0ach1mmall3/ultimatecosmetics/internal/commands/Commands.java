@@ -17,6 +17,7 @@ import com.j0ach1mmall3.ultimatecosmetics.internal.data.CosmeticsQueue;
 import com.j0ach1mmall3.ultimatecosmetics.internal.data.DataLoader;
 import com.j0ach1mmall3.ultimatecosmetics.internal.fireworks.FireworkImpl;
 import com.j0ach1mmall3.ultimatecosmetics.internal.gadgets.GadgetImpl;
+import com.j0ach1mmall3.ultimatecosmetics.internal.gui.CosmeticsGuiHandler;
 import com.j0ach1mmall3.ultimatecosmetics.internal.hats.HatImpl;
 import com.j0ach1mmall3.ultimatecosmetics.internal.hearts.HeartImpl;
 import com.j0ach1mmall3.ultimatecosmetics.internal.morphs.MorphImpl;
@@ -67,6 +68,23 @@ public final class Commands implements CommandExecutor {
                 }
                 this.plugin.reload();
                 sender.sendMessage(ChatColor.GREEN + "Done reloading the plugin!");
+                return true;
+            }
+            if("openmenu".equalsIgnoreCase(args[0])) {
+                if (!sender.hasPermission("uc.openmenu")) {
+                    this.plugin.informPlayerNoPermission(sender, this.plugin.getLang().getCommandNoPermission());
+                    return true;
+                }
+                if(args.length < 2) {
+                    sender.sendMessage(ChatColor.RED + "Usage: /uc openmenu <player>");
+                    return true;
+                }
+                Player p = General.getPlayerByName(args[1], false);
+                if(p == null) {
+                    sender.sendMessage(ChatColor.RED + "Unknown player!");
+                    return true;
+                }
+                CosmeticsGuiHandler.open(p);
                 return true;
             }
             if("debug".equalsIgnoreCase(args[0])) {

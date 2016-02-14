@@ -44,7 +44,7 @@ public final class Halo extends BukkitRunnable {
                         if (this.i > 2 * Math.PI) this.cancel();
                     }
 
-                }.runTaskTimer(this.plugin, 0, 1);
+                }.runTaskTimerAsynchronously(this.plugin, 0, 1);
             }
         }
     }
