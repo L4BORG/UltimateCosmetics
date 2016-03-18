@@ -1,12 +1,10 @@
 # ######################################################################################## #
-# UltimateCosmetics version 3.X.X configuration                                            #
+# UltimateCosmetics version 4.X.X configuration                                            #
 # Any help with this configuration should be requested here:                               #
-# https://www.spigotmc.org/threads/ultimatecosmetics-new-per-cosmetic-commands-paid.60528/ #
-# (c) 2015 j0ach1mmall3 - All rights reserved                                              #
+# https://www.spigotmc.org/threads/ultimatecosmetics.60528/                                #
+# (c) 2016 j0ach1mmall3 - All rights reserved                                              #
 # ######################################################################################## #
 
-# Should Fireworks be enabled?
-Enabled: true
 # The worlds in which Fireworks will not work
 # Make sure RemoveCosmeticsOnWorldChange is set to true for this to work correctly
 WorldsBlacklist:
@@ -17,184 +15,35 @@ Command: /fireworks
 # The message to show when a player doesn't have permission to use a Firework
 NoPermissionMessage: '&4You are not allowed to use this Firework!'
 # The inventory name of the GUI
-GUIName: '&4&lFireworks'
+GUIName: '&8&lFireworks'
 # The size of the GUI
 GUISize: 45
 NoPermissionItem:
     # Should every Firework that a player doesn't have access to be replaced by this item?
     Enabled: true
-    # The item ID and optionally data of the item
-    Item: '351:8'
-    # The name in the GUI of the item (Use %cosmeticsname% Placeholder for the current Balloon Name)
-    Name: '%cosmeticsname%'
-    # The description, or 'lore' of the item (use | to start a new line)
-    Description: '&4&oYou are not allowed to use this Firework'
+    # The item format of the item
+    Item: '351:8 name:%cosmeticsname% lore:&4&oYou_are_not_allowed_to_use_this_Firework'
 HomeItem:
-    # The item ID and optionally data of the 'Home' item
-    Item: 355
-    # The name in the GUI of the 'Home' item
-    Name: '&c&lMain menu'
-    # The description, or 'lore' of the item (use | to start a new line)
-    Description: '&8&oClick to go back to the main menu!'
+    # The item format of the 'Home' item
+    Item: '355 name:&c&lMain_menu lore:&8&oClick_to_go_back_to_the_main_menu!'
     # The position in the GUI of this item (starts at 0)
     Position: 40
 PreviousItem:
-    # The item ID and optionally data of the 'Previous' item
-    Item: 262
-    # The name in the GUI of the 'Previous' item
-    Name: '&6< Previous'
-    # The description, or 'lore' of the item (use | to start a new line)
-    Description: '&8&oClick to go to the previous page!'
+    # The item format of the 'Previous' item
+    Item: '262 name:&6<_Previous lore:&8&oClick_to_go_to_the_previous_page!'
     # The position in the GUI of this item (starts at 0)
     Position: 39
 NextItem:
-    # The item ID and optionally data of the 'Next' item
-    Item: 262
-    # The name in the GUI of the 'Next' item
-    Name: '&6Next >'
-    # The description, or 'lore' of the item (use | to start a new line)
-    Description: '&8&oClick to go to the next page!'
+    # The item format of the 'Next' item
+    Item: '262 name:&6Next_> lore:&8&oClick_to_go_to_the_next_page!'
     # The position in the GUI of this item (starts at 0)
     Position: 41
 Fireworks:
-    WhiteBall:
-        # The name in the GUI of the item
-        Name: '&4White Ball'
-        # The description, or 'lore' of the item (use | to start a new line)
-        Description: '&e&oA White Ball Firework'
+    ExampleFirework:
+        # The item format of the item
+        Item: '401 name:&8Example_Firework lore:&e&oThis_is_an_Example_Firework power:3 fireworkeffect_ball:true|true|255.255.255|255.255.255'
         # The position in the GUI of this item (starts at 0)
         Position: 10
         # The permission to use this Firework
         Permission: ultimatecosmetics.fireworks.whiteball
-        # The power of this Firework (0-128)
-        Power: 3
-        # Should this Firework flicker?
-        Flicker: true
-        # Should this Firework have a Trail?
-        Trail: true
-        # The Type of the Firework (Valid Types are BALL, BALL_LARGE, BURST, CREEPER, STAR)
-        Type: BALL
-        # The Colors of the Firework (Valid Colors can be found here: https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/DyeColor.html)
-        Colors:
-        - WHITE
-        # The FadeColors of the Firework (Valid Colors can be found here: https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/DyeColor.html)
-        FadeColors:
-        - WHITE
-    RedBall:
-        Name: '&4Red Ball'
-        Description: '&e&oA Red Ball Firework'
-        Position: 11
-        Permission: ultimatecosmetics.fireworks.redball
-        Power: 3
-        Flicker: true
-        Trail: true
-        Type: BALL
-        Colors:
-        - RED
-        FadeColors:
-        - RED
-    WhiteLargeBall:
-        Name: '&4White Large Ball'
-        Description: '&e&oA White Large Ball Firework'
-        Position: 12
-        Permission: ultimatecosmetics.fireworks.whitelargeball
-        Power: 3
-        Flicker: true
-        Trail: true
-        Type: BALL_LARGE
-        Colors:
-        - WHITE
-        FadeColors:
-        - WHITE
-    RedLargeBall:
-        Name: '&4Red Large Ball'
-        Description: '&e&oA Red Large Ball Firework'
-        Position: 13
-        Permission: ultimatecosmetics.fireworks.redlargeball
-        Power: 3
-        Flicker: true
-        Trail: true
-        Type: BALL_LARGE
-        Colors:
-        - RED
-        FadeColors:
-        - RED
-    WhiteBurst:
-        Name: '&4White Burst'
-        Description: '&e&oA White Burst Firework'
-        Position: 14
-        Permission: ultimatecosmetics.fireworks.whiteburst
-        Power: 3
-        Flicker: true
-        Trail: true
-        Type: BURST
-        Colors:
-        - WHITE
-        FadeColors:
-        - WHITE
-    RedBurst:
-        Name: '&4Red Burst'
-        Description: '&e&oA Red Burst Firework'
-        Position: 15
-        Permission: ultimatecosmetics.fireworks.redburst
-        Power: 3
-        Flicker: true
-        Trail: true
-        Type: BURST
-        Colors:
-        - RED
-        FadeColors:
-        - RED
-    WhiteCreeper:
-        Name: '&4White Creeper'
-        Description: '&e&oA White Creeper Firework'
-        Position: 16
-        Permission: ultimatecosmetics.fireworks.whitecreeper
-        Power: 3
-        Flicker: true
-        Trail: true
-        Type: CREEPER
-        Colors:
-        - WHITE
-        FadeColors:
-        - WHITE
-    RedCreeper:
-        Name: '&4Red Creeper'
-        Description: '&e&oA Red Creeper Firework'
-        Position: 19
-        Permission: ultimatecosmetics.fireworks.redcreeper
-        Power: 3
-        Flicker: true
-        Trail: true
-        Type: CREEPER
-        Colors:
-        - RED
-        FadeColors:
-        - RED
-    WhiteStar:
-        Name: '&4White Star'
-        Description: '&e&oA White Star Firework'
-        Position: 20
-        Permission: ultimatecosmetics.fireworks.whitestar
-        Power: 3
-        Flicker: true
-        Trail: true
-        Type: STAR
-        Colors:
-        - WHITE
-        FadeColors:
-        - WHITE
-    RedStar:
-        Name: '&4Red Star'
-        Description: '&e&oA Red Star Firework'
-        Position: 21
-        Permission: ultimatecosmetics.fireworks.redstar
-        Power: 3
-        Flicker: true
-        Trail: true
-        Type: STAR
-        Colors:
-        - RED
-        FadeColors:
-        - RED
-DoNotChange: 3.7.0
+DoNotChange: 4.0.0

@@ -1,17 +1,14 @@
 # ######################################################################################## #
-# UltimateCosmetics version 3.X.X configuration                                            #
+# UltimateCosmetics version 4.X.X configuration                                            #
 # Any help with this configuration should be requested here:                               #
-# https://www.spigotmc.org/threads/ultimatecosmetics-new-per-cosmetic-commands-paid.60528/ #
-# (c) 2015 j0ach1mmall3 - All rights reserved                                              #
+# https://www.spigotmc.org/threads/ultimatecosmetics.60528/                                #
+# (c) 2016 j0ach1mmall3 - All rights reserved                                              #
 # ######################################################################################## #
 
 # Should the plugin check for updates on Spigot
 UpdateChecker: true
-# Console logging level
-# 0 means no logging at all
-# 1 means basic logging
-# 2 means extensive logging
-LoggingLevel: 1
+# The logging level, can be ALL, EXTENDED, NORMAL, MINIMAL, NOTHING
+LogLevel: EXTENDED
 # Should Cosmetics be removed when a player changes worlds?
 RemoveCosmeticsOnWorldChange: false
 # Should Cosmetics be removed when a player logs out?
@@ -24,18 +21,14 @@ WorldsBlacklist:
 # Should an Item be given upon joining, that will display the GUI upon clicking? (It is advised to turn this off in a non-hub environment)
 GiveItemOnJoin: true
 JoinItem:
-    # The item ID and optionally data of the item
-    Item: '54'
-    # The name of the Item
-    Name: '&1C&2o&3s&4m&5e&6t&7i&8c&9s'
-    # The description, or 'lore' of the item (use | to start a new line)
-    Description: '&e&oAmazing Cosmetics!'
+    # The item format of the item (More info here: https://github.com/j0ach1mmall3/JLib/wiki/The-new-Item-Format)
+    Item: '54 name:&1C&2o&3s&4m&5e&6t&7i&8c&9s lore:&e&oAmazing_Cosmetics!'
     # The slot in which the item will be put
-    Slot: 3
+    Position: 3
 # The Sound to be played when a player opens the GUI (leave blank for no sound) A list of valid sounds can be found here: https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Sound.html
-GUIOpenSound: CHEST_OPEN
+GUIOpenSound: BLOCK_CHEST_OPEN
 # The Sound to be played when a player clicks in the GUI (leave blank for no sound) A list of valid sounds can be found here: https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Sound.html
-GUIClickSound: CLICK
+GUIClickSound: UI_BUTTON_CLICK
 # The command that will open the Cosmetics GUI
 CosmeticsCommand: /cosmetics
 CosmeticsGUI:
@@ -44,93 +37,103 @@ CosmeticsGUI:
     # The size of the Cosmetics GUI (must be divisible by 9!)
     Size: 45
     Items:
-        BalloonsItem:
-            # The item ID and optionally data of the item
-            Item: '420'
-            # The name of the item
-            Name: '&1&lBalloons'
-            # The description, or 'lore' of the item (use | to start a new line)
-            Description: '&e&oGet yourself a lovely Balloon!'
+        AurasItem:
+            # The item format of the item
+            Item: '95:14 name:&1&lAuras lore:&e&oShow_everyone_who''s_important!'
             # The position in the GUI of this item (starts at 0)
-            Position: 2
+            Position: 1
             #The command to be executed when you click on the item. Generally, this is the same command as defined in the Cosmetic's config, however, there are plenty of other options.
+            Command: /auras
+        BalloonsItem:
+            Item: '420 name:&2&lBalloons lore:&e&oGet_yourself_a_lovely_Balloon!'
+            Position: 3
             Command: /balloons
+        BannerCapesItem:
+            Item: '425:8 name:&3&lBanner_Capes lore:&e&oWalk_around_with_a_stylish_Cape! pattern_cross:red'
+            Position: 5
+            Command: /bannercapes
         BannersItem:
-            Item: '425'
-            Name: '&2&lBanners'
-            Description: '&e&oPut an amazing Banner on your head!'
-            Position: 4
+            Item: '425:3 name:&4&lBanners lore:&e&oPut_an_amazing_Banner_on_your_head! pattern_creeper:blue'
+            Position: 7
             Command: /banners
-        MorphsItem:
-            Item: '397:4'
-            Name: '&3&lMorphs'
-            Description: '&e&oScare your friends as a Creeper!'
-            Position: 6
-            Command: /morphs
+        BlockPetsItem:
+            Item: '91 name:&5&lBlock_Pets lore:&e&oBefriend_the_Blocks!'
+            Position: 9
+            Command: /blockpets
+        BowTrailsItem:
+            Item: '261 name:&6&lBowtrails lore:&e&oKill_your_opponents_in_style!'
+            Position: 11
+            Command: /bowtrails
+        CloaksItem:
+            Item: '116 name:&7&lCloaks lore:&e&oEquip_yourself_some_mystical_Cloaks!'
+            Position: 15
+            Command: /cloaks
         FireworksItem:
-            Item: '401'
-            Name: '&4&lFireworks'
-            Description: '&e&oLight of some celebration Fireworks!'
-            Position: 10
+            Item: '401 name:&8&lFireworks lore:&e&oLight_off_some_celebration_Fireworks!'
+            Position: 17
             Command: /fireworks
         GadgetsItem:
-            Item: '369'
-            Name: '&5&lGadgets'
-            Description: '&e&oGet hold of some cool Gadgets!'
-            Position: 12
+            Item: '369 name:&9&lGadgets lore:&e&oGet_hold_of_some_cool_Gadgets!'
+            Position: 21
             Command: /gadgets
         HatsItem:
-            Item: '310'
-            Name: '&6&lHats'
-            Description: '&e&oShow the world your new Hats!'
-            Position: 14
+            Item: '310 name:&a&lHats lore:&e&oShow_the_world_your_new_Hats!'
+            Position: 23
             Command: /hats
         HeartsItem:
-            Item: '351:1'
-            Name: '&7&lHearts'
-            Description: '&e&oCustomize your Hearts!'
-            Position: 16
+            Item: '351:1 name:&b&lHearts lore:&e&oCustomize_your_Hearts!'
+            Position: 27
             Command: /hearts
+        MorphsItem:
+            Item: '397:4 name:&c&lMorphs lore:&e&oScare_your_friends_as_a_Creeper!'
+            Position: 29
+            Command: /morphs
         MountsItem:
-            Item: '329'
-            Name: '&8&lMounts'
-            Description: '&e&oBecause walking is mainstream!'
-            Position: 28
+            Item: '329 name:&d&lMounts lore:&e&oBecause_walking_is_mainstream!'
+            Position: 33
             Command: /mounts
         MusicItem:
-            Item: '2258'
-            Name: '&9&lMusic'
-            Description: '&e&oListen to some funky Music!'
-            Position: 30
+            Item: '2258 name:&1&lMusic lore:&e&oListen_to_some_funky_Music!'
+            Position: 35
             Command: /music
         ParticlesItem:
-            Item: '399'
-            Name: '&a&lParticles'
-            Description: '&e&oLet Particles fly around you!'
-            Position: 32
+            Item: '399 name:&2&lParticles lore:&e&oLet_Particles_fly_around_you!'
+            Position: 37
             Command: /particles
         PetsItem:
-            Item: '383:90'
-            Name: '&b&lPets'
-            Description: '&e&oFriends for life!'
-            Position: 34
+            Item: '383:90 name:&3&lPets lore:&e&oFriends_for_life!'
+            Position: 39
             Command: /pets
         TrailsItem:
-            Item: '362'
-            Name: '&c&lTrails'
-            Description: '&e&oLeave a trail of... Anything!'
-            Position: 38
+            Item: '362 name:&4&lTrails lore:&e&oLeave_a_trail_of..._Anything!'
+            Position: 41
             Command: /trails
         WardrobeItem:
-            Item: '299'
-            Name: '&d&lWardrobe'
-            Description: '&e&oShow off some beautiful clothes!'
-            Position: 40
+            Item: '299 name:&5&lWardrobe lore:&e&oShow_off_some_beautiful_clothes!'
+            Position: 43
             Command: /wardrobe
-        BowtrailsItem:
-            Item: '261'
-            Name: '&e&lBowtrails'
-            Description: '&e&oKill your opponents in style!'
-            Position: 42
-            Command: /bowtrails
-DoNotChange: 3.5.2
+# Which Cosmetics should be enabled
+Cosmetics:
+  # Requires MC 1.9 or above
+  Auras: true
+  Balloons: true
+  # Requires MC 1.8 or above
+  BannerCapes: true
+  # Requires MC 1.8 or above
+  Banners: true
+  BlockPets: true
+  BowTrails: true
+  Cloaks: true
+  Fireworks: true
+  Gadgets: true
+  Hats: true
+  Hearts: true
+  # Requires LibsDisguises
+  Morphs: true
+  Mounts: true
+  Music: true
+  Particles: true
+  Pets: true
+  Trails: true
+  Wardrobe: true
+DoNotChange: 4.0.0

@@ -1,8 +1,8 @@
 # ######################################################################################## #
-# UltimateCosmetics version 3.X.X configuration                                            #
+# UltimateCosmetics version 4.X.X configuration                                            #
 # Any help with this configuration should be requested here:                               #
-# https://www.spigotmc.org/threads/ultimatecosmetics-new-per-cosmetic-commands-paid.60528/ #
-# (c) 2015 j0ach1mmall3 - All rights reserved                                              #
+# https://www.spigotmc.org/threads/ultimatecosmetics.60528/                                #
+# (c) 2016 j0ach1mmall3 - All rights reserved                                              #
 # ######################################################################################## #
 
 Stacker:
@@ -16,7 +16,7 @@ Stacker:
     StackPlayersOnly: false
     # The prefix that will be shown in chat
     Prefix: '&b[&cStacker&b]'
-    
+
 DoubleJump:
     # Should DoubleJump be enabled?
     Enabled: true
@@ -26,4 +26,22 @@ DoubleJump:
             Permission: ultimatecosmetics.doublejump.example
             # The Multiplier of this DoubleJump group
             Multiplier: 5
-DoNotChange: 3.3.1
+            # The Sound of this DoubleJump group
+            Sound: ENTITY_FIREWORK_LARGE_BLAST
+
+UpsideDown:
+    # Should UpsideDown be enabled?
+    Enabled: true
+    # The permission to use UpsideDown
+    Permission: ultimatecosmetics.upsidedown
+    # The message to display when someone doesn't have permission to use UpsideDown
+    NoPermissionMessage: '&4You are not allowed to use UpsideDown!'
+
+Ears:
+    # Should Ears be enabled?
+    Enabled: true
+    # The permission to use Ears
+    Permission: ultimatecosmetics.ears
+    # The message to display when someone doesn't have permission to use Ears
+    NoPermissionMessage: '&4You are not allowed to use Ears!'
+DoNotChange: 4.0.0

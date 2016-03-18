@@ -1,42 +1,21 @@
 package com.j0ach1mmall3.ultimatecosmetics.api.events;
 
-import com.j0ach1mmall3.ultimatecosmetics.api.cosmetics.Cosmetic;
-import org.bukkit.event.Cancellable;
-import org.bukkit.event.Event;
+import com.j0ach1mmall3.ultimatecosmetics.api.Cosmetic;
 import org.bukkit.event.HandlerList;
 
 /**
- * Created by j0ach1mmall3 on 17:54 13/10/2015 using IntelliJ IDEA.
+ * @author j0ach1mmall3 (business.j0ach1mmall3@gmail.com)
+ * @since 13/10/2015
  */
-public class CosmeticGiveEvent extends Event implements Cancellable {
+public final class CosmeticGiveEvent extends CosmeticEvent {
     private static final HandlerList HANDLERS = new HandlerList();
-    private Cosmetic cosmetic;
-    private boolean cancelled;
 
     public CosmeticGiveEvent(Cosmetic cosmetic) {
-        this.cosmetic = cosmetic;
-    }
-
-    public final Cosmetic getCosmetic() {
-        return this.cosmetic;
-    }
-
-    public final void setCosmetic(Cosmetic cosmetic) {
-        this.cosmetic = cosmetic;
+        super(cosmetic);
     }
 
     @Override
-    public final boolean isCancelled() {
-        return this.cancelled;
-    }
-
-    @Override
-    public final void setCancelled(boolean cancel) {
-        this.cancelled = cancel;
-    }
-
-    @Override
-    public final HandlerList getHandlers() {
+    public HandlerList getHandlers() {
         return HANDLERS;
     }
 

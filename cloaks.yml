@@ -1,0 +1,74 @@
+# ######################################################################################## #
+# UltimateCosmetics version 4.X.X configuration                                            #
+# Any help with this configuration should be requested here:                               #
+# https://www.spigotmc.org/threads/ultimatecosmetics.60528/                                # 
+# (c) 2016 j0ach1mmall3 - All rights reserved                                              #
+# ######################################################################################## #
+
+# The worlds in which Cloaks will not work
+# Make sure RemoveCosmeticsOnWorldChange is set to true for this to work correctly
+WorldsBlacklist:
+- someworld
+- someotherworld
+# The command to open the GUI
+Command: /cloaks
+# The message to show when a player doesn't have permission to use a Cloak
+NoPermissionMessage: '&4You are not allowed to use this Cloak!'
+# The Sound to be played when a player is given a Cloak
+GiveSound: ENTITY_EXPERIENCE_ORB_PICKUP
+# The Sound to be played when a player's Cloak is removed
+RemoveSound: ENTITY_ENDERDRAGON_FLAP
+# The interval in ticks between the updating of the Cloaks
+UpdateInterval: 40
+# The distance in blocks or less that are required to see the Cloaks
+ViewDistance: 50
+# The delay in seconds after moving before the Cloak will be given
+GiveDelay: 3
+# The inventory name of the GUI
+GUIName: '&7&lCloaks'
+# The size of the GUI
+GUISize: 45
+NoPermissionItem:
+    # Should every Cloak that a player doesn't have access to be replaced by this item?
+    Enabled: true
+    # The item format of the item
+    Item: '351:8 name:%cosmeticsname% lore:&4&oYou_are_not_allowed_to_use_this_Cloak'
+RemoveItem:
+    # The item format of the item
+    Item: '30 name:&c&l>_&4Remove_your_Cloak_&c&l< lore:&c&oClick_here_to_remove_your_current_Cloak'
+    # The position in the GUI of this item (starts at 0)
+    Position: 4
+HomeItem:
+    # The item format of the 'Home' item
+    Item: '355 name:&c&lMain_menu lore:&8&oClick_to_go_back_to_the_main_menu!'
+    # The position in the GUI of this item (starts at 0)
+    Position: 40
+PreviousItem:
+    # The item format of the 'Previous' item
+    Item: '262 name:&6<_Previous lore:&8&oClick_to_go_to_the_previous_page!'
+    # The position in the GUI of this item (starts at 0)
+    Position: 39
+NextItem:
+    # The item format of the 'Next' item
+    Item: '262 name:&6Next_> lore:&8&oClick_to_go_to_the_next_page!'
+    # The position in the GUI of this item (starts at 0)
+    Position: 41
+Cloaks:
+    ExampleCloak:
+        # The item format of the item
+        Item: '377 name:&7Example_Cloak lore:&e&oThis_is_an_Example_Cloak'
+        # The position in the GUI of this item (starts at 0)
+        Position: 10
+        # The permission to use this Cloak
+        Permission: ultimatecosmetics.cloaks.example
+        # The Cloak effect (Valid Effects can be found here: https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Effect.html)
+        Effect: FLAME
+        # The ID of the Cloak effect (Can be left 0 in most cases)
+        ID: 0
+        # The data of the Cloak effect (Can be left 0 in most cases)
+        Data: 0
+        # The speed of the Cloak effect
+        Speed: 0.01
+        # The shape of the Cloak effect (Valid Shapes can be found here: https://github.com/j0ach1mmall3/UltimateCosmetics/wiki/Particle-Shapes)
+        Shape: HALO
+DoNotChange: 4.0.0

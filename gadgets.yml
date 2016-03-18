@@ -1,12 +1,10 @@
 # ######################################################################################## #
-# UltimateCosmetics version 3.X.X configuration                                            #
+# UltimateCosmetics version 4.X.X configuration                                            #
 # Any help with this configuration should be requested here:                               #
-# https://www.spigotmc.org/threads/ultimatecosmetics-new-per-cosmetic-commands-paid.60528/ #
-# (c) 2015 j0ach1mmall3 - All rights reserved                                              #
+# https://www.spigotmc.org/threads/ultimatecosmetics.60528/                                # 
+# (c) 2016 j0ach1mmall3 - All rights reserved                                              #
 # ######################################################################################## #
 
-# Should Gadgets be enabled?
-Enabled: true
 # The worlds in which Gadgets will not work
 # Make sure RemoveCosmeticsOnWorldChange is set to true for this to work correctly
 WorldsBlacklist:
@@ -17,9 +15,9 @@ Command: /gadgets
 # The message to show when a player doesn't have permission to use a Gadget
 NoPermissionMessage: '&4You are not allowed to use this Gadget!'
 # The Sound to be played when a player is given a Gadget
-GiveSound: ORB_PICKUP
+GiveSound: ENTITY_EXPERIENCE_ORB_PICKUP
 # The Sound to be played when a player's Gadget is removed
-RemoveSound: ENDERDRAGON_WINGS
+RemoveSound: ENTITY_ENDERDRAGON_FLAP
 # Should Bat sounds be completely disabled on the server?
 DisableBatSounds: true
 # Should the Gadget be kept in the Slot?
@@ -29,69 +27,47 @@ CheckInSlot: true
 # The slots in which the Gadgets will be put
 GadgetSlot: 4
 # The inventory name of the GUI
-GUIName: '&5&lGadgets'
+GUIName: '&9&lGadgets'
 # The size of the GUI
 GUISize: 45
 NoPermissionItem:
     # Should every Gadget that a player doesn't have access to be replaced by this item?
     Enabled: true
-    # The item ID and optionally data of the item
-    Item: '351:8'
-    # The name in the GUI of the item (Use %cosmeticsname% Placeholder for the current Gadget Name)
-    Name: '%cosmeticsname%'
-    # The description, or 'lore' of the item (use | to start a new line)
-    Description: '&4&oYou are not allowed to use this Gadget'
+    # The item format of the item
+    Item: '351:8 name:%cosmeticsname% lore:&4&oYou_are_not_allowed_to_use_this_Gadget'
 RemoveItem:
-    # The item ID and optionally data of the item
-    Item: '30'
-    # The name in the GUI of the item
-    Name: '&c&l> &4Remove your Gadget &c&l<'
-    # The description, or 'lore' of the item (use | to start a new line)
-    Description: '&c&oClick here to remove your current Gadget'
+    # The item format of the item
+    Item: '30 name:&c&l>_&4Remove_your_Gadget_&c&l< lore:&c&oClick_here_to_remove_your_current_Gadget'
     # The position in the GUI of this item (starts at 0)
     Position: 4
 HomeItem:
-    # The item ID and optionally data of the 'Home' item
-    Item: 355
-    # The name in the GUI of the 'Home' item
-    Name: '&c&lMain menu'
-    # The description, or 'lore' of the item (use | to start a new line)
-    Description: '&8&oClick to go back to the main menu!'
+    # The item format of the 'Home' item
+    Item: '355 name:&c&lMain_menu lore:&8&oClick_to_go_back_to_the_main_menu!'
     # The position in the GUI of this item (starts at 0)
     Position: 40
 PreviousItem:
-    # The item ID and optionally data of the 'Previous' item
-    Item: 262
-    # The name in the GUI of the 'Previous' item
-    Name: '&6< Previous'
-    # The description, or 'lore' of the item (use | to start a new line)
-    Description: '&8&oClick to go to the previous page!'
+    # The item format of the 'Previous' item
+    Item: '262 name:&6<_Previous lore:&8&oClick_to_go_to_the_previous_page!'
     # The position in the GUI of this item (starts at 0)
     Position: 39
 NextItem:
-    # The item ID and optionally data of the 'Next' item
-    Item: 262
-    # The name in the GUI of the 'Next' item
-    Name: '&6Next >'
-    # The description, or 'lore' of the item (use | to start a new line)
-    Description: '&8&oClick to go to the next page!'
+    # The item format of the 'Next' item
+    Item: '262 name:&6Next_> lore:&8&oClick_to_go_to_the_next_page!'
     # The position in the GUI of this item (starts at 0)
     Position: 41
 Gadgets:
     Enderbow:
-        # The name in the GUI of the item
-        Name: '&5Enderbow'
-        # The description, or 'lore' of the item (use | to start a new line)
-        Description: '&e&oShoot arrows and teleport to the place of landing!'
+        # The item format of the item
+        Item: '261 name:&9Enderbow lore:&e&oShoot_arrows_and_teleport_to_the_place_of_landing!'
         # The permission to use this Gadget
         Permission: ultimatecosmetics.gadgets.enderbow
-        # The item ID and optionally data of the item (Should not be changed!)
-        Item: '261'
+        # The Sound of this Gadget
+        Sound: ENTITY_ARROW_SHOOT
         # Should the 'Ammo System' be used for this Gadget?
         # You can give Ammo to a player by using /giveammo %playername% %gadgetidentifier% %amount%
         # You can remove Ammo from a player by using /removeammo %playername% %gadgetidentifier% %amount%
         # Examples: /giveammo j0ach1mmall3 Enderbow 10, /removeammo Notch PaintballGun 10
-        UseAmmo: true
+        UseAmmo: false
         # The name of the Ammo
         AmmoName: 'EnderArrow'
         # The cooldown in seconds before a player can use this Gadget again
@@ -99,60 +75,54 @@ Gadgets:
         # The position in the GUI
         Position: 10
     EtherealPearl:
-        Name: '&5Ethereal Pearl'
-        Description: '&e&oTake a ride through the skies!'
+        Item: '368 name:&9Ethereal_Pearl lore:&e&oTake_a_ride_through_the_skies!'
         Permission: ultimatecosmetics.gadgets.etherealpearl
-        Item: '368'
         # The speed at which you will travel
         Speed: 1
-        UseAmmo: true
+        Sound: ENTITY_WITHER_SHOOT
+        UseAmmo: false
         AmmoName: 'Ethereal Pearl'
         Cooldown: 10
         Position: 11
     PaintballGun:
-        Name: '&5Paintball Gun'
-        Description: '&e&oPaint the world!'
+        Item: '418 name:&9Paintball_Gun lore:&e&oPaint_the_world!'
         Permission: ultimatecosmetics.gadgets.paintballgun
-        Item: '418'
         # The speed at which the bullets travel
         Speed: 3
         # The time in seconds before the ground will be restored
         RestoreDelay: 3
         # The size of paint you will shoot
         PaintSize: 4
-        UseAmmo: true
+        Sound: ENTITY_CHICKEN_EGG
+        UseAmmo: false
         AmmoName: 'Paintball'
         Cooldown: 0
         Position: 12
     FlyingPig:
-        Name: '&5Flying Pig'
-        Description: '&e&oJust a randomly flying pig, what could go wrong?'
+        Item: '329 name:&9Flying_Pig lore:&e&oJust_a_randomly_flying_pig,_what_could_go_wrong?'
         Permission: ultimatecosmetics.gadgets.flyingpig
-        Item: '329'
+        Sound: ENTITY_PIG_SADDLE
         UseAmmo: false
         AmmoName: 'Flying Pig'
         Cooldown: 20
         Position: 13
     BatBlaster:
-        Name: '&5Bat Blaster'
-        Description: '&e&oBlow away your enemies with... Bats???'
+        Item: '417 name:&9Bat_Blaster lore:&e&oBlow_away_your_enemies_with..._Bats???'
         Permission: ultimatecosmetics.gadgets.batblaster
-        Item: '417'
         # The amount of Bats that will spawn
         Amount: 20
         # The speed at which the Bats will travel
         Speed: 3
         # The delay in seconds untill the Bats will be removed
         RemoveDelay: 3
+        Sound: ENTITY_BAT_TAKEOFF
         UseAmmo: false
         AmmoName: 'BatBlaster Charge'
         Cooldown: 20
         Position: 14
     CATapult:
-        Name: '&5CATapult'
-        Description: '&e&oLaunch 5 fearsome Cats!'
+        Item: '383:98 name:&9CATapult lore:&e&oLaunch_5_fearsome_Cats!'
         Permission: ultimatecosmetics.gadgets.catapult
-        Item: '383:98'
         # The amount of Cats that will spawn
         Amount: 5
         # The speed at which the Cats will travel
@@ -161,126 +131,116 @@ Gadgets:
         ExplosionDelay: 3
         # The power of the explosion
         ExplosionPower: 1
+        Sound: ENTITY_CAT_PURREOW
         UseAmmo: false
         AmmoName: 'CATapult Charge'
         Cooldown: 20
         Position: 15
     RailGun:
-        Name: '&5RailGun'
-        Description: '&e&oUnleash the power of the RailGun!'
+        Item: '292 name:&9RailGun lore:&e&oUnleash_the_power_of_the_RailGun!'
         Permission: ultimatecosmetics.gadgets.railgun
-        Item: '292'
         # The range of the RailGun
         Range: 10
+        Sound: ENTITY_FIREWORK_LAUNCH
         UseAmmo: false
         AmmoName: 'RailGun Charge'
         Cooldown: 0
         Position: 16
     CryoTube:
-        Name: '&5CryoTube'
-        Description: '&e&oProtect yourself against Apocalypse with the CryoTube!'
+        Item: '79 name:&9CryoTube lore:&e&oProtect_yourself_against_Apocalypse_with_the_CryoTube!'
         Permission: ultimatecosmetics.gadgets.cryotube
-        Item: '79'
         # The delay untill the CryoTube gets removed
         RemoveDelay: 3
+        Sound: BLOCK_GLASS_BREAK
         UseAmmo: false
         AmmoName: 'CryoTube'
         Cooldown: 20
         Position: 19
     Rocket:
-        Name: '&5Rocket'
-        Description: '&e&oFly up into the Sky before exploding in a large ball of colors!'
+        Item: '401 name:&9Rocket lore:&e&oFly_up_into_the_sky_before_exploding_in_a_large_ball_of_colors!'
         Permission: ultimatecosmetics.gadgets.rocket
-        Item: '401'
         # The speed at which the Rocket will travel
         Speed: 2
         # The time in seconds the Rocket will count down before lift-off
         Countdown: 10
+        Sound: ENTITY_IRONGOLEM_ATTACK
         UseAmmo: false
         AmmoName: 'Rocket'
         Cooldown: 30
         Position: 20
     PoopBomb:
-        Name: '&5Poop Bomb'
-        Description: '&e&oLet the poop fly everywhere'
+        Item: '351:3 name:&9Poop_Bomb lore:&e&oLet_the_poop_fly_everywhere!'
         Permission: ultimatecosmetics.gadgets.poopbomb
-        Item: '351:3'
         # The radius in which the poop will land
         Radius: 5
         # The amount of poop that will land
         Amount: 15
         # The delay in seconds untill the poop will be removed
         RemoveDelay: 5
+        Sound: ENTITY_CHICKEN_EGG
         UseAmmo: false
         AmmoName: 'Poop Bomb'
         Cooldown: 20
         Position: 21
     GrapplingHook:
-        Name: '&5Grappling Hook'
-        Description: '&e&oDiscover unseen places with the new Grappling Hook(TM)!'
+        Item: '346 name:&9Grappling_Hook lore:&e&oDiscover_unseen_places_with_the_new_Grappling_Hook(TM)!'
         Permission: ultimatecosmetics.gadgets.grapplinghook
-        Item: '346'
         # Should the GrapplingHook be able to pull players?
         PullPlayers: true
+        Sound: ENTITY_ARROW_SHOOT
         UseAmmo: false
         AmmoName: 'Grapple'
         Position: 22
     SelfDestruct:
-        Name: '&5Self Destruct'
-        Description: '&e&oExperience the feeling of blowing up!'
+        Item: '46 name:&9Self_Destruct lore:&e&oExperience_the_feeling_of_blowing_up!'
         Permission: ultimatecosmetics.gadgets.selfdestruct
-        Item: '46'
         # The range in which the players will be pushed back
         PushbackRange: 5
+        Sound: ENTITY_GENERIC_EXPLODE
         UseAmmo: false
         AmmoName: 'Bomb'
         Cooldown: 20
         Position: 23
     Slimevasion:
-        Name: '&5Slimevasion'
-        Description: '&e&oRise my minnions, RISE!'
+        Item: '341 name:&9Slimevasion lore:&e&oRise_my_minnions,_RISE!'
         Permission: ultimatecosmetics.gadgets.slimevasion
-        Item: '341'
         # The amount of Slimes that will spawn
         Amount: 10
         # The delay untill the Slimes will be removed
         RemoveDelay: 3
+        Sound: ENTITY_SLIME_SQUISH
         UseAmmo: false
         AmmoName: 'Slimevasion Charge'
         Cooldown: 20
         Position: 24
     FunGun:
-        Name: '&5Fun Gun'
-        Description: '&e&oIt''s a Fun Gun...'
+        Item: '369 name:&9Fun_Gun lore:&e&oIt''s_a_Fun_Gun...'
         Permission: ultimatecosmetics.gadgets.fungun
-        Item: '369'
         Cooldown: 5
+        Sound: ENTITY_CAT_PURREOW
         UseAmmo: false
         AmmoName: 'FunGun Charge'
         Position: 25
     MelonThrower:
-        Name: '&5Melon Thrower'
-        Description: '&e&oThrow the melons everywhere!'
+        Item: '103 name:&9Melon_Thrower lore:&e&oThrow_the_Melons_everywhere!'
         Permission: ultimatecosmetics.gadgets.melonthrower
-        Item: '103'
         # The amount of melon slices that will be created
         Amount: 15
         # The delay in seconds untill the melon slices will be removed
         RemoveDelay: 3
         Speed:
-            # The multiplier of the Speed potion effect when picking up a melon slice (Set to 0 to disable)
+            # The multiplier of the Speed potion effect when picking up a melon slice
             Multiplier: 3
             # The duration in seconds of the Speed potion effect when picking up a melon slice (Set to 0 to disable)
             Duration: 3
+        Sound: ENTITY_ITEM_PICKUP
         UseAmmo: false
         AmmoName: 'Melon'
         Cooldown: 20
         Position: 28
     ColorBomb:
-        Name: '&5Color Bomb'
-        Description: '&e&oMake the world explode in colors!'
+        Item: '35:2 name:&9Color_Bomb lore:&e&oMake_the_world_explode_in_colors!'
         Permission: ultimatecosmetics.gadgets.colorbomb
-        Item: '35:2'
         # The delay in seconds untill the bomb will be removed
         RemoveDelay: 5
         # The items that will be shot out of the Color Bomb
@@ -301,61 +261,58 @@ Gadgets:
         - '35:13'
         - '35:14'
         - '35:15'
+        Sound: ENTITY_ITEM_PICKUP
         UseAmmo: false
         AmmoName: 'Color Bomb'
         Cooldown: 20
         Position: 29
     FireTrail:
-        Name: '&5Fire Trail'
-        Description: '&e&oLeave a trail of blazing fire!'
+        Item: '377 name:&9Fire_Trail lore:&e&oLeave_a_trail_of_blazing_fire!'
         Permission: ultimatecosmetics.gadgets.firetrail
-        Item: '377'
         # The delay in seconds untill the fire will be removed
         RemoveDelay: 3
         # The duration in seconds of this Gadget
         Duration: 10
-        Speed:
-            # The multiplier of the Speed potion effect when picking up a melon slice (Set to 0 to disable)
-            Multiplier: 2
+        # The multiplier of the Speed potion effect when using this Gadget
+        SpeedMultiplier: 2
+        Sound: ENTITY_BLAZE_SHOOT
         UseAmmo: false
         AmmoName: 'Fire Trail'
         Cooldown: 20
         Position: 30
     DiamondShower:
-        Name: '&5Diamond Shower'
-        Description: '&e&oShower yourself in Diamonds to show off your wealth!'
+        Item: '264 name:&9Diamond_Shower lore:&e&oShower_yourself_in_Diamonds_to_show_off_your_wealth!'
         Permission: ultimatecosmetics.gadgets.diamondshower
-        Item: '264'
         # The interval in TICKS!! in which the Diamonds will be spawned
         Interval: 5
         # The duration in seconds of this Gadget
         Duration: 10
+        # The Sound of this Gadget
+        Sound: ENTITY_CHICKEN_EGG
         UseAmmo: false
         AmmoName: 'Diamond'
         Cooldown: 20
         Position: 31
     GoldFountain:
-        Name: '&5Gold Fountain'
-        Description: '&e&oMake it rain Gold!'
+        Item: '41 name:&9Gold_Fountain lore:&e&oMake_it_rain_Gold!'
         Permission: ultimatecosmetics.gadgets.goldfountain
-        Item: '41'
         # The delay in seconds untill the fountain will be removed
         RemoveDelay: 5
+        Sound: ENTITY_ITEM_PICKUP
         UseAmmo: false
         AmmoName: 'Gold'
         Cooldown: 20
         Position: 32
     PaintTrail:
-        Name: '&5Paint Trail'
-        Description: '&e&oLeave a trail of Paint as you move!'
+        Item: '159:5 name:&9Paint_Trail lore:&e&oLeave_a_trail_of_Paint_as_you_move!'
         Permission: ultimatecosmetics.gadgets.painttrail
-        Item: '159:5'
         # The time in seconds before the ground will be restored
         RestoreDelay: 3
         # The duration in seconds of this Gadget
         Duration: 10
+        Sound: ENTITY_GENERIC_SPLASH
         UseAmmo: false
         AmmoName: 'Paint'
         Cooldown: 20
         Position: 33
-DoNotChange: 3.7.0
+DoNotChange: 4.0.0
