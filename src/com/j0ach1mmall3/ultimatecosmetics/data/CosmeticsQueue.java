@@ -37,23 +37,23 @@ public final class CosmeticsQueue {
 
     CosmeticsQueue(Main plugin, String cosmetics) {
         this.plugin = plugin;
-        EnumMap o = null;
-        try {
-            o = new JSerializable<EnumMap>(cosmetics).getObject();
-        } catch (Exception e) {
-            e.printStackTrace();
+        EnumMap o = new EnumMap<>(CosmeticType.class);
+        if(cosmetics != null) {
+            try {
+                o = new JSerializable<EnumMap>(cosmetics).getObject();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
         this.cosmetics = o;
     }
 
     public String asString() {
         try {
-            String s = new JSerializable<EnumMap>(this.cosmetics).getString();
-            Bukkit.broadcastMessage(s);
-            return s;
+            return new JSerializable<EnumMap>(this.cosmetics).getString();
         } catch (Exception e) {
             e.printStackTrace();
-            return null;
+            return "";
         }
     }
 

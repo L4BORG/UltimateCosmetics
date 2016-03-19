@@ -13,7 +13,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -68,7 +68,10 @@ public final class UltimateCosmeticsCommandHandler extends CommandHandler {
                     commandSender.sendMessage(Placeholders.parse(this.plugin.getLang().getCommandNoPermission()));
                     return true;
                 }
-                List<ConfigLoader> configs = Arrays.asList(this.plugin.getBabies(), this.plugin.getLang(), this.plugin.getMisc());
+                List<ConfigLoader> configs = new ArrayList<>();
+                configs.add(this.plugin.getBabies());
+                configs.add(this.plugin.getLang());
+                configs.add(this.plugin.getMisc());
                 for(PluginModule pluginModule : this.plugin.getEnabledModules()) {
                     configs.add(pluginModule.getConfig());
                 }

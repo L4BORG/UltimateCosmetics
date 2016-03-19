@@ -36,6 +36,7 @@ import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.metadata.MetadataValue;
 import org.bukkit.potion.PotionEffect;
@@ -97,12 +98,12 @@ public final class MorphsListener implements Listener {
 
     @EventHandler
     public void onDrop(PlayerDropItemEvent e) {
-        if (((Morphs) this.module.getConfig()).isAbilityItem(e.getItemDrop().getItemStack())) e.setCancelled(true);
+        if (((Main) this.module.getParent()).getApi().hasCosmetics(e.getPlayer(), CosmeticType.MORPH) && ((Morphs) this.module.getConfig()).isAbilityItem(e.getItemDrop().getItemStack())) e.setCancelled(true);
     }
 
     @EventHandler
     public void onInventoryClick(InventoryClickEvent e) {
-        if (((Morphs) this.module.getConfig()).isAbilityItem(e.getCurrentItem())) e.setCancelled(true);
+        if (((Main) this.module.getParent()).getApi().hasCosmetics((Player) e.getWhoClicked(), CosmeticType.MORPH) && ((Morphs) this.module.getConfig()).isAbilityItem(e.getCurrentItem())) e.setCancelled(true);
     }
 
     @EventHandler
@@ -168,7 +169,7 @@ public final class MorphsListener implements Listener {
     public void onInteract(PlayerInteractEvent e) {
         final Player p = e.getPlayer();
         Morphs config = (Morphs) this.module.getConfig();
-        if (config.isAbilityItem(p.getItemInHand())) {
+        if (((Main) this.module.getParent()).getApi().hasCosmetics(p, CosmeticType.MORPH) && config.isAbilityItem(p.getItemInHand())) {
             MorphStorage morph = config.getMorphByAbilityItem(p.getItemInHand());
             if (e.getAction() != Action.PHYSICAL) e.setCancelled(true);
             if (this.isInCooldown(p, morph)) return;
@@ -344,7 +345,11 @@ public final class MorphsListener implements Listener {
                     break;
                 case WITCH:
                     ThrownPotion potion = p.launchProjectile(ThrownPotion.class);
-                    potion.setItem(new ItemStack(Material.POTION, 1, (short) 16421));
+                    ItemStack item = new ItemStack(Material.POTION, 1);
+                    PotionMeta potionMeta = (PotionMeta) item.getItemMeta();
+                    potionMeta.addCustomEffect(new PotionEffect(PotionEffectType.HEAL, 60, 1), true);
+                    item.setItemMeta(potionMeta);
+                    potion.setItem(item);
                     break;
                 case WITHER:
                     velocity = l.getDirection();

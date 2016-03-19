@@ -220,7 +220,7 @@ public final class Main extends ModularizedPlugin {
             try {
                 new ProtocolListener(this);
             } catch (RuntimeException e) {
-                this.jLogger.log(ChatColor.RED + "Failed to set up TinyProtocol, disabling Bat sounds will NOT work!", JLogger.LogLevel.MINIMAL);
+                this.jLogger.log(ChatColor.RED + "Failed to set up TinyProtocol, did you /reload? Disabling Bat sounds will NOT work!", JLogger.LogLevel.MINIMAL);
                 if (this.jLogger.getLogLevel() == JLogger.LogLevel.EXTENDED || this.jLogger.getLogLevel() == JLogger.LogLevel.ALL) e.printStackTrace();
             }
         }
