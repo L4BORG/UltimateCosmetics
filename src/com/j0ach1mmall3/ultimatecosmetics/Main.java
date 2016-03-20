@@ -373,37 +373,37 @@ public final class Main extends ModularizedPlugin {
             case BALLOON:
                 return ((Config) this.config).isBalloons() ? (CosmeticConfig) this.modules.get(1).getConfig() : null;
             case BANNERCAPE:
-                return ((Config) this.config).isAuras() ? (CosmeticConfig) this.modules.get(2).getConfig() : null;
+                return ((Config) this.config).isBannercapes() ? (CosmeticConfig) this.modules.get(2).getConfig() : null;
             case BANNER:
-                return ((Config) this.config).isAuras() ? (CosmeticConfig) this.modules.get(3).getConfig() : null;
+                return ((Config) this.config).isBanners() ? (CosmeticConfig) this.modules.get(3).getConfig() : null;
             case BLOCKPET:
-                return ((Config) this.config).isAuras() ? (CosmeticConfig) this.modules.get(4).getConfig() : null;
+                return ((Config) this.config).isBlockpets() ? (CosmeticConfig) this.modules.get(4).getConfig() : null;
             case BOWTRAIL:
-                return ((Config) this.config).isAuras() ? (CosmeticConfig) this.modules.get(5).getConfig() : null;
+                return ((Config) this.config).isBowtrails() ? (CosmeticConfig) this.modules.get(5).getConfig() : null;
             case CLOAK:
-                return ((Config) this.config).isAuras() ? (CosmeticConfig) this.modules.get(6).getConfig() : null;
+                return ((Config) this.config).isCloaks() ? (CosmeticConfig) this.modules.get(6).getConfig() : null;
             case FIREWORK:
-                return ((Config) this.config).isAuras() ? (CosmeticConfig) this.modules.get(7).getConfig() : null;
+                return ((Config) this.config).isFireworks() ? (CosmeticConfig) this.modules.get(7).getConfig() : null;
             case GADGET:
-                return ((Config) this.config).isAuras() ? (CosmeticConfig) this.modules.get(8).getConfig() : null;
+                return ((Config) this.config).isGadgets() ? (CosmeticConfig) this.modules.get(8).getConfig() : null;
             case HAT:
-                return ((Config) this.config).isAuras() ? (CosmeticConfig) this.modules.get(9).getConfig() : null;
+                return ((Config) this.config).isHats() ? (CosmeticConfig) this.modules.get(9).getConfig() : null;
             case HEART:
-                return ((Config) this.config).isAuras() ? (CosmeticConfig) this.modules.get(10).getConfig() : null;
+                return ((Config) this.config).isHearts() ? (CosmeticConfig) this.modules.get(10).getConfig() : null;
             case MORPH:
-                return ((Config) this.config).isAuras() ? (CosmeticConfig) this.modules.get(11).getConfig() : null;
+                return ((Config) this.config).isMorphs() ? (CosmeticConfig) this.modules.get(11).getConfig() : null;
             case MOUNT:
-                return ((Config) this.config).isAuras() ? (CosmeticConfig) this.modules.get(12).getConfig() : null;
+                return ((Config) this.config).isMounts() ? (CosmeticConfig) this.modules.get(12).getConfig() : null;
             case MUSIC:
-                return ((Config) this.config).isAuras() ? (CosmeticConfig) this.modules.get(13).getConfig() : null;
+                return ((Config) this.config).isMusic() ? (CosmeticConfig) this.modules.get(13).getConfig() : null;
             case PARTICLE:
-                return ((Config) this.config).isAuras() ? (CosmeticConfig) this.modules.get(14).getConfig() : null;
+                return ((Config) this.config).isParticles() ? (CosmeticConfig) this.modules.get(14).getConfig() : null;
             case PET:
-                return ((Config) this.config).isAuras() ? (CosmeticConfig) this.modules.get(15).getConfig() : null;
+                return ((Config) this.config).isPets() ? (CosmeticConfig) this.modules.get(15).getConfig() : null;
             case TRAIL:
-                return ((Config) this.config).isAuras() ? (CosmeticConfig) this.modules.get(16).getConfig() : null;
+                return ((Config) this.config).isTrails() ? (CosmeticConfig) this.modules.get(16).getConfig() : null;
             case OUTFIT:
-                return ((Config) this.config).isAuras() ? (CosmeticConfig) this.modules.get(17).getConfig() : null;
+                return ((Config) this.config).isWardrobe() ? (CosmeticConfig) this.modules.get(17).getConfig() : null;
         }
         return null;
     }

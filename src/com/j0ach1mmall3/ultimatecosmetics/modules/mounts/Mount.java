@@ -1,11 +1,12 @@
 package com.j0ach1mmall3.ultimatecosmetics.modules.mounts;
 
 import com.j0ach1mmall3.jlib.integration.Placeholders;
+import com.j0ach1mmall3.ultimatecosmetics.Reflection;
 import com.j0ach1mmall3.ultimatecosmetics.api.Cosmetic;
 import com.j0ach1mmall3.ultimatecosmetics.api.CosmeticType;
 import com.j0ach1mmall3.ultimatecosmetics.api.storage.EntityCosmeticStorage;
-import com.j0ach1mmall3.ultimatecosmetics.Reflection;
 import com.j0ach1mmall3.ultimatecosmetics.config.CosmeticConfig;
+import org.bukkit.entity.Creature;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.metadata.FixedMetadataValue;
@@ -15,7 +16,7 @@ import org.bukkit.metadata.FixedMetadataValue;
  * @since 9/03/2016
  */
 public final class Mount extends Cosmetic {
-    private LivingEntity entity;
+    private Creature entity;
 
     public Mount(CosmeticConfig cosmeticConfig, Player player, EntityCosmeticStorage cosmeticStorage) {
         super(cosmeticConfig, player, cosmeticStorage, CosmeticType.MOUNT);
@@ -23,7 +24,7 @@ public final class Mount extends Cosmetic {
 
     @Override
     protected boolean giveInternal() {
-        this.entity = (LivingEntity) this.player.getWorld().spawnEntity(this.player.getLocation(), ((EntityCosmeticStorage) this.cosmeticStorage).getType().getType());
+        this.entity = this.player.getWorld().spawn(this.player.getLocation(), ((EntityCosmeticStorage) this.cosmeticStorage).getType().getClazz());
         Reflection.removeGoalSelectors(this.entity);
         this.entity.teleport(this.player);
         this.entity.setCanPickupItems(false);

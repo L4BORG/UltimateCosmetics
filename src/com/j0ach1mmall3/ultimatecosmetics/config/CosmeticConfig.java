@@ -64,11 +64,11 @@ public abstract class CosmeticConfig extends ConfigLoader {
     }
 
     private int getMaxPageInternal() {
-        int biggestSlot = 0;
+        int page = 0;
         for (CosmeticStorage cosmeticStorage : this.cosmetics) {
-            if (cosmeticStorage.getGuiItem().getPosition() > biggestSlot) biggestSlot = cosmeticStorage.getGuiItem().getPosition();
+            if (cosmeticStorage.getPage() > page) page = cosmeticStorage.getPage();
         }
-        return biggestSlot / 44;
+        return page;
     }
 
     private List<CosmeticStorage> getCosmetics(String section) {

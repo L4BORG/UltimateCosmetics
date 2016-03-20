@@ -27,7 +27,7 @@ public final class Pet extends Cosmetic {
 
     @Override
     protected boolean giveInternal() {
-        this.entity = (Creature) this.player.getWorld().spawnEntity(this.player.getLocation(), ((EntityCosmeticStorage) this.cosmeticStorage).getType().getType());
+        this.entity = this.player.getWorld().spawn(this.player.getLocation(), ((EntityCosmeticStorage) this.cosmeticStorage).getType().getClazz());
         Reflection.removeGoalSelectors(this.entity);
         Reflection.addGoalSelectors(this.entity);
         this.entity.teleport(this.player);
