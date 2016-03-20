@@ -1,0 +1,12 @@
+.idea/
+
+## File-based project format:
+*.iml
+
+## Plugin-specific files:
+config_1.7/
+config_1.8/
+config_1.9/
+
+# IntelliJ
+/out/
