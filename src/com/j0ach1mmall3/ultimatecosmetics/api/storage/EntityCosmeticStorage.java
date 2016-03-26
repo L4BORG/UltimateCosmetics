@@ -44,7 +44,6 @@ public final class EntityCosmeticStorage extends CosmeticStorage {
         WITCH("org.bukkit.entity.Witch"),
         ENDERMITE("org.bukkit.entity.Endermite"),
         GUARDIAN("org.bukkit.entity.Guardian"),
-        SHULKER("org.bukkit.entity.Shulker"),
         PIG("org.bukkit.entity.Pig"),
         SHEEP("org.bukkit.entity.Sheep"),
         COW("org.bukkit.entity.Cow"),

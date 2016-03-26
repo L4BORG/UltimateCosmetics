@@ -54,7 +54,7 @@ NextItem:
 Hats:
     ExampleHat:
         # The item format of the item
-        Item: '397:3 name:&aExample_Hat lore:&e&oThis_is_an_Example_Hat owner:MHF_TNT'
+        Item: '397:3 name:&aExample_Hat lore:&7&oThis_is_an_Example_Hat owner:MHF_TNT'
         # The position in the GUI of this item (starts at 0)
         Position: 10
         # The permission to use this Hat

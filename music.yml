@@ -50,7 +50,7 @@ NextItem:
 Music:
     ExampleMusic:
         # The item format of the item
-        Item: '2256 name:&1Example_Music lore:&e&oThis_is_an_Example_Music'
+        Item: '2256 name:&1Example_Music lore:&7&oThis_is_an_Example_Music'
         # The position in the GUI of this item (starts at 0)
         Position: 22
         # The permission to use this Music

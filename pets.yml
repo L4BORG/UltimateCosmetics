@@ -54,7 +54,7 @@ NextItem:
 Pets:
     ExamplePet:
         # The item format of the item
-        Item: '383:50 name:&3Example_Pet lore:&e&oThis_is_an_Example_Pet'
+        Item: '383:50 name:&3Example_Pet lore:&7&oThis_is_an_Example_Pet'
         # The position in the GUI of this item (starts at 0)
         Position: 10
         # The permission to use this Pet

@@ -58,7 +58,7 @@ NextItem:
 Gadgets:
     Enderbow:
         # The item format of the item
-        Item: '261 name:&9Enderbow lore:&e&oShoot_arrows_and_teleport_to_the_place_of_landing!'
+        Item: '261 name:&9Enderbow lore:&7&oShoot_arrows_and_teleport_to_the_place_of_landing!'
         # The permission to use this Gadget
         Permission: ultimatecosmetics.gadgets.enderbow
         # The Sound of this Gadget
@@ -75,7 +75,7 @@ Gadgets:
         # The position in the GUI
         Position: 10
     EtherealPearl:
-        Item: '368 name:&9Ethereal_Pearl lore:&e&oTake_a_ride_through_the_skies!'
+        Item: '368 name:&9Ethereal_Pearl lore:&7&oTake_a_ride_through_the_skies!'
         Permission: ultimatecosmetics.gadgets.etherealpearl
         # The speed at which you will travel
         Speed: 1
@@ -85,7 +85,7 @@ Gadgets:
         Cooldown: 10
         Position: 11
     PaintballGun:
-        Item: '418 name:&9Paintball_Gun lore:&e&oPaint_the_world!'
+        Item: '418 name:&9Paintball_Gun lore:&7&oPaint_the_world!'
         Permission: ultimatecosmetics.gadgets.paintballgun
         # The speed at which the bullets travel
         Speed: 3
@@ -99,7 +99,7 @@ Gadgets:
         Cooldown: 0
         Position: 12
     FlyingPig:
-        Item: '329 name:&9Flying_Pig lore:&e&oJust_a_randomly_flying_pig,_what_could_go_wrong?'
+        Item: '329 name:&9Flying_Pig lore:&7&oJust_a_randomly_flying_pig,_what_could_go_wrong?'
         Permission: ultimatecosmetics.gadgets.flyingpig
         Sound: ENTITY_PIG_SADDLE
         UseAmmo: false
@@ -107,7 +107,7 @@ Gadgets:
         Cooldown: 20
         Position: 13
     BatBlaster:
-        Item: '417 name:&9Bat_Blaster lore:&e&oBlow_away_your_enemies_with..._Bats???'
+        Item: '417 name:&9Bat_Blaster lore:&7&oBlow_away_your_enemies_with..._Bats???'
         Permission: ultimatecosmetics.gadgets.batblaster
         # The amount of Bats that will spawn
         Amount: 20
@@ -121,7 +121,7 @@ Gadgets:
         Cooldown: 20
         Position: 14
     CATapult:
-        Item: '383:98 name:&9CATapult lore:&e&oLaunch_5_fearsome_Cats!'
+        Item: '383:98 name:&9CATapult lore:&7&oLaunch_5_fearsome_Cats!'
         Permission: ultimatecosmetics.gadgets.catapult
         # The amount of Cats that will spawn
         Amount: 5
@@ -137,7 +137,7 @@ Gadgets:
         Cooldown: 20
         Position: 15
     RailGun:
-        Item: '292 name:&9RailGun lore:&e&oUnleash_the_power_of_the_RailGun!'
+        Item: '292 name:&9RailGun lore:&7&oUnleash_the_power_of_the_RailGun!'
         Permission: ultimatecosmetics.gadgets.railgun
         # The range of the RailGun
         Range: 10
@@ -147,7 +147,7 @@ Gadgets:
         Cooldown: 0
         Position: 16
     CryoTube:
-        Item: '79 name:&9CryoTube lore:&e&oProtect_yourself_against_Apocalypse_with_the_CryoTube!'
+        Item: '79 name:&9CryoTube lore:&7&oProtect_yourself_against_Apocalypse_with_the_CryoTube!'
         Permission: ultimatecosmetics.gadgets.cryotube
         # The delay untill the CryoTube gets removed
         RemoveDelay: 3
@@ -157,7 +157,7 @@ Gadgets:
         Cooldown: 20
         Position: 19
     Rocket:
-        Item: '401 name:&9Rocket lore:&e&oFly_up_into_the_sky_before_exploding_in_a_large_ball_of_colors!'
+        Item: '401 name:&9Rocket lore:&7&oFly_up_into_the_sky_before_exploding_in_a_large_ball_of_colors!'
         Permission: ultimatecosmetics.gadgets.rocket
         # The speed at which the Rocket will travel
         Speed: 2
@@ -169,7 +169,7 @@ Gadgets:
         Cooldown: 30
         Position: 20
     PoopBomb:
-        Item: '351:3 name:&9Poop_Bomb lore:&e&oLet_the_poop_fly_everywhere!'
+        Item: '351:3 name:&9Poop_Bomb lore:&7&oLet_the_poop_fly_everywhere!'
         Permission: ultimatecosmetics.gadgets.poopbomb
         # The radius in which the poop will land
         Radius: 5
@@ -183,7 +183,7 @@ Gadgets:
         Cooldown: 20
         Position: 21
     GrapplingHook:
-        Item: '346 name:&9Grappling_Hook lore:&e&oDiscover_unseen_places_with_the_new_Grappling_Hook(TM)!'
+        Item: '346 name:&9Grappling_Hook lore:&7&oDiscover_unseen_places_with_the_new_Grappling_Hook(TM)!'
         Permission: ultimatecosmetics.gadgets.grapplinghook
         # Should the GrapplingHook be able to pull players?
         PullPlayers: true
@@ -192,7 +192,7 @@ Gadgets:
         AmmoName: 'Grapple'
         Position: 22
     SelfDestruct:
-        Item: '46 name:&9Self_Destruct lore:&e&oExperience_the_feeling_of_blowing_up!'
+        Item: '46 name:&9Self_Destruct lore:&7&oExperience_the_feeling_of_blowing_up!'
         Permission: ultimatecosmetics.gadgets.selfdestruct
         # The range in which the players will be pushed back
         PushbackRange: 5
@@ -202,7 +202,7 @@ Gadgets:
         Cooldown: 20
         Position: 23
     Slimevasion:
-        Item: '341 name:&9Slimevasion lore:&e&oRise_my_minnions,_RISE!'
+        Item: '341 name:&9Slimevasion lore:&7&oRise_my_minnions,_RISE!'
         Permission: ultimatecosmetics.gadgets.slimevasion
         # The amount of Slimes that will spawn
         Amount: 10
@@ -214,7 +214,7 @@ Gadgets:
         Cooldown: 20
         Position: 24
     FunGun:
-        Item: '369 name:&9Fun_Gun lore:&e&oIt''s_a_Fun_Gun...'
+        Item: '369 name:&9Fun_Gun lore:&7&oIt''s_a_Fun_Gun...'
         Permission: ultimatecosmetics.gadgets.fungun
         Cooldown: 5
         Sound: ENTITY_CAT_PURREOW
@@ -222,7 +222,7 @@ Gadgets:
         AmmoName: 'FunGun Charge'
         Position: 25
     MelonThrower:
-        Item: '103 name:&9Melon_Thrower lore:&e&oThrow_the_Melons_everywhere!'
+        Item: '103 name:&9Melon_Thrower lore:&7&oThrow_the_Melons_everywhere!'
         Permission: ultimatecosmetics.gadgets.melonthrower
         # The amount of melon slices that will be created
         Amount: 15
@@ -239,7 +239,7 @@ Gadgets:
         Cooldown: 20
         Position: 28
     ColorBomb:
-        Item: '35:2 name:&9Color_Bomb lore:&e&oMake_the_world_explode_in_colors!'
+        Item: '35:2 name:&9Color_Bomb lore:&7&oMake_the_world_explode_in_colors!'
         Permission: ultimatecosmetics.gadgets.colorbomb
         # The delay in seconds untill the bomb will be removed
         RemoveDelay: 5
@@ -267,7 +267,7 @@ Gadgets:
         Cooldown: 20
         Position: 29
     FireTrail:
-        Item: '377 name:&9Fire_Trail lore:&e&oLeave_a_trail_of_blazing_fire!'
+        Item: '377 name:&9Fire_Trail lore:&7&oLeave_a_trail_of_blazing_fire!'
         Permission: ultimatecosmetics.gadgets.firetrail
         # The delay in seconds untill the fire will be removed
         RemoveDelay: 3
@@ -281,7 +281,7 @@ Gadgets:
         Cooldown: 20
         Position: 30
     DiamondShower:
-        Item: '264 name:&9Diamond_Shower lore:&e&oShower_yourself_in_Diamonds_to_show_off_your_wealth!'
+        Item: '264 name:&9Diamond_Shower lore:&7&oShower_yourself_in_Diamonds_to_show_off_your_wealth!'
         Permission: ultimatecosmetics.gadgets.diamondshower
         # The interval in TICKS!! in which the Diamonds will be spawned
         Interval: 5
@@ -294,7 +294,7 @@ Gadgets:
         Cooldown: 20
         Position: 31
     GoldFountain:
-        Item: '41 name:&9Gold_Fountain lore:&e&oMake_it_rain_Gold!'
+        Item: '41 name:&9Gold_Fountain lore:&7&oMake_it_rain_Gold!'
         Permission: ultimatecosmetics.gadgets.goldfountain
         # The delay in seconds untill the fountain will be removed
         RemoveDelay: 5
@@ -304,7 +304,7 @@ Gadgets:
         Cooldown: 20
         Position: 32
     PaintTrail:
-        Item: '159:5 name:&9Paint_Trail lore:&e&oLeave_a_trail_of_Paint_as_you_move!'
+        Item: '159:5 name:&9Paint_Trail lore:&7&oLeave_a_trail_of_Paint_as_you_move!'
         Permission: ultimatecosmetics.gadgets.painttrail
         # The time in seconds before the ground will be restored
         RestoreDelay: 3

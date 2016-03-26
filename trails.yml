@@ -54,7 +54,7 @@ NextItem:
 Trails:
     ExampleTrail:
         # The item format of the item
-        Item: '406 name:&4Example_Trail lore:&e&oThis_is_an_Example_Trail'
+        Item: '406 name:&4Example_Trail lore:&7&oThis_is_an_Example_Trail'
         # The position in the GUI of this item (starts at 0)
         Position: 10
         # The permission to use this Trail

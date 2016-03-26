@@ -54,7 +54,7 @@ NextItem:
 BlockPets:
     ExampleBlockPet:
         # The item format of the item
-        Item: '152 name:&5Example_BlockPet lore:&e&oThis_is_an_Example_BlockPet'
+        Item: '152 name:&5Example_BlockPet lore:&7&oThis_is_an_Example_BlockPet'
         # The position in the GUI of this item (starts at 0)
         # The position/44 = the page the BlockPet will be on
         # Position: 0 will put it in Slot 1 from page 1

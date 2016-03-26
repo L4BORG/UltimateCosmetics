@@ -56,7 +56,7 @@ NextItem:
 Morphs:
     ExampleMorph:
         # The item format of the item
-        Item: '397:3 name:&cExample_Morph lore:&e&oThis_is_an_Example_Morph owner:MHF_Witch'
+        Item: '397:3 name:&cExample_Morph lore:&7&oThis_is_an_Example_Morph owner:MHF_Witch'
         # The position in the GUI of this item (starts at 0)
         Position: 10
         # The permission to use this Morph
@@ -68,7 +68,7 @@ Morphs:
           # Whether the Ability should be enabled
           Enabled: true
           # The item format of the item
-          Item: '373 name:&bExample_Morph_Ability lore:&e&oThrow_Potions_and_stuff_I_think potioneffect_heal:60|1|true|true'
+          Item: '373 name:&bExample_Morph_Ability lore:&7&oThrow_Potions_and_stuff_I_think potioneffect_heal:60|1|true|true'
           # The duration in seconds of this Ability
           Duration: 5
           # The cooldown in seconds of this Ability

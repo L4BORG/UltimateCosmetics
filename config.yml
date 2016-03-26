@@ -22,7 +22,7 @@ WorldsBlacklist:
 GiveItemOnJoin: true
 JoinItem:
     # The item format of the item (More info here: https://github.com/j0ach1mmall3/JLib/wiki/The-new-Item-Format)
-    Item: '54 name:&1C&2o&3s&4m&5e&6t&7i&8c&9s lore:&e&oAmazing_Cosmetics!'
+    Item: '54 name:&1C&2o&3s&4m&5e&6t&7i&8c&9s lore:&7&oAmazing_Cosmetics!'
     # The slot in which the item will be put
     Position: 3
 # The Sound to be played when a player opens the GUI (leave blank for no sound) A list of valid sounds can be found here: https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Sound.html
@@ -39,77 +39,77 @@ CosmeticsGUI:
     Items:
         AurasItem:
             # The item format of the item
-            Item: '95:14 name:&1&lAuras lore:&e&oShow_everyone_who''s_important!'
+            Item: '95:14 name:&1&lAuras lore:&7&oShow_everyone_who''s_important!'
             # The position in the GUI of this item (starts at 0)
             Position: 1
             #The command to be executed when you click on the item. Generally, this is the same command as defined in the Cosmetic's config, however, there are plenty of other options.
             Command: /auras
         BalloonsItem:
-            Item: '420 name:&2&lBalloons lore:&e&oGet_yourself_a_lovely_Balloon!'
+            Item: '420 name:&2&lBalloons lore:&7&oGet_yourself_a_lovely_Balloon!'
             Position: 3
             Command: /balloons
         BannerCapesItem:
-            Item: '425:8 name:&3&lBanner_Capes lore:&e&oWalk_around_with_a_stylish_Cape! pattern_cross:red'
+            Item: '425:8 name:&3&lBanner_Capes lore:&7&oWalk_around_with_a_stylish_Cape! pattern_cross:red'
             Position: 5
             Command: /bannercapes
         BannersItem:
-            Item: '425:3 name:&4&lBanners lore:&e&oPut_an_amazing_Banner_on_your_head! pattern_creeper:blue'
+            Item: '425:3 name:&4&lBanners lore:&7&oPut_an_amazing_Banner_on_your_head! pattern_creeper:blue'
             Position: 7
             Command: /banners
         BlockPetsItem:
-            Item: '91 name:&5&lBlock_Pets lore:&e&oBefriend_the_Blocks!'
+            Item: '91 name:&5&lBlock_Pets lore:&7&oBefriend_the_Blocks!'
             Position: 9
             Command: /blockpets
         BowTrailsItem:
-            Item: '261 name:&6&lBowtrails lore:&e&oKill_your_opponents_in_style!'
+            Item: '261 name:&6&lBowtrails lore:&7&oKill_your_opponents_in_style!'
             Position: 11
             Command: /bowtrails
         CloaksItem:
-            Item: '116 name:&7&lCloaks lore:&e&oEquip_yourself_some_mystical_Cloaks!'
+            Item: '116 name:&7&lCloaks lore:&7&oEquip_yourself_some_mystical_Cloaks!'
             Position: 15
             Command: /cloaks
         FireworksItem:
-            Item: '401 name:&8&lFireworks lore:&e&oLight_off_some_celebration_Fireworks!'
+            Item: '401 name:&8&lFireworks lore:&7&oLight_off_some_celebration_Fireworks!'
             Position: 17
             Command: /fireworks
         GadgetsItem:
-            Item: '369 name:&9&lGadgets lore:&e&oGet_hold_of_some_cool_Gadgets!'
+            Item: '369 name:&9&lGadgets lore:&7&oGet_hold_of_some_cool_Gadgets!'
             Position: 21
             Command: /gadgets
         HatsItem:
-            Item: '310 name:&a&lHats lore:&e&oShow_the_world_your_new_Hats!'
+            Item: '310 name:&a&lHats lore:&7&oShow_the_world_your_new_Hats!'
             Position: 23
             Command: /hats
         HeartsItem:
-            Item: '351:1 name:&b&lHearts lore:&e&oCustomize_your_Hearts!'
+            Item: '351:1 name:&b&lHearts lore:&7&oCustomize_your_Hearts!'
             Position: 27
             Command: /hearts
         MorphsItem:
-            Item: '397:4 name:&c&lMorphs lore:&e&oScare_your_friends_as_a_Creeper!'
+            Item: '397:4 name:&c&lMorphs lore:&7&oScare_your_friends_as_a_Creeper!'
             Position: 29
             Command: /morphs
         MountsItem:
-            Item: '329 name:&d&lMounts lore:&e&oBecause_walking_is_mainstream!'
+            Item: '329 name:&d&lMounts lore:&7&oBecause_walking_is_mainstream!'
             Position: 33
             Command: /mounts
         MusicItem:
-            Item: '2258 name:&1&lMusic lore:&e&oListen_to_some_funky_Music!'
+            Item: '2258 name:&1&lMusic lore:&7&oListen_to_some_funky_Music!'
             Position: 35
             Command: /music
         ParticlesItem:
-            Item: '399 name:&2&lParticles lore:&e&oLet_Particles_fly_around_you!'
+            Item: '399 name:&2&lParticles lore:&7&oLet_Particles_fly_around_you!'
             Position: 37
             Command: /particles
         PetsItem:
-            Item: '383:90 name:&3&lPets lore:&e&oFriends_for_life!'
+            Item: '383:90 name:&3&lPets lore:&7&oFriends_for_life!'
             Position: 39
             Command: /pets
         TrailsItem:
-            Item: '362 name:&4&lTrails lore:&e&oLeave_a_trail_of..._Anything!'
+            Item: '362 name:&4&lTrails lore:&7&oLeave_a_trail_of..._Anything!'
             Position: 41
             Command: /trails
         WardrobeItem:
-            Item: '299 name:&5&lWardrobe lore:&e&oShow_off_some_beautiful_clothes!'
+            Item: '299 name:&5&lWardrobe lore:&7&oShow_off_some_beautiful_clothes!'
             Position: 43
             Command: /wardrobe
 # Which Cosmetics should be enabled

@@ -41,7 +41,7 @@ NextItem:
 Fireworks:
     ExampleFirework:
         # The item format of the item
-        Item: '401 name:&8Example_Firework lore:&e&oThis_is_an_Example_Firework power:3 fireworkeffect_ball:true|true|255.255.255|255.255.255'
+        Item: '401 name:&8Example_Firework lore:&7&oThis_is_an_Example_Firework power:3 fireworkeffect_ball:true|true|255.255.255|255.255.255'
         # The position in the GUI of this item (starts at 0)
         Position: 10
         # The permission to use this Firework

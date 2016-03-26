@@ -54,13 +54,13 @@ NextItem:
 Outfits:
     ExampleOutfit:
         # The item format of the item
-        Item: '299 name:&5Example_Outfit lore:&e&oThis_is_an_Example_Outfit color:255|255|255'
+        Item: '299 name:&5Example_Outfit lore:&7&oThis_is_an_Example_Outfit color:255|255|255'
         # The position in the GUI of this item (starts at 0)
         Position: 10
         # The permission to use this Outfit
         Permission: ultimatecosmetics.wardrobe.american
         # The item format of the Leggings
-        Leggings: '300 name:&5Example_Outfit lore:&e&oThis_is_an_Example_Outfit color:255|0|0'
+        Leggings: '300 name:&5Example_Outfit lore:&7&oThis_is_an_Example_Outfit color:255|0|0'
         # The item format of the Boots
-        Boots: '301 name:&5Example_Outfit lore:&e&oThis_is_an_Example_Outfit color:0|0|255'
+        Boots: '301 name:&5Example_Outfit lore:&7&oThis_is_an_Example_Outfit color:0|0|255'
 DoNotChange: 4.0.0

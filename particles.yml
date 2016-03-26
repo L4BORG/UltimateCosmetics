@@ -56,7 +56,7 @@ NextItem:
 Particles:
     ExampleParticles:
         # The item format of the item
-        Item: '377 name:&1Example_Particles lore:&e&oThis_is_an_Example_Particles'
+        Item: '377 name:&1Example_Particles lore:&7&oThis_is_an_Example_Particles'
         # The position in the GUI of this item (starts at 0)
         Position: 10
         # The permission to use this Particle

@@ -54,7 +54,7 @@ NextItem:
 BowTrails:
     ExampleBowTrail:
         # The item format of the item
-        Item: '80 name:&6Example_BowTrail lore:&e&oThis_is_an_Example_BowTrail'
+        Item: '80 name:&6Example_BowTrail lore:&7&oThis_is_an_Example_BowTrail'
         # The position in the GUI of this item (starts at 0)
         Position: 10
         # The permission to use this BowTrail

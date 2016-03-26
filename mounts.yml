@@ -52,7 +52,7 @@ NextItem:
 Mounts:
     ExampleMount:
         # The item format of the item
-        Item: '383:50 name:&dExample_Mount lore:&e&oThis_is_an_Example_Mount'
+        Item: '383:50 name:&dExample_Mount lore:&7&oThis_is_an_Example_Mount'
         # The position in the GUI of this item (starts at 0)
         Position: 10
         # The permission to use this Mount
