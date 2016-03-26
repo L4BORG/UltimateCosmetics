@@ -79,7 +79,7 @@ public final class PlayerListener implements Listener {
     }
 
     @EventHandler(ignoreCancelled = true)
-    public void onPlayerInteractWithEntity(final PlayerInteractEntityEvent e) {
+    public void onPlayerInteractEntity(final PlayerInteractEntityEvent e) {
         final Player p = e.getPlayer();
         if (this.plugin.getMisc().isStackerEnabled()) {
             this.plugin.getDataLoader().getStacker(p, new CallbackHandler<Boolean>() {

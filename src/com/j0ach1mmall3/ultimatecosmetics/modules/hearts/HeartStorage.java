@@ -17,7 +17,7 @@ public final class HeartStorage extends CosmeticStorage {
 
     public HeartStorage(Main plugin, String identifier, String permission, GuiItem guiItem, int rows, Color color, Effect effect) {
         super(plugin, identifier, permission, guiItem);
-        this.rows = rows > 4 ? 4 : rows < 1 ? 1 : rows;
+        this.rows = rows;
         this.color = color;
         this.effect = effect;
     }

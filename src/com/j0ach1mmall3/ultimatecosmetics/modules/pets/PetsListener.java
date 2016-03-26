@@ -18,7 +18,6 @@ import org.bukkit.event.entity.EntityPortalEvent;
 import org.bukkit.event.entity.EntityTameEvent;
 import org.bukkit.event.entity.EntityTargetEvent;
 import org.bukkit.event.entity.EntityTeleportEvent;
-import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
@@ -41,14 +40,6 @@ public final class PetsListener implements Listener {
     public PetsListener(PetsModule module) {
         this.module = module;
         module.getParent().getServer().getPluginManager().registerEvents(this, module.getParent());
-    }
-
-    @EventHandler
-    public void onPlayerDeath(PlayerDeathEvent e) {
-        Player p = e.getEntity();
-        for(Cosmetic cosmetic : ((Main) this.module.getParent()).getApi().getCosmetics(p, CosmeticType.PET)) {
-            cosmetic.remove();
-        }
     }
 
     @EventHandler
@@ -153,7 +144,7 @@ public final class PetsListener implements Listener {
     public void onPlayerTeleport(PlayerTeleportEvent e) {
         Player p = e.getPlayer();
         for(Cosmetic cosmetic : ((Main) this.module.getParent()).getApi().getCosmetics(p, CosmeticType.PET)) {
-            cosmetic.remove();
+            ((Pet) cosmetic).getEntity().teleport(p);
         }
     }
 

@@ -23,6 +23,25 @@ public final class CosmeticsAPI {
         this.plugin = plugin;
     }
 
+    void addCosmetics(Player p, Cosmetic... cosmetic) {
+        Set<Cosmetic> cosmetics = this.getCosmetics(p);
+        cosmetics.addAll(Arrays.asList(cosmetic));
+        this.cosmetics.put(p, cosmetics);
+    }
+
+    void removeCosmetics(Player p, CosmeticType... type) {
+        List<CosmeticType> types = Arrays.asList(type);
+        Set<Cosmetic> cosmetics = Collections.newSetFromMap(new ConcurrentHashMap<Cosmetic, Boolean>());
+        for(Cosmetic cosmetic : this.getCosmetics(p)) {
+            if(!types.contains(cosmetic.getCosmeticType())) cosmetics.add(cosmetic);
+        }
+        this.cosmetics.put(p, cosmetics);
+    }
+
+    public boolean hasCosmetics(Player p, CosmeticType... type) {
+        return !this.getCosmetics(p, type).isEmpty();
+    }
+
     public Set<Cosmetic> getCosmetics(Player p) {
         return this.cosmetics.containsKey(p) ? this.cosmetics.get(p) : Collections.newSetFromMap(new ConcurrentHashMap<Cosmetic, Boolean>());
     }
@@ -34,25 +53,6 @@ public final class CosmeticsAPI {
             if(types.contains(cosmetic.getCosmeticType())) cosmetics.add(cosmetic);
         }
         return cosmetics;
-    }
-
-    public void addCosmetics(Player p, Cosmetic... cosmetic) {
-        Set<Cosmetic> cosmetics = this.getCosmetics(p);
-        cosmetics.addAll(Arrays.asList(cosmetic));
-        this.cosmetics.put(p, cosmetics);
-    }
-
-    public void removeCosmetics(Player p, CosmeticType... type) {
-        List<CosmeticType> types = Arrays.asList(type);
-        Set<Cosmetic> cosmetics = Collections.newSetFromMap(new ConcurrentHashMap<Cosmetic, Boolean>());
-        for(Cosmetic cosmetic : this.getCosmetics(p)) {
-            if(!types.contains(cosmetic.getCosmeticType())) cosmetics.add(cosmetic);
-        }
-        this.cosmetics.put(p, cosmetics);
-    }
-
-    public boolean hasCosmetics(Player p, CosmeticType... type) {
-        return !this.getCosmetics(p, type).isEmpty();
     }
 
     public Set<Cosmetic> getCosmetics() {

@@ -42,7 +42,7 @@ public final class CosmeticsQueue {
             try {
                 o = new JSerializable<EnumMap>(cosmetics).getObject();
             } catch (Exception e) {
-                e.printStackTrace();
+                // NOP
             }
         }
         this.cosmetics = o;
@@ -52,7 +52,7 @@ public final class CosmeticsQueue {
         try {
             return new JSerializable<EnumMap>(this.cosmetics).getString();
         } catch (Exception e) {
-            e.printStackTrace();
+            // NOP
             return "";
         }
     }

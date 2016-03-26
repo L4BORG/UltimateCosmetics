@@ -6,23 +6,12 @@ import com.j0ach1mmall3.ultimatecosmetics.config.CosmeticConfig;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 
-import java.util.HashMap;
-import java.util.Map;
-
 /**
  * @author j0ach1mmall3 (business.j0ach1mmall3@gmail.com)
  * @since 9/03/2016
  */
 public final class Heart extends Cosmetic {
-    private static final Map<Integer, Integer> AMPLIFIERS = new HashMap<>();
-    
-    static {
-        AMPLIFIERS.put(1, 4);
-        AMPLIFIERS.put(2, 9);
-        AMPLIFIERS.put(3, 14);
-        AMPLIFIERS.put(4, 19);
-    }
-    
+
     private PotionEffect colorEffect;
     private PotionEffect effectsEffect;
 
@@ -39,14 +28,14 @@ public final class Heart extends Cosmetic {
         this.player.setMaxHealth(rows * 20);
         this.player.setHealth(this.player.getMaxHealth());
         if (color == HeartStorage.Color.YELLOW) {
-            this.player.setMaxHealth(0.5);
-            this.colorEffect = new PotionEffect(color.getPotionEffect(), Integer.MAX_VALUE, AMPLIFIERS.get(rows));
+            this.player.setMaxHealth(1);
+            this.colorEffect = new PotionEffect(color.getPotionEffect(), Integer.MAX_VALUE, rows * 5);
         }
-        if (color != HeartStorage.Color.RED) this.colorEffect = new PotionEffect(color.getPotionEffect(), Integer.MAX_VALUE, 0);
+        if (color != HeartStorage.Color.RED && color != HeartStorage.Color.YELLOW) this.colorEffect = new PotionEffect(color.getPotionEffect(), Integer.MAX_VALUE, 0);
         this.effectsEffect = effect == HeartStorage.Effect.BOUNCING ? new PotionEffect(effect.getPotionEffect(), Integer.MAX_VALUE, 0) : null;
         if(this.colorEffect != null) this.player.addPotionEffect(this.colorEffect);
         if(this.effectsEffect != null) this.player.addPotionEffect(this.effectsEffect);
-        this.player.damage(color == HeartStorage.Color.YELLOW ? 1.5 : 0);
+        this.player.damage(color == HeartStorage.Color.YELLOW ? 5 : 0);
         return true;
     }
 

@@ -1,10 +1,8 @@
 package com.j0ach1mmall3.ultimatecosmetics.modules.auras;
 
 import com.j0ach1mmall3.ultimatecosmetics.Main;
-import com.j0ach1mmall3.ultimatecosmetics.api.CosmeticType;
 import com.j0ach1mmall3.ultimatecosmetics.api.Cosmetic;
-import org.bukkit.Bukkit;
-import org.bukkit.entity.Player;
+import com.j0ach1mmall3.ultimatecosmetics.api.CosmeticType;
 import org.bukkit.scheduler.BukkitRunnable;
 
 /**
@@ -21,9 +19,7 @@ public final class AurasRunnable extends BukkitRunnable {
     @Override
     public void run() {
         for (Cosmetic cosmetic : ((Main) this.module.getParent()).getApi().getCosmetics(CosmeticType.AURA)) {
-            for(Player p : Bukkit.getOnlinePlayers()) {
-                ((Aura) cosmetic).setGlowing(p);
-            }
+            ((Aura) cosmetic).giveInternal();
         }
     }
 }

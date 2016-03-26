@@ -3,6 +3,7 @@ package com.j0ach1mmall3.ultimatecosmetics.commands;
 import com.j0ach1mmall3.jlib.commands.CommandHandler;
 import com.j0ach1mmall3.jlib.methods.General;
 import com.j0ach1mmall3.ultimatecosmetics.Main;
+import com.j0ach1mmall3.ultimatecosmetics.api.Cosmetic;
 import com.j0ach1mmall3.ultimatecosmetics.api.CosmeticType;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
@@ -37,7 +38,9 @@ public final class RemoveCosmeticCommandHandler extends CommandHandler {
             commandSender.sendMessage(ChatColor.RED + "Invalid CosmeticType!");
             return true;
         }
-        this.plugin.getApi().removeCosmetics(player, type);
+        for(Cosmetic cosmetic : this.plugin.getApi().getCosmetics(player, type)) {
+            cosmetic.remove();
+        }
         commandSender.sendMessage(ChatColor.GREEN + "Successfully removed " + player.getName() + "'s " + type.name() + '!');
         return true;
     }

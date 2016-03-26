@@ -5,6 +5,7 @@ import com.j0ach1mmall3.ultimatecosmetics.Main;
 import com.j0ach1mmall3.ultimatecosmetics.api.Cosmetic;
 import com.j0ach1mmall3.ultimatecosmetics.api.CosmeticType;
 import com.j0ach1mmall3.ultimatecosmetics.api.CosmeticsAPI;
+import com.j0ach1mmall3.ultimatecosmetics.modules.pets.Pet;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
@@ -159,10 +160,9 @@ public final class BlockPetsListener implements Listener {
 
     @EventHandler
     public void onPlayerTeleport(PlayerTeleportEvent e) {
-        CosmeticsAPI api = ((Main) this.module.getParent()).getApi();
         Player p = e.getPlayer();
-        for(Cosmetic cosmetic : api.getCosmetics(p, CosmeticType.BLOCKPET)) {
-            cosmetic.remove();
+        for(Cosmetic cosmetic : ((Main) this.module.getParent()).getApi().getCosmetics(p, CosmeticType.PET)) {
+            ((Pet) cosmetic).getEntity().teleport(p);
         }
     }
 

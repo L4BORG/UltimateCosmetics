@@ -4,7 +4,6 @@ import com.j0ach1mmall3.ultimatecosmetics.Main;
 import com.j0ach1mmall3.ultimatecosmetics.api.Cosmetic;
 import com.j0ach1mmall3.ultimatecosmetics.api.storage.CosmeticStorage;
 import com.j0ach1mmall3.ultimatecosmetics.config.CosmeticConfig;
-import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
 /**
@@ -32,7 +31,7 @@ public final class Auras extends CosmeticConfig {
                 identifier,
                 this.config.getString(path + "Permission"),
                 this.customConfig.getGuiItemNew(this.config, path),
-                ChatColor.valueOf(this.config.getString(path + "Color").toUpperCase())
+                AuraStorage.Color.valueOf(this.config.getString(path + "Color").toUpperCase())
         );
     }
 

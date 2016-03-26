@@ -59,7 +59,7 @@ Hearts:
         Position: 10
         # The permission to use this Heart
         Permission: ultimatecosmetics.hearts.example
-        # The amount of Rows (1-4)
+        # The amount of Rows
         Rows: 3
         # The Color of the Heart (Valid Colors are: RED, GREEN, YELLOW, BLACK)
         Color: GREEN
