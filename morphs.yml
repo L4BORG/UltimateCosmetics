@@ -65,12 +65,12 @@ Morphs:
         MorphType: WITCH
         # Ability configuration
         Ability:
-          # Whether the Ability should be enabled
-          Enabled: true
-          # The item format of the item
-          Item: '373 name:&bExample_Morph_Ability lore:&7&oThrow_Potions_and_stuff_I_think potioneffect_heal:60|1|true|true'
-          # The duration in seconds of this Ability
-          Duration: 5
-          # The cooldown in seconds of this Ability
-          Cooldown: 20
+            # Whether the Ability should be enabled
+            Enabled: true
+            # The item format of the item
+            Item: '373 name:&bExample_Morph_Ability lore:&7&oThrow_Potions_and_stuff_I_think potioneffect_heal:60|1|true|true'
+            # The duration in seconds of this Ability
+            Duration: 5
+            # The cooldown in seconds of this Ability
+            Cooldown: 20
 DoNotChange: 4.0.1

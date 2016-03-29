@@ -5,8 +5,10 @@ import com.j0ach1mmall3.jlib.inventory.CustomItem;
 import com.j0ach1mmall3.jlib.methods.Parsing;
 import com.j0ach1mmall3.jlib.methods.Random;
 import com.j0ach1mmall3.ultimatecosmetics.Main;
+import com.j0ach1mmall3.ultimatecosmetics.api.Cosmetic;
 import com.j0ach1mmall3.ultimatecosmetics.api.CosmeticType;
 import com.j0ach1mmall3.ultimatecosmetics.api.storage.CooldownCosmeticStorage;
+import me.libraryaddict.disguise.disguisetypes.DisguiseType;
 import org.bukkit.Effect;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -69,8 +71,10 @@ public final class MorphsListener implements Listener {
             Player p = (Player) e.getEntity();
             double damage = e.getDamage();
             if (damage >= p.getHealth()) {
-                if (((Main) this.module.getParent()).getApi().hasCosmetics(p, CosmeticType.MORPH) && ((Morphs) this.module.getConfig()).isEnableAbilities())
-                    p.getInventory().setItem(((Morphs) this.module.getConfig()).getAbilitySlot(), null);
+                for(Cosmetic cosmetic : ((Main) this.module.getParent()).getApi().getCosmetics(p, CosmeticType.MORPH)) {
+                    cosmetic.remove();
+                }
+                return;
             }
         }
         if (e.getEntity() instanceof LivingEntity && this.isEntity(e.getEntity())) e.setCancelled(true);
@@ -345,7 +349,7 @@ public final class MorphsListener implements Listener {
                     break;
                 case WITCH:
                     ThrownPotion potion = p.launchProjectile(ThrownPotion.class);
-                    ItemStack item = new ItemStack(Material.POTION, 1);
+                    ItemStack item = new ItemStack(Material.SPLASH_POTION, 1);
                     PotionMeta potionMeta = (PotionMeta) item.getItemMeta();
                     potionMeta.addCustomEffect(new PotionEffect(PotionEffectType.HEAL, 60, 1), true);
                     item.setItemMeta(potionMeta);
@@ -367,7 +371,8 @@ public final class MorphsListener implements Listener {
                         final Zombie zombie = (Zombie) p.getWorld().spawnEntity(p.getLocation(), EntityType.ZOMBIE);
                         ((Main) this.module.getParent()).queueEntity(zombie);
                         zombie.addPotionEffect(speed);
-                        zombie.setBaby(false);
+                        zombie.setBaby(true);
+                        zombie.setVillager(morph.getMorphType() != DisguiseType.ZOMBIE);
                         zombie.setMetadata("MorphAbility", playerValue);
                         babyZombies.add(zombie);
                     }

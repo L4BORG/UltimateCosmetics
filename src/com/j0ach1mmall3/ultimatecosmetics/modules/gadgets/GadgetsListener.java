@@ -9,6 +9,7 @@ import com.j0ach1mmall3.jlib.methods.Sounds;
 import com.j0ach1mmall3.jlib.visual.Title;
 import com.j0ach1mmall3.ultimatecosmetics.Main;
 import com.j0ach1mmall3.ultimatecosmetics.Methods;
+import com.j0ach1mmall3.ultimatecosmetics.api.Cosmetic;
 import com.j0ach1mmall3.ultimatecosmetics.api.CosmeticType;
 import com.j0ach1mmall3.ultimatecosmetics.api.storage.CooldownCosmeticStorage;
 import com.j0ach1mmall3.ultimatecosmetics.config.Lang;
@@ -481,7 +482,9 @@ public final class GadgetsListener implements Listener {
             Player p = (Player) e.getEntity();
             double damage = e.getDamage();
             if (damage >= p.getHealth()) {
-                if (((Main) this.module.getParent()).getApi().hasCosmetics(p, CosmeticType.GADGET))  p.getInventory().setItem(((Gadgets) this.module.getConfig()).getGadgetSlot(), null);
+                for(Cosmetic cosmetic : ((Main) this.module.getParent()).getApi().getCosmetics(p, CosmeticType.GADGET)) {
+                    cosmetic.remove();
+                }
                 return;
             }
             if (e.getCause() == EntityDamageEvent.DamageCause.SUFFOCATION && p.isInsideVehicle()) e.setCancelled(true);

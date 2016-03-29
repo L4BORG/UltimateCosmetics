@@ -4,6 +4,7 @@ import com.j0ach1mmall3.ultimatecosmetics.api.CosmeticType;
 import com.j0ach1mmall3.ultimatecosmetics.api.Cosmetic;
 import com.j0ach1mmall3.ultimatecosmetics.api.storage.CosmeticStorage;
 import com.j0ach1mmall3.ultimatecosmetics.config.CosmeticConfig;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.meta.FireworkMeta;
 
@@ -18,7 +19,7 @@ public final class Firework extends Cosmetic {
 
     @Override
     public boolean giveInternal() {
-        org.bukkit.entity.Firework fw = this.player.getWorld().spawn(this.player.getLocation(), org.bukkit.entity.Firework.class);
+        org.bukkit.entity.Firework fw = (org.bukkit.entity.Firework) this.player.getWorld().spawnEntity(this.player.getLocation(), EntityType.FIREWORK);
         fw.setFireworkMeta((FireworkMeta) this.cosmeticStorage.getGuiItem().getItem().getItemMeta());
         return false;
     }
