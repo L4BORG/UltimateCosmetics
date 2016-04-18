@@ -24,8 +24,8 @@ public final class StackerCommandHandler extends CommandHandler {
         this.plugin.getDataLoader().getStacker(p, new CallbackHandler<Boolean>() {
             @Override
             public void callback(Boolean o) {
-                String toggledStacker = StackerCommandHandler.this.plugin.getLang().getToggledStacker();
-                if(!toggledStacker.isEmpty()) p.sendMessage(toggledStacker.replace("{statuscolor}", (o ? ChatColor.RED : ChatColor.GREEN).toString()));
+                String toggled = StackerCommandHandler.this.plugin.getLang().getToggled();
+                if(!toggled.isEmpty()) p.sendMessage(toggled.replace("%statuscolor%", (o ? ChatColor.RED : ChatColor.GREEN).toString()).replace("%type%", "Stacker"));
                 StackerCommandHandler.this.plugin.getDataLoader().setStacker(p, !o);
             }
         });

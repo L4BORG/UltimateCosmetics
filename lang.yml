@@ -35,10 +35,10 @@ AlreadyInGadgetsSlot: '&cYou already have something in Slot 4!'
 AlreadyInAbilitySlot: '&cYou already have something in Slot 5!'
 # The message that should be sent when a player is still in the cooldown for a Morph Ability
 AbilityCooldown: '&cPlease wait %timeleft% more seconds before using this Ability again!'
-# The message to be shown when a player toggled Stacker ({statuscolor} will be green/red)
-ToggledStacker: '{statuscolor}You toggled Stacker!'
+# The message to be shown when a player toggled Stacker/Upsidedown/Ears ({statuscolor} will be green/red)
+Toggled: '%statuscolor%You toggled %type%!'
 # The message to be shown when a player doesn't have Stacker enabled
 StackerNotEnabled: '&cYou don''t have Stacker enabled!'
 # The message to be shown when the Stacked player doesn't have Stacker enabled
-StackedNotEnabled: '&c{stacked} doesn''t have Stacker enabled!'
-DoNotChange: 4.0.0
+StackedNotEnabled: '&c%stacked% doesn''t have Stacker enabled!'
+DoNotChange: 4.1.0

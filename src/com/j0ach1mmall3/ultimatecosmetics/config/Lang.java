@@ -25,7 +25,7 @@ public final class Lang extends ConfigLoader {
     private final String alreadyInGadgetsSlot;
     private final String alreadyInAbilitySlot;
     private final String abilityCooldown;
-    private final String toggledStacker;
+    private final String toggled;
     private final String stackerNotEnabled;
     private final String stackedNotEnabled;
 
@@ -46,7 +46,7 @@ public final class Lang extends ConfigLoader {
         this.alreadyInGadgetsSlot = this.config.getString("AlreadyInGadgetsSlot");
         this.alreadyInAbilitySlot = this.config.getString("AlreadyInAbilitySlot");
         this.abilityCooldown = this.config.getString("AbilityCooldown");
-        this.toggledStacker = this.config.getString("ToggledStacker");
+        this.toggled = this.config.getString("Toggled");
         this.stackerNotEnabled = this.config.getString("StackerNotEnabled");
         this.stackedNotEnabled = this.config.getString("StackedNotEnabled");
         plugin.getjLogger().log(ChatColor.GREEN + "Language config successfully loaded!", JLogger.LogLevel.EXTENDED);
@@ -112,8 +112,8 @@ public final class Lang extends ConfigLoader {
         return this.abilityCooldown;
     }
 
-    public String getToggledStacker() {
-        return this.toggledStacker;
+    public String getToggled() {
+        return this.toggled;
     }
 
     public String getStackedNotEnabled() {

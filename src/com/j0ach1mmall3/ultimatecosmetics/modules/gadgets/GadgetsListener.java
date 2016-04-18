@@ -145,26 +145,6 @@ public final class GadgetsListener implements Listener {
     }
 
     @EventHandler
-    public void onInvClick(InventoryClickEvent e) {
-        if (e.getSlot() == ((Gadgets) this.module.getConfig()).getGadgetSlot() && ((Gadgets) this.module.getConfig()).isGadgetItem(e.getCurrentItem())) e.setCancelled(true);
-    }
-
-    @EventHandler
-    public void onPlayerMove(PlayerMoveEvent e) {
-        Player p = e.getPlayer();
-        if (this.firePlayers.contains(p)) {
-            Block b = p.getLocation().getBlock();
-            if (b.getType() == Material.AIR) this.setFakeBlock(b, new MaterialData(Material.FIRE), ((Gadgets) this.module.getConfig()).getIntValue("FireTrail", "RemoveDelay"));
-        }
-        if (this.paintTrailPlayers.contains(p)) this.setRandomClay(p.getLocation().getBlock().getRelative(BlockFace.DOWN), ((Gadgets) this.module.getConfig()).getIntValue("PaintTrail", "RestoreDelay"));
-    }
-
-    @EventHandler
-    public void onPlayerDrop(PlayerDropItemEvent e) {
-        if (e.getPlayer().getInventory().getHeldItemSlot() == ((Gadgets) this.module.getConfig()).getGadgetSlot() && ((Gadgets) this.module.getConfig()).isGadgetItem(e.getItemDrop().getItemStack())) e.setCancelled(true);
-    }
-
-    @EventHandler
     @SuppressWarnings("deprecation")
     public void onInteract(final PlayerInteractEvent e) {
         if(e.getAction() == Action.PHYSICAL) return;
@@ -450,6 +430,26 @@ public final class GadgetsListener implements Listener {
             }
             p.updateInventory();
         }
+    }
+
+    @EventHandler
+    public void onInvClick(InventoryClickEvent e) {
+        if (e.getSlot() == ((Gadgets) this.module.getConfig()).getGadgetSlot() && ((Gadgets) this.module.getConfig()).isGadgetItem(e.getCurrentItem())) e.setCancelled(true);
+    }
+
+    @EventHandler
+    public void onPlayerMove(PlayerMoveEvent e) {
+        Player p = e.getPlayer();
+        if (this.firePlayers.contains(p)) {
+            Block b = p.getLocation().getBlock();
+            if (b.getType() == Material.AIR) this.setFakeBlock(b, new MaterialData(Material.FIRE), ((Gadgets) this.module.getConfig()).getIntValue("FireTrail", "RemoveDelay"));
+        }
+        if (this.paintTrailPlayers.contains(p)) this.setRandomClay(p.getLocation().getBlock().getRelative(BlockFace.DOWN), ((Gadgets) this.module.getConfig()).getIntValue("PaintTrail", "RestoreDelay"));
+    }
+
+    @EventHandler
+    public void onPlayerDrop(PlayerDropItemEvent e) {
+        if (e.getPlayer().getInventory().getHeldItemSlot() == ((Gadgets) this.module.getConfig()).getGadgetSlot() && ((Gadgets) this.module.getConfig()).isGadgetItem(e.getItemDrop().getItemStack())) e.setCancelled(true);
     }
 
     @EventHandler

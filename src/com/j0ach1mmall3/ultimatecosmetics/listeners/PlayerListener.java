@@ -4,6 +4,7 @@ import com.j0ach1mmall3.jlib.integration.Placeholders;
 import com.j0ach1mmall3.jlib.integration.updatechecker.AsyncUpdateChecker;
 import com.j0ach1mmall3.jlib.integration.updatechecker.UpdateCheckerResult;
 import com.j0ach1mmall3.jlib.methods.General;
+import com.j0ach1mmall3.jlib.methods.ReflectionAPI;
 import com.j0ach1mmall3.jlib.methods.Sounds;
 import com.j0ach1mmall3.jlib.storage.database.CallbackHandler;
 import com.j0ach1mmall3.ultimatecosmetics.Main;
@@ -14,11 +15,14 @@ import com.j0ach1mmall3.ultimatecosmetics.api.storage.unique.DoubleJumpStorage;
 import com.j0ach1mmall3.ultimatecosmetics.config.Config;
 import com.j0ach1mmall3.ultimatecosmetics.data.CosmeticsQueue;
 import com.j0ach1mmall3.ultimatecosmetics.data.DataLoader;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.block.BlockFace;
+import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Creature;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -93,19 +97,29 @@ public final class PlayerListener implements Listener {
                                 public void callback(Boolean o1) {
                                     if (o1) {
                                         e.setCancelled(true);
-                                        if (p.getVehicle() != null) p.getVehicle().remove();
+
+                                        if (p.getPassenger() instanceof ArmorStand) return;
                                         if (clicked.getVehicle() != null) return;
-                                        p.setPassenger(clicked);
+                                        if (p.getPassenger() != null)  p.getPassenger().leaveVehicle();
+                                        setPassenger(p, null);
+                                        setPassenger(p, e.getRightClicked());
+
                                         String stackedPlayer = PlayerListener.this.plugin.getLang().getStackedPlayer();
                                         if(!stackedPlayer.isEmpty()) p.sendMessage(Placeholders.parse(PlayerListener.this.plugin.getMisc().getStackerPrefix(), p) + Placeholders.parse(stackedPlayer, p).replace("%target%", clicked.getName()));
                                         String stackedByPlayer = PlayerListener.this.plugin.getLang().getStackedByPlayer();
                                         if(!stackedByPlayer.isEmpty()) clicked.sendMessage(Placeholders.parse(PlayerListener.this.plugin.getMisc().getStackerPrefix(), clicked) + Placeholders.parse(stackedByPlayer, clicked).replace("%stacker%", p.getName()));
-                                    } else PlayerListener.this.plugin.informPlayerNoPermission(p, Placeholders.parse(PlayerListener.this.plugin.getLang().getStackedNotEnabled().replace("{stacked}", clicked.getName()), p));
+                                    } else PlayerListener.this.plugin.informPlayerNoPermission(p, Placeholders.parse(PlayerListener.this.plugin.getLang().getStackedNotEnabled().replace("%stacked%", clicked.getName()), p));
                                 }
                             });
                         } else if (!PlayerListener.this.plugin.getMisc().isStackerStackPlayersOnly() && e.getRightClicked() instanceof Creature && e.getRightClicked().getCustomName() == null && e.getRightClicked().getPassenger() == null) {
                             e.setCancelled(true);
-                            p.setPassenger(e.getRightClicked());
+
+                            if (p.getPassenger() instanceof ArmorStand) return;
+                            if (e.getRightClicked().getVehicle() != null) return;
+                            if (p.getPassenger() != null)  p.getPassenger().leaveVehicle();
+                            setPassenger(p, null);
+                            setPassenger(p, e.getRightClicked());
+
                             String stackedPlayer = PlayerListener.this.plugin.getLang().getStackedPlayer();
                             if(!stackedPlayer.isEmpty()) p.sendMessage(Placeholders.parse(PlayerListener.this.plugin.getMisc().getStackerPrefix(), p) + Placeholders.parse(stackedPlayer, p).replace("%target%", e.getRightClicked().getType().name().replace("_", " ").toLowerCase()));
                         }
@@ -115,13 +129,15 @@ public final class PlayerListener implements Listener {
         }
     }
 
-    @EventHandler(ignoreCancelled = true)
+    @EventHandler
     public void onPlayerDamageEntity(EntityDamageByEntityEvent e) {
+        Bukkit.broadcastMessage("damage");
         if (e.getDamager() instanceof Player) {
             Player p = (Player) e.getDamager();
             if (e.getEntity().getVehicle() != null && p.getName().equals(e.getEntity().getVehicle().getName())) {
                 e.setCancelled(true);
-                e.getEntity().leaveVehicle();
+                p.getPassenger().leaveVehicle();
+                setPassenger(p, null);
                 e.getEntity().setVelocity(p.getLocation().getDirection().multiply(2));
                 e.getEntity().setFallDistance(-100.0F);
             }
@@ -190,6 +206,7 @@ public final class PlayerListener implements Listener {
     @EventHandler
     public void onPlayerLeave(PlayerQuitEvent e) {
         final Player p = e.getPlayer();
+        this.plugin.getMisc().getRunnable().removePlayer(p);
         final CosmeticsQueue queue =  new CosmeticsQueue(this.plugin, p);
         for(Cosmetic cosmetic : this.plugin.getApi().getCosmetics(p)) {
             cosmetic.remove();
@@ -206,6 +223,7 @@ public final class PlayerListener implements Listener {
     @EventHandler
     public void onPlayerKick(PlayerKickEvent e) {
         final Player p = e.getPlayer();
+        this.plugin.getMisc().getRunnable().removePlayer(p);
         final CosmeticsQueue queue =  new CosmeticsQueue(this.plugin, p);
         for(Cosmetic cosmetic : this.plugin.getApi().getCosmetics(p)) {
             cosmetic.remove();
@@ -217,5 +235,15 @@ public final class PlayerListener implements Listener {
                 PlayerListener.this.plugin.getDataLoader().getAmmoCache().unload(p);
             }
         }.runTaskAsynchronously(this.plugin);
+    }
+
+    public static void setPassenger(Player p, Entity entity) {
+        p.setPassenger(entity);
+        try {
+            Object packetPlayOutMount = ReflectionAPI.getNmsClass("PacketPlayOutMount").getConstructor(ReflectionAPI.getNmsClass("Entity")).newInstance(ReflectionAPI.getHandle((Object) p));
+            ReflectionAPI.sendPacket(p, packetPlayOutMount);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }
