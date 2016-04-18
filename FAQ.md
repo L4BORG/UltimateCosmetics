@@ -4,8 +4,8 @@
 Yes, you can compile the source for yourself, or buy the plugin and get access to the binaries, and support.
 Keep in mind that buying the plugin supports the author of it!
 
-## I am running Minecraft 1.7 and I get an error upon startup!
-Remove the Banners item from the config.yml, and disable Banners in banners.yml
+## I get an error upon startup!
+Use the config files in the jar under the folder of the MC version you're running. For example, if you're running 1.8, use the config_1.8 files in the jar file.
 
 ## I want to run this plugin without Spigot!
 Not possible, I depend on a lot of Spigot features, and you should use it if possible.
