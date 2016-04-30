@@ -15,7 +15,6 @@ import com.j0ach1mmall3.ultimatecosmetics.api.storage.unique.DoubleJumpStorage;
 import com.j0ach1mmall3.ultimatecosmetics.config.Config;
 import com.j0ach1mmall3.ultimatecosmetics.data.CosmeticsQueue;
 import com.j0ach1mmall3.ultimatecosmetics.data.DataLoader;
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
@@ -131,7 +130,6 @@ public final class PlayerListener implements Listener {
 
     @EventHandler
     public void onPlayerDamageEntity(EntityDamageByEntityEvent e) {
-        Bukkit.broadcastMessage("damage");
         if (e.getDamager() instanceof Player) {
             Player p = (Player) e.getDamager();
             if (e.getEntity().getVehicle() != null && p.getName().equals(e.getEntity().getVehicle().getName())) {
