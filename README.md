@@ -3,13 +3,6 @@
 [![Issue Stats](http://issuestats.com/github/j0ach1mmall3/UltimateCosmetics/badge/issue?style=flat)](http://issuestats.com/github/j0ach1mmall3/UltimateCosmetics)
 
 # UltimateCosmetics
-UltimateCosmetics repository
-
-Every bug with the UltimateCosmetics plugin should be posted here!
+Featuring over 20 different Cosmetic types, endless possibilities!
 
 API documentation will be released soon(TM)
-
-Plugin link: https://www.spigotmc.org/resources/5885/
-
-Information that should be included:
-* /uc debug output
