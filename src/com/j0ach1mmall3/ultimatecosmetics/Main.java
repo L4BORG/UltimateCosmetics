@@ -62,41 +62,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
-import org.bukkit.event.entity.CreatureSpawnEvent;
-import org.bukkit.event.entity.EntityChangeBlockEvent;
-import org.bukkit.event.entity.EntityCombustEvent;
-import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.event.entity.EntityDamageEvent;
-import org.bukkit.event.entity.EntityExplodeEvent;
-import org.bukkit.event.entity.EntityInteractEvent;
-import org.bukkit.event.entity.EntityPortalEvent;
-import org.bukkit.event.entity.EntityRegainHealthEvent;
-import org.bukkit.event.entity.EntityTameEvent;
-import org.bukkit.event.entity.EntityTargetEvent;
-import org.bukkit.event.entity.EntityTeleportEvent;
-import org.bukkit.event.entity.EntityUnleashEvent;
-import org.bukkit.event.entity.ItemDespawnEvent;
-import org.bukkit.event.entity.PlayerDeathEvent;
-import org.bukkit.event.entity.ProjectileHitEvent;
-import org.bukkit.event.hanging.HangingBreakByEntityEvent;
-import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.event.inventory.InventoryOpenEvent;
-import org.bukkit.event.inventory.InventoryPickupItemEvent;
-import org.bukkit.event.player.AsyncPlayerChatEvent;
-import org.bukkit.event.player.PlayerChangedWorldEvent;
-import org.bukkit.event.player.PlayerCommandPreprocessEvent;
-import org.bukkit.event.player.PlayerDropItemEvent;
-import org.bukkit.event.player.PlayerInteractEntityEvent;
-import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.player.PlayerKickEvent;
-import org.bukkit.event.player.PlayerMoveEvent;
-import org.bukkit.event.player.PlayerPickupItemEvent;
-import org.bukkit.event.player.PlayerQuitEvent;
-import org.bukkit.event.player.PlayerRespawnEvent;
-import org.bukkit.event.player.PlayerToggleFlightEvent;
-import org.bukkit.event.vehicle.VehicleExitEvent;
-import org.spigotmc.event.entity.EntityDismountEvent;
+import org.bukkit.event.HandlerList;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -240,51 +206,7 @@ public final class Main extends ModularizedPlugin {
             }
         }
 
-        PlayerCommandPreprocessEvent.getHandlerList().unregister(this);
-        PlayerToggleFlightEvent.getHandlerList().unregister(this);
-        PlayerMoveEvent.getHandlerList().unregister(this);
-        PlayerInteractEntityEvent.getHandlerList().unregister(this);
-        PlayerDeathEvent.getHandlerList().unregister(this);
-        PlayerRespawnEvent.getHandlerList().unregister(this);
-        PlayerJoinEvent.getHandlerList().unregister(this);
-        PlayerInteractEvent.getHandlerList().unregister(this);
-        PlayerChangedWorldEvent.getHandlerList().unregister(this);
-        PlayerQuitEvent.getHandlerList().unregister(this);
-        PlayerKickEvent.getHandlerList().unregister(this);
-        AsyncPlayerChatEvent.getHandlerList().unregister(this);
-        PlayerDropItemEvent.getHandlerList().unregister(this);
-        PlayerPickupItemEvent.getHandlerList().unregister(this);
-
-
-        CreatureSpawnEvent.getHandlerList().unregister(this);
-
-        VehicleExitEvent.getHandlerList().unregister(this);
-
-        HangingBreakByEntityEvent.getHandlerList().unregister(this);
-
-        ProjectileHitEvent.getHandlerList().unregister(this);
-
-        ItemDespawnEvent.getHandlerList().unregister(this);
-
-        EntityChangeBlockEvent.getHandlerList().unregister(this);
-        EntityUnleashEvent.getHandlerList().unregister(this);
-        EntityDismountEvent.getHandlerList().unregister(this);
-        EntityPortalEvent.getHandlerList().unregister(this);
-        EntityDamageEvent.getHandlerList().unregister(this);
-        EntityChangeBlockEvent.getHandlerList().unregister(this);
-        EntityDamageByEntityEvent.getHandlerList().unregister(this);
-        EntityTargetEvent.getHandlerList().unregister(this);
-        EntityTeleportEvent.getHandlerList().unregister(this);
-        EntityCombustEvent.getHandlerList().unregister(this);
-        EntityTameEvent.getHandlerList().unregister(this);
-        EntityRegainHealthEvent.getHandlerList().unregister(this);
-        EntityExplodeEvent.getHandlerList().unregister(this);
-        EntityInteractEvent.getHandlerList().unregister(this);
-
-        InventoryClickEvent.getHandlerList().unregister(this);
-        InventoryPickupItemEvent.getHandlerList().unregister(this);
-        InventoryOpenEvent.getHandlerList().unregister(this);
-
+        HandlerList.unregisterAll(this);
 
         this.config = new Config(this);
         this.lang = new Lang(this);

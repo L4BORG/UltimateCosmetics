@@ -1,5 +1,6 @@
 package com.j0ach1mmall3.ultimatecosmetics.modules.gadgets;
 
+import com.j0ach1mmall3.jlib.methods.ReflectionAPI;
 import com.j0ach1mmall3.jlib.plugin.modularization.ModularizedPlugin;
 import com.j0ach1mmall3.jlib.plugin.modularization.PluginModule;
 import com.j0ach1mmall3.jlib.storage.file.yaml.ConfigLoader;
@@ -17,6 +18,7 @@ public final class GadgetsModule extends PluginModule {
     public void onEnable() {
         this.config = new Gadgets(this);
         new GadgetsListener(this);
+        if(ReflectionAPI.verBiggerThan(1, 9)) new GadgetsListener1_9(this);
     }
 
     @Override

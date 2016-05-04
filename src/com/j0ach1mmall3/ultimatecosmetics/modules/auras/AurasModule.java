@@ -19,7 +19,7 @@ public final class AurasModule extends PluginModule {
     @Override
     public void onEnable() {
         this.config = new Auras(this);
-        this.task = new AurasRunnable(this).runTaskTimer(this.getParent(), ((Auras) this.config).getUpdateInterval(), ((Auras) this.config).getUpdateInterval());
+        this.task = new AurasRunnable(this).runTaskTimer(this.getParent(), ((Auras) this.config).getUpdateInterval() * 20, ((Auras) this.config).getUpdateInterval() * 20);
     }
 
     @Override

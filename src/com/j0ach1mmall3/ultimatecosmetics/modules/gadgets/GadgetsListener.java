@@ -434,7 +434,7 @@ public final class GadgetsListener implements Listener {
 
     @EventHandler
     public void onInvClick(InventoryClickEvent e) {
-        if (e.getSlot() == ((Gadgets) this.module.getConfig()).getGadgetSlot() && ((Gadgets) this.module.getConfig()).isGadgetItem(e.getCurrentItem())) e.setCancelled(true);
+        if (((Gadgets) this.module.getConfig()).isGadgetItem(e.getCurrentItem())) e.setCancelled(true);
     }
 
     @EventHandler
@@ -449,7 +449,7 @@ public final class GadgetsListener implements Listener {
 
     @EventHandler
     public void onPlayerDrop(PlayerDropItemEvent e) {
-        if (e.getPlayer().getInventory().getHeldItemSlot() == ((Gadgets) this.module.getConfig()).getGadgetSlot() && ((Gadgets) this.module.getConfig()).isGadgetItem(e.getItemDrop().getItemStack())) e.setCancelled(true);
+        if (((Gadgets) this.module.getConfig()).isGadgetItem(e.getItemDrop().getItemStack())) e.setCancelled(true);
     }
 
     @EventHandler

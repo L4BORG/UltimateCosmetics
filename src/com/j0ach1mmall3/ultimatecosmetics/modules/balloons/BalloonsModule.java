@@ -3,6 +3,7 @@ package com.j0ach1mmall3.ultimatecosmetics.modules.balloons;
 import com.j0ach1mmall3.jlib.plugin.modularization.ModularizedPlugin;
 import com.j0ach1mmall3.jlib.plugin.modularization.PluginModule;
 import com.j0ach1mmall3.jlib.storage.file.yaml.ConfigLoader;
+import org.bukkit.event.HandlerList;
 import org.bukkit.scheduler.BukkitTask;
 
 /**

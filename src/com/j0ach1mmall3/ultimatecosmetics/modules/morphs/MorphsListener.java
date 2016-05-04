@@ -102,12 +102,12 @@ public final class MorphsListener implements Listener {
 
     @EventHandler
     public void onDrop(PlayerDropItemEvent e) {
-        if (((Main) this.module.getParent()).getApi().hasCosmetics(e.getPlayer(), CosmeticType.MORPH) && ((Morphs) this.module.getConfig()).isAbilityItem(e.getItemDrop().getItemStack())) e.setCancelled(true);
+        if (((Morphs) this.module.getConfig()).isAbilityItem(e.getItemDrop().getItemStack())) e.setCancelled(true);
     }
 
     @EventHandler
     public void onInventoryClick(InventoryClickEvent e) {
-        if (((Main) this.module.getParent()).getApi().hasCosmetics((Player) e.getWhoClicked(), CosmeticType.MORPH) && ((Morphs) this.module.getConfig()).isAbilityItem(e.getCurrentItem())) e.setCancelled(true);
+        if (((Morphs) this.module.getConfig()).isAbilityItem(e.getCurrentItem())) e.setCancelled(true);
     }
 
     @EventHandler

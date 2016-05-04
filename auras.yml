@@ -60,6 +60,6 @@ Auras:
         Position: 10
         # The permission to use this Aura
         Permission: ultimatecosmetics.auras.example
-        # The color of the Aura (Needs to be one of https://hub.spigotmc.org/javadocs/spigot/org/bukkit/ChatColor.html)
-        Color: BLUE
+        # The color of the Aura (Needs to be one of https://hub.spigotmc.org/javadocs/spigot/org/bukkit/ChatColor.html) or RAINBOW
+        Color: RAINBOW
 DoNotChange: 4.0.0

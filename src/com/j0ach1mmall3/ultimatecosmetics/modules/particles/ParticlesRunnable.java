@@ -63,10 +63,10 @@ public final class ParticlesRunnable extends BukkitRunnable {
                     new DoubleHelixEffect(p.getLocation(), pcs.getParticle(), pcs.getId(), pcs.getData(), pcs.getSpeed(), ((Particles) this.module.getConfig()).getViewDistance(), 1, 32, 2).play(this.module.getParent());
                     break;
                 case RANDOM:
-                    Methods.broadcastSafeParticle(p.getLocation().add(0, 0.5, 0), pcs.getParticle(), pcs.getId(), pcs.getData(), 0.5F, 0.5F, 0.5F, pcs.getSpeed(), 16, ((Particles) this.module.getConfig()).getViewDistance());
+                    Methods.broadcastSafeParticle(p.getLocation().add(0, 0.75, 0), pcs.getParticle(), pcs.getId(), pcs.getData(), 0.5F, 0.5F, 0.5F, pcs.getSpeed(), 16, ((Particles) this.module.getConfig()).getViewDistance());
                     break;
                 case TRAIL:
-                    Methods.broadcastSafeParticle(p.getLocation().add(0, 0.5, 0), pcs.getParticle(), pcs.getId(), pcs.getData(), pcs.getSpeed(), 1, ((Particles) this.module.getConfig()).getViewDistance());
+                    Methods.broadcastSafeParticle(p.getLocation().add(0, 0.75, 0), pcs.getParticle(), pcs.getId(), pcs.getData(), pcs.getSpeed(), 1, ((Particles) this.module.getConfig()).getViewDistance());
                     break;
             }
         }

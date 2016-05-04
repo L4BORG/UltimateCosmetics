@@ -2,7 +2,7 @@ package com.j0ach1mmall3.ultimatecosmetics.modules.music;
 
 import com.j0ach1mmall3.jlib.nbsapi.NBSDecoder;
 import com.j0ach1mmall3.jlib.nbsapi.Song;
-import com.j0ach1mmall3.jlib.plugin.JlibPlugin;
+import com.j0ach1mmall3.jlib.plugin.JLibPlugin;
 import com.j0ach1mmall3.ultimatecosmetics.Main;
 import com.j0ach1mmall3.ultimatecosmetics.api.Cosmetic;
 import com.j0ach1mmall3.ultimatecosmetics.api.storage.CosmeticStorage;
@@ -33,7 +33,7 @@ public final class Musics extends CosmeticConfig {
         try {
             song = new NBSDecoder(new File(this.storage.getPlugin().getDataFolder().getPath() + "/songs", this.config.getString(path + "SongName") + ".nbs")).getSong();
         } catch (Exception e) {
-            ((JlibPlugin) this.storage.getPlugin()).getjLogger().log(ChatColor.RED + "An exception occured while loading Song " + identifier + '!');
+            ((JLibPlugin) this.storage.getPlugin()).getjLogger().log(ChatColor.RED + "An exception occured while loading Song " + identifier + '!');
             e.printStackTrace();
         }
         return new MusicStorage(

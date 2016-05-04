@@ -6,7 +6,7 @@ import com.j0ach1mmall3.jlib.inventory.GuiItem;
 import com.j0ach1mmall3.jlib.logging.JLogger;
 import com.j0ach1mmall3.jlib.methods.General;
 import com.j0ach1mmall3.jlib.methods.Sounds;
-import com.j0ach1mmall3.jlib.plugin.JlibPlugin;
+import com.j0ach1mmall3.jlib.plugin.JLibPlugin;
 import com.j0ach1mmall3.jlib.storage.file.yaml.ConfigLoader;
 import com.j0ach1mmall3.ultimatecosmetics.Main;
 import com.j0ach1mmall3.ultimatecosmetics.Methods;
@@ -43,7 +43,7 @@ public abstract class CosmeticConfig extends ConfigLoader {
     private final List<CosmeticStorage> cosmetics;
     private final int maxPage;
 
-    public CosmeticConfig(String config, JlibPlugin plugin, String section) {
+    public CosmeticConfig(String config, JLibPlugin plugin, String section) {
         super(config, plugin);
         this.worldsBlacklist = this.config.getStringList("WorldsBlacklist");
         this.command = this.config.getString("Command");

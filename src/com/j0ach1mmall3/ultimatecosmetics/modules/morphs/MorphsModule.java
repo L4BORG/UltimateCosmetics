@@ -1,5 +1,6 @@
 package com.j0ach1mmall3.ultimatecosmetics.modules.morphs;
 
+import com.j0ach1mmall3.jlib.methods.ReflectionAPI;
 import com.j0ach1mmall3.jlib.plugin.modularization.ModularizedPlugin;
 import com.j0ach1mmall3.jlib.plugin.modularization.PluginModule;
 import com.j0ach1mmall3.jlib.storage.file.yaml.ConfigLoader;
@@ -17,6 +18,7 @@ public final class MorphsModule extends PluginModule {
     public void onEnable() {
         this.config = new Morphs(this);
         new MorphsListener(this);
+        if(ReflectionAPI.verBiggerThan(1, 9)) new MorphsListener1_9(this);
     }
 
     @Override
