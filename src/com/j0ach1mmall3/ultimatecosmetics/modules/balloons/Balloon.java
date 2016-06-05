@@ -1,9 +1,7 @@
 package com.j0ach1mmall3.ultimatecosmetics.modules.balloons;
 
-import com.j0ach1mmall3.ultimatecosmetics.api.CosmeticType;
 import com.j0ach1mmall3.ultimatecosmetics.api.Cosmetic;
 import com.j0ach1mmall3.ultimatecosmetics.api.storage.CosmeticStorage;
-import com.j0ach1mmall3.ultimatecosmetics.config.CosmeticConfig;
 import org.bukkit.Location;
 import org.bukkit.entity.Bat;
 import org.bukkit.entity.EntityType;
@@ -17,12 +15,12 @@ import org.bukkit.potion.PotionEffectType;
  * @author j0ach1mmall3 (business.j0ach1mmall3@gmail.com)
  * @since 9/03/2016
  */
-public final class Balloon extends Cosmetic {
+public final class Balloon extends Cosmetic<Balloons, CosmeticStorage> {
     private Bat bat;
     private FallingBlock block;
 
-    public Balloon(CosmeticConfig cosmeticConfig, Player player, CosmeticStorage cosmeticStorage) {
-        super(cosmeticConfig, player, cosmeticStorage, CosmeticType.BALLOON);
+    public Balloon(Balloons cosmeticConfig, Player player, CosmeticStorage cosmeticStorage) {
+        super(cosmeticConfig, player, cosmeticStorage);
     }
 
     @Override

@@ -1,8 +1,5 @@
 package com.j0ach1mmall3.ultimatecosmetics.modules.balloons;
 
-import com.j0ach1mmall3.ultimatecosmetics.Main;
-import com.j0ach1mmall3.ultimatecosmetics.api.CosmeticType;
-import com.j0ach1mmall3.ultimatecosmetics.api.Cosmetic;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
@@ -14,8 +11,6 @@ import org.bukkit.event.entity.EntityPortalEvent;
 import org.bukkit.event.entity.EntityUnleashEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.spigotmc.event.entity.EntityDismountEvent;
-
-import java.util.Set;
 
 /**
  * @author j0ach1mmall3 (business.j0ach1mmall3@gmail.com)
@@ -34,16 +29,14 @@ public final class BalloonsListener implements Listener {
         Entity ent = e.getEntity();
         if (ent.hasMetadata("Balloon")) {
             Player owner = Bukkit.getPlayer(ent.getMetadata("Balloon").get(0).asString());
-            Set<Cosmetic> balloons = ((Main) this.module.getParent()).getApi().getCosmetics(owner, CosmeticType.BALLOON);
-            for(Cosmetic cosmetic : balloons) {
+            for(Balloon cosmetic : this.module.getParent().getApi().getCosmetics(owner, Balloon.class)) {
                 cosmetic.give();
             }
             e.setCancelled(true);
         }
         if(ent.getVehicle() != null && ent.getVehicle().hasMetadata("Balloon")) {
             Player owner = Bukkit.getPlayer(ent.getVehicle().getMetadata("Balloon").get(0).asString());
-            Set<Cosmetic> balloons = ((Main) this.module.getParent()).getApi().getCosmetics(owner, CosmeticType.BALLOON);
-            for(Cosmetic cosmetic : balloons) {
+            for(Balloon cosmetic : this.module.getParent().getApi().getCosmetics(owner, Balloon.class)) {
                 cosmetic.give();
             }
             e.setCancelled(true);
@@ -55,15 +48,13 @@ public final class BalloonsListener implements Listener {
         Entity ent = e.getEntity();
         if (ent.hasMetadata("Balloon")) {
             Player owner = Bukkit.getPlayer(ent.getMetadata("Balloon").get(0).asString());
-            Set<Cosmetic> balloons = ((Main) this.module.getParent()).getApi().getCosmetics(owner, CosmeticType.BALLOON);
-            for(Cosmetic cosmetic : balloons) {
+            for(Balloon cosmetic : this.module.getParent().getApi().getCosmetics(owner, Balloon.class)) {
                 cosmetic.give();
             }
         }
         if(ent.getVehicle() != null && ent.getVehicle().hasMetadata("Balloon")) {
             Player owner = Bukkit.getPlayer(ent.getVehicle().getMetadata("Balloon").get(0).asString());
-            Set<Cosmetic> balloons = ((Main) this.module.getParent()).getApi().getCosmetics(owner, CosmeticType.BALLOON);
-            for(Cosmetic cosmetic : balloons) {
+            for(Balloon cosmetic : this.module.getParent().getApi().getCosmetics(owner, Balloon.class)) {
                 cosmetic.give();
             }
         }
@@ -74,15 +65,13 @@ public final class BalloonsListener implements Listener {
         Entity ent = e.getEntity();
         if (ent.hasMetadata("Balloon")) {
             Player owner = Bukkit.getPlayer(ent.getMetadata("Balloon").get(0).asString());
-            Set<Cosmetic> balloons = ((Main) this.module.getParent()).getApi().getCosmetics(owner, CosmeticType.BALLOON);
-            for(Cosmetic cosmetic : balloons) {
+            for(Balloon cosmetic : this.module.getParent().getApi().getCosmetics(owner, Balloon.class)) {
                 cosmetic.give();
             }
         }
         if(ent.getVehicle() != null && ent.getVehicle().hasMetadata("Balloon")) {
             Player owner = Bukkit.getPlayer(ent.getVehicle().getMetadata("Balloon").get(0).asString());
-            Set<Cosmetic> balloons = ((Main) this.module.getParent()).getApi().getCosmetics(owner, CosmeticType.BALLOON);
-            for(Cosmetic cosmetic : balloons) {
+            for(Balloon cosmetic : this.module.getParent().getApi().getCosmetics(owner, Balloon.class)) {
                 cosmetic.give();
             }
         }
@@ -93,16 +82,14 @@ public final class BalloonsListener implements Listener {
         Entity ent = e.getEntity();
         if (ent.hasMetadata("Balloon")) {
             Player owner = Bukkit.getPlayer(ent.getMetadata("Balloon").get(0).asString());
-            Set<Cosmetic> balloons = ((Main) this.module.getParent()).getApi().getCosmetics(owner, CosmeticType.BALLOON);
-            for(Cosmetic cosmetic : balloons) {
+            for(Balloon cosmetic : this.module.getParent().getApi().getCosmetics(owner, Balloon.class)) {
                 cosmetic.give();
             }
             e.setCancelled(true);
         }
         if(ent.getVehicle() != null && ent.getVehicle().hasMetadata("Balloon")) {
             Player owner = Bukkit.getPlayer(ent.getVehicle().getMetadata("Balloon").get(0).asString());
-            Set<Cosmetic> balloons = ((Main) this.module.getParent()).getApi().getCosmetics(owner, CosmeticType.BALLOON);
-            for(Cosmetic cosmetic : balloons) {
+            for(Balloon cosmetic : this.module.getParent().getApi().getCosmetics(owner, Balloon.class)) {
                 cosmetic.give();
             }
             e.setCancelled(true);
@@ -112,6 +99,6 @@ public final class BalloonsListener implements Listener {
     @EventHandler
     public void onPlayerInteract(PlayerInteractEvent e) {
         Player p = e.getPlayer();
-        if (((Main) this.module.getParent()).getApi().hasCosmetics(p, CosmeticType.BALLOON) && e.getAction() == Action.RIGHT_CLICK_BLOCK && e.getClickedBlock().getType().name().contains("FENCE")) e.setCancelled(true);
+        if (this.module.getParent().getApi().hasCosmetics(p, Balloon.class) && e.getAction() == Action.RIGHT_CLICK_BLOCK && e.getClickedBlock().getType().name().contains("FENCE")) e.setCancelled(true);
     }
 }

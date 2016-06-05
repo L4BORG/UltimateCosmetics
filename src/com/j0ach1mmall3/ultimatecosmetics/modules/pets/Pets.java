@@ -1,6 +1,5 @@
 package com.j0ach1mmall3.ultimatecosmetics.modules.pets;
 
-import com.j0ach1mmall3.ultimatecosmetics.Main;
 import com.j0ach1mmall3.ultimatecosmetics.api.Cosmetic;
 import com.j0ach1mmall3.ultimatecosmetics.api.storage.CosmeticStorage;
 import com.j0ach1mmall3.ultimatecosmetics.api.storage.EntityCosmeticStorage;
@@ -14,7 +13,7 @@ import java.util.List;
  * @author j0ach1mmall3 (business.j0ach1mmall3@gmail.com)
  * @since 23/08/2015
  */
-public final class Pets extends CosmeticConfig {
+public final class Pets extends CosmeticConfig<EntityCosmeticStorage> {
     private final int teleportInterval;
     private final int teleportDistance;
 
@@ -25,18 +24,23 @@ public final class Pets extends CosmeticConfig {
     }
 
     @Override
-    public Cosmetic getCosmetic(CosmeticStorage cosmeticStorage, Player player) {
-        return new Pet(this, player, (EntityCosmeticStorage) cosmeticStorage);
+    public Class<? extends Cosmetic> getCosmeticClass() {
+        return Pet.class;
+    }
+
+    @Override
+    public Cosmetic getCosmetic(EntityCosmeticStorage cosmeticStorage, Player player) {
+        return new Pet(this, player, cosmeticStorage);
     }
 
     @Override
     protected CosmeticStorage getCosmeticStorageByIdentifier(String section, String identifier) {
         String path = section + '.' + identifier + '.';
         return new EntityCosmeticStorage(
-                (Main) this.storage.getPlugin(),
+                this.storage.getPlugin(),
                 identifier,
                 this.config.getString(path + "Permission"),
-                this.customConfig.getGuiItemNew(this.config, path),
+                this.storage.getGuiItemNew(this.config, path),
                 EntityCosmeticStorage.EntityType.valueOf(this.config.getString(path + "PetType").toUpperCase()),
                 this.getEntityData(this.config.getStringList(path + "PetData"))
         );

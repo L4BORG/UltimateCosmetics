@@ -1,9 +1,6 @@
 package com.j0ach1mmall3.ultimatecosmetics.modules.trails;
 
 import com.j0ach1mmall3.jlib.methods.Random;
-import com.j0ach1mmall3.ultimatecosmetics.Main;
-import com.j0ach1mmall3.ultimatecosmetics.api.Cosmetic;
-import com.j0ach1mmall3.ultimatecosmetics.api.CosmeticType;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -27,7 +24,7 @@ public final class TrailsRunnable extends BukkitRunnable {
     @Override
     public void run() {
         final Set<Item> items = new HashSet<>();
-        for (Cosmetic cosmetic : ((Main) this.module.getParent()).getApi().getCosmetics(CosmeticType.TRAIL)) {
+        for (Trail cosmetic : this.module.getParent().getApi().getAllCosmetics(Trail.class)) {
             Player p = cosmetic.getPlayer();
             ItemStack ci = cosmetic.getCosmeticStorage().getGuiItem().getItem().clone();
             ItemMeta im = ci.getItemMeta();
@@ -35,7 +32,7 @@ public final class TrailsRunnable extends BukkitRunnable {
             ci.setItemMeta(im);
             final Item i = p.getWorld().dropItem(p.getLocation(), ci);
             i.setPickupDelay(Integer.MAX_VALUE);
-            ((Main) this.module.getParent()).queueEntity(i);
+            this.module.getParent().queueEntity(i);
             items.add(i);
         }
         new BukkitRunnable() {
@@ -43,10 +40,10 @@ public final class TrailsRunnable extends BukkitRunnable {
             public void run() {
                 for(Item i : items) {
                     i.remove();
-                    ((Main) TrailsRunnable.this.module.getParent()).removeEntity(i);
+                    TrailsRunnable.this.module.getParent().removeEntity(i);
                 }
 
             }
-        }.runTaskLater(this.module.getParent(), ((Trails) this.module.getConfig()).getRemoveDelay() * 20);
+        }.runTaskLater(this.module.getParent(), this.module.getConfig().getRemoveDelay() * 20);
     }
 }

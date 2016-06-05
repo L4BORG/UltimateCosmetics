@@ -4,21 +4,22 @@ import com.j0ach1mmall3.jlib.storage.Cache;
 import com.j0ach1mmall3.jlib.storage.database.CallbackHandler;
 import com.j0ach1mmall3.jlib.storage.file.yaml.ConfigLoader;
 import com.j0ach1mmall3.ultimatecosmetics.Main;
+import com.j0ach1mmall3.ultimatecosmetics.Methods;
 import org.bukkit.entity.Player;
 
-import java.util.HashSet;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
  * @author j0ach1mmall3 (business.j0ach1mmall3@gmail.com)
  * @since 5/11/2015
  */
-public final class FileDataLoader extends ConfigLoader implements DataLoader {
+public final class FileDataLoader extends ConfigLoader<Main> implements DataLoader {
     private final Cache<Map<String, Integer>> cache = new Cache<Map<String, Integer>>() {
         @Override
         public void getOffline(String s, CallbackHandler<Map<String, Integer>> callbackHandler) {
-            Map<String, Integer> map = ((Main) FileDataLoader.this.storage.getPlugin()).getDefaultAmmo();
-            for (String gadget : new HashSet<>(map.keySet())) {
+            Map<String, Integer> map = new HashMap<>(Methods.DEFAULT_AMMO);
+            for (String gadget : map.keySet()) {
                 map.put(gadget, FileDataLoader.this.config.getInt("Ammo." + s + '.' + gadget));
             }
             callbackHandler.callback(map);
@@ -30,17 +31,17 @@ public final class FileDataLoader extends ConfigLoader implements DataLoader {
             for(Map.Entry<String, Integer> entry : c.entrySet()) {
                 FileDataLoader.this.config.set("Ammo." + s + '.' + entry.getKey(), entry.getValue());
             }
-            FileDataLoader.this.customConfig.saveConfig(FileDataLoader.this.config);
+            FileDataLoader.this.storage.saveConfig(FileDataLoader.this.config);
         }
 
         @Override
         public void existsOffline(String s, CallbackHandler<Boolean> callbackHandler) {
-            callbackHandler.callback(FileDataLoader.this.customConfig.getKeys("Ammo").contains(s));
+            callbackHandler.callback(FileDataLoader.this.storage.getKeys("Ammo").contains(s));
         }
 
         @Override
         public Map<String, Integer> createOffline(String s) {
-            Map<String, Integer> map = ((Main) FileDataLoader.this.storage.getPlugin()).getDefaultAmmo();
+            Map<String, Integer> map = new HashMap<>(Methods.DEFAULT_AMMO);
             setOffline(s, map);
             return map;
         }
@@ -76,21 +77,21 @@ public final class FileDataLoader extends ConfigLoader implements DataLoader {
 
     @Override
     public void giveBackQueue(Player p) {
-        new CosmeticsQueue((Main) this.storage.getPlugin(), this.config.getString("NewQueue." + p.getUniqueId())).giveBack(p);
+        new CosmeticsQueue(this.storage.getPlugin(), this.config.getString("NewQueue." + p.getUniqueId())).giveBack(p);
     }
 
     @Override
     public void createQueue(Player p) {
-        if(this.customConfig.getKeys("NewQueue") == null || !this.customConfig.getKeys("NewQueue").contains(p.getUniqueId().toString())) {
+        if(this.storage.getKeys("NewQueue") == null || !this.storage.getKeys("NewQueue").contains(p.getUniqueId().toString())) {
             this.config.set("NewQueue." + p.getUniqueId(), "");
-            this.customConfig.saveConfig(this.config);
+            this.storage.saveConfig(this.config);
         }
     }
 
     @Override
     public void updateQueue(String uuid, CosmeticsQueue queue) {
         this.config.set("NewQueue." + uuid, queue.asString());
-        this.customConfig.saveConfig(this.config);
+        this.storage.saveConfig(this.config);
     }
 
     @Override
@@ -101,14 +102,14 @@ public final class FileDataLoader extends ConfigLoader implements DataLoader {
     @Override
     public void setStacker(Player p, boolean stacker) {
         this.config.set("Stacker." + p.getUniqueId(), stacker);
-        this.customConfig.saveConfig(this.config);
+        this.storage.saveConfig(this.config);
     }
 
     @Override
     public void createStacker(Player p) {
-        if(this.customConfig.getKeys("Stacker") == null || !this.customConfig.getKeys("Stacker").contains(p.getUniqueId().toString())) {
+        if(this.storage.getKeys("Stacker") == null || !this.storage.getKeys("Stacker").contains(p.getUniqueId().toString())) {
             this.config.set("Stacker." + p.getUniqueId(), true);
-            this.customConfig.saveConfig(this.config);
+            this.storage.saveConfig(this.config);
         }
     }
 
@@ -119,15 +120,15 @@ public final class FileDataLoader extends ConfigLoader implements DataLoader {
 
     @Override
     public void createPetName(Player p) {
-        if(this.customConfig.getKeys("PetNames") == null || !this.customConfig.getKeys("PetNames").contains(p.getUniqueId().toString())) {
+        if(this.storage.getKeys("PetNames") == null || !this.storage.getKeys("PetNames").contains(p.getUniqueId().toString())) {
             this.config.set("PetNames." + p.getUniqueId(), "");
-            this.customConfig.saveConfig(this.config);
+            this.storage.saveConfig(this.config);
         }
     }
 
     @Override
     public void setPetName(Player p, String name) {
         this.config.set("PetNames." + p.getUniqueId(), name.replace(".", ""));
-        this.customConfig.saveConfig(this.config);
+        this.storage.saveConfig(this.config);
     }
 }

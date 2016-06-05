@@ -3,10 +3,8 @@ package com.j0ach1mmall3.ultimatecosmetics.api;
 import com.j0ach1mmall3.ultimatecosmetics.Main;
 import org.bukkit.entity.Player;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -23,53 +21,46 @@ public final class CosmeticsAPI {
         this.plugin = plugin;
     }
 
-    void addCosmetics(Player p, Cosmetic... cosmetic) {
+    void addCosmetic(Player p, Cosmetic cosmetic) {
         Set<Cosmetic> cosmetics = this.getCosmetics(p);
-        cosmetics.addAll(Arrays.asList(cosmetic));
+        cosmetics.add(cosmetic);
         this.cosmetics.put(p, cosmetics);
     }
 
-    void removeCosmetics(Player p, CosmeticType... type) {
-        List<CosmeticType> types = Arrays.asList(type);
-        Set<Cosmetic> cosmetics = Collections.newSetFromMap(new ConcurrentHashMap<Cosmetic, Boolean>());
-        for(Cosmetic cosmetic : this.getCosmetics(p)) {
-            if(!types.contains(cosmetic.getCosmeticType())) cosmetics.add(cosmetic);
-        }
+    void removeCosmetic(Player p, Cosmetic cosmetic) {
+        Set<Cosmetic> cosmetics = this.getCosmetics(p);
+        cosmetics.remove(cosmetic);
         this.cosmetics.put(p, cosmetics);
     }
 
-    public boolean hasCosmetics(Player p, CosmeticType... type) {
-        return !this.getCosmetics(p, type).isEmpty();
+    public boolean hasCosmetics(Player p, Class<? extends Cosmetic> clazz) {
+        return !this.getCosmetics(p, clazz).isEmpty();
     }
 
     public Set<Cosmetic> getCosmetics(Player p) {
         return this.cosmetics.containsKey(p) ? this.cosmetics.get(p) : Collections.newSetFromMap(new ConcurrentHashMap<Cosmetic, Boolean>());
     }
 
-    public Set<Cosmetic> getCosmetics(Player p, CosmeticType... type) {
-        List<CosmeticType> types = Arrays.asList(type);
-        Set<Cosmetic> cosmetics = Collections.newSetFromMap(new ConcurrentHashMap<Cosmetic, Boolean>());
+    public <C extends Cosmetic> Set<C> getCosmetics(Player p, Class<C> clazz) {
+        Set<C> cosmetics = Collections.newSetFromMap(new ConcurrentHashMap<C, Boolean>());
         for(Cosmetic cosmetic : this.getCosmetics(p)) {
-            if(types.contains(cosmetic.getCosmeticType())) cosmetics.add(cosmetic);
+            if(cosmetic.getClass() == clazz) cosmetics.add((C) cosmetic);
         }
         return cosmetics;
     }
 
-    public Set<Cosmetic> getCosmetics() {
+    public Set<Cosmetic> getAllCosmetics() {
         Set<Cosmetic> cosmetics = Collections.newSetFromMap(new ConcurrentHashMap<Cosmetic, Boolean>());
-        for(Map.Entry<Player, Set<Cosmetic>> entry : this.cosmetics.entrySet()) {
-            cosmetics.addAll(entry.getValue());
+        for(Set<Cosmetic> cosmeticz : this.cosmetics.values()) {
+            cosmetics.addAll(cosmeticz);
         }
         return cosmetics;
     }
 
-    public Set<Cosmetic> getCosmetics(CosmeticType... type) {
-        List<CosmeticType> types = Arrays.asList(type);
-        Set<Cosmetic> cosmetics = Collections.newSetFromMap(new ConcurrentHashMap<Cosmetic, Boolean>());
-        for(Map.Entry<Player, Set<Cosmetic>> entry : this.cosmetics.entrySet()) {
-            for(Cosmetic cosmetic : entry.getValue()) {
-                if(types.contains(cosmetic.getCosmeticType())) cosmetics.add(cosmetic);
-            }
+    public <C extends Cosmetic> Set<C> getAllCosmetics(Class<C> clazz) {
+        Set<C> cosmetics = Collections.newSetFromMap(new ConcurrentHashMap<C, Boolean>());
+        for(Cosmetic cosmetic : this.getAllCosmetics()) {
+            if(cosmetic.getClass() == clazz) cosmetics.add((C) cosmetic);
         }
         return cosmetics;
     }

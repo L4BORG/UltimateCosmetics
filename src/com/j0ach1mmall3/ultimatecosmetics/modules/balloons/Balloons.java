@@ -9,25 +9,24 @@ import org.bukkit.entity.Player;
  * @author j0ach1mmall3 (business.j0ach1mmall3@gmail.com)
  * @since 20/08/2015
  */
-public final class Balloons extends CosmeticConfig {
-    private final boolean disableBatSounds;
+public final class Balloons extends CosmeticConfig<CosmeticStorage> {
     private final int teleportInterval;
     private final int teleportDistance;
 
     public Balloons(BalloonsModule module) {
         super("balloons.yml", module.getParent(), "Balloons");
-        this.disableBatSounds = this.config.getBoolean("DisableBatSounds");
         this.teleportInterval = this.config.getInt("TeleportInterval");
         this.teleportDistance = this.config.getInt("TeleportDistance");
     }
 
     @Override
-    public Cosmetic getCosmetic(CosmeticStorage cosmeticStorage, Player player) {
-        return new Balloon(this, player, cosmeticStorage);
+    public Class<? extends Cosmetic> getCosmeticClass() {
+        return Balloon.class;
     }
 
-    public boolean isDisableBatSounds() {
-        return this.disableBatSounds;
+    @Override
+    public Cosmetic getCosmetic(CosmeticStorage cosmeticStorage, Player player) {
+        return new Balloon(this, player, cosmeticStorage);
     }
 
     public int getTeleportInterval() {

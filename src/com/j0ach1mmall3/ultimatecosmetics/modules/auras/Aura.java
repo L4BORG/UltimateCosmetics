@@ -3,8 +3,6 @@ package com.j0ach1mmall3.ultimatecosmetics.modules.auras;
 import com.j0ach1mmall3.jlib.methods.Random;
 import com.j0ach1mmall3.jlib.methods.ReflectionAPI;
 import com.j0ach1mmall3.ultimatecosmetics.api.Cosmetic;
-import com.j0ach1mmall3.ultimatecosmetics.api.CosmeticType;
-import com.j0ach1mmall3.ultimatecosmetics.config.CosmeticConfig;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
@@ -14,21 +12,21 @@ import java.util.Collections;
  * @author j0ach1mmall3 (business.j0ach1mmall3@gmail.com)
  * @since 9/03/2016
  */
-public final class Aura extends Cosmetic {
-    private static final Class<?> PACKET = ReflectionAPI.getNmsClass("PacketPlayOutScoreboardTeam");
+public final class Aura extends Cosmetic<Auras, AuraStorage> {
+    private static final Class<?> PPOSTCLASS = ReflectionAPI.getNmsClass("PacketPlayOutScoreboardTeam");
     private final Object givePacket;
     private final Object removePacket;
 
     private String teamName = Random.getString(16, true, true);
     private AuraStorage.Color color;
 
-    public Aura(CosmeticConfig cosmeticConfig, Player player, AuraStorage cosmeticStorage) {
-        super(cosmeticConfig, player, cosmeticStorage, CosmeticType.AURA);
+    public Aura(Auras cosmeticConfig, Player player, AuraStorage cosmeticStorage) {
+        super(cosmeticConfig, player, cosmeticStorage);
         this.color = cosmeticStorage.getColor();
         Object givePacket = null;
         Object removePacket = null;
         try {
-            givePacket = PACKET.newInstance();
+            givePacket = PPOSTCLASS.newInstance();
             ReflectionAPI.setField(givePacket, "c", this.color.asString());
             ReflectionAPI.setField(givePacket, "d", "");
             ReflectionAPI.setField(givePacket, "e", "always");
@@ -38,7 +36,7 @@ public final class Aura extends Cosmetic {
             ReflectionAPI.setField(givePacket, "i", 0);
             ReflectionAPI.setField(givePacket, "j", 0);
 
-            removePacket = PACKET.newInstance();
+            removePacket = PPOSTCLASS.newInstance();
             ReflectionAPI.setField(removePacket, "i", 1);
         } catch (Exception e) {
             e.printStackTrace();
@@ -60,7 +58,7 @@ public final class Aura extends Cosmetic {
             ReflectionAPI.setField(this.givePacket, "a", this.teamName);
             ReflectionAPI.setField(this.givePacket, "b", this.teamName);
 
-            if(((AuraStorage) this.cosmeticStorage).getColor() == AuraStorage.Color.RAINBOW) {
+            if(this.cosmeticStorage.getColor() == AuraStorage.Color.RAINBOW) {
                 if(this.color == AuraStorage.Color.RAINBOW) this.color = AuraStorage.Color.BLACK;
                 ReflectionAPI.setField(this.givePacket, "c", this.color.asString());
                 this.color = AuraStorage.Color.values()[this.color.ordinal() + 1];

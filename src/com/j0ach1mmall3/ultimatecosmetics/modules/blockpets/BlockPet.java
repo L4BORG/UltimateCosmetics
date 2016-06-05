@@ -2,11 +2,9 @@ package com.j0ach1mmall3.ultimatecosmetics.modules.blockpets;
 
 import com.j0ach1mmall3.jlib.integration.Placeholders;
 import com.j0ach1mmall3.jlib.storage.database.CallbackHandler;
-import com.j0ach1mmall3.ultimatecosmetics.api.Cosmetic;
-import com.j0ach1mmall3.ultimatecosmetics.api.CosmeticType;
-import com.j0ach1mmall3.ultimatecosmetics.api.storage.CosmeticStorage;
 import com.j0ach1mmall3.ultimatecosmetics.Reflection;
-import com.j0ach1mmall3.ultimatecosmetics.config.CosmeticConfig;
+import com.j0ach1mmall3.ultimatecosmetics.api.Cosmetic;
+import com.j0ach1mmall3.ultimatecosmetics.api.storage.CosmeticStorage;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.EntityType;
@@ -23,12 +21,12 @@ import java.util.concurrent.Callable;
  * @author j0ach1mmall3 (business.j0ach1mmall3@gmail.com)
  * @since 9/03/2016
  */
-public final class BlockPet extends Cosmetic {
+public final class BlockPet extends Cosmetic<BlockPets, CosmeticStorage> {
     private Ocelot ocelot;
     private FallingBlock block;
 
-    public BlockPet(CosmeticConfig cosmeticConfig, Player player, CosmeticStorage cosmeticStorage) {
-        super(cosmeticConfig, player, cosmeticStorage, CosmeticType.BLOCKPET);
+    public BlockPet(BlockPets cosmeticConfig, Player player, CosmeticStorage cosmeticStorage) {
+        super(cosmeticConfig, player, cosmeticStorage);
     }
 
     @Override

@@ -1,8 +1,6 @@
 package com.j0ach1mmall3.ultimatecosmetics.modules.hearts;
 
 import com.j0ach1mmall3.ultimatecosmetics.api.Cosmetic;
-import com.j0ach1mmall3.ultimatecosmetics.api.CosmeticType;
-import com.j0ach1mmall3.ultimatecosmetics.config.CosmeticConfig;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 
@@ -10,18 +8,18 @@ import org.bukkit.potion.PotionEffect;
  * @author j0ach1mmall3 (business.j0ach1mmall3@gmail.com)
  * @since 9/03/2016
  */
-public final class Heart extends Cosmetic {
+public final class Heart extends Cosmetic<Hearts, HeartStorage> {
 
     private PotionEffect colorEffect;
     private PotionEffect effectsEffect;
 
-    public Heart(CosmeticConfig cosmeticConfig, Player player, HeartStorage cosmeticStorage) {
-        super(cosmeticConfig, player, cosmeticStorage, CosmeticType.HEART);
+    public Heart(Hearts cosmeticConfig, Player player, HeartStorage cosmeticStorage) {
+        super(cosmeticConfig, player, cosmeticStorage);
     }
 
     @Override
     protected boolean giveInternal() {
-        HeartStorage heartStorage = (HeartStorage) this.cosmeticStorage;
+        HeartStorage heartStorage = this.cosmeticStorage;
         int rows = heartStorage.getRows();
         HeartStorage.Color color = heartStorage.getColor();
         HeartStorage.Effect effect = heartStorage.getEffect();
@@ -41,7 +39,7 @@ public final class Heart extends Cosmetic {
 
     @Override
     protected void removeInternal() {
-        HeartStorage heartStorage = (HeartStorage) this.cosmeticStorage;
+        HeartStorage heartStorage = this.cosmeticStorage;
         int rows = heartStorage.getRows();
         HeartStorage.Color color = heartStorage.getColor();
         HeartStorage.Effect effect = heartStorage.getEffect();

@@ -1,18 +1,17 @@
 package com.j0ach1mmall3.ultimatecosmetics.modules.mounts;
 
-import com.j0ach1mmall3.jlib.plugin.modularization.ModularizedPlugin;
 import com.j0ach1mmall3.jlib.plugin.modularization.PluginModule;
-import com.j0ach1mmall3.jlib.storage.file.yaml.ConfigLoader;
+import com.j0ach1mmall3.ultimatecosmetics.Main;
 import org.bukkit.scheduler.BukkitTask;
 
 /**
  * @author j0ach1mmall3 (business.j0ach1mmall3@gmail.com)
  * @since 8/03/2016
  */
-public final class MountsModule extends PluginModule {
+public final class MountsModule extends PluginModule<Main, Mounts> {
     private BukkitTask task;
 
-    public MountsModule(ModularizedPlugin parent) {
+    public MountsModule(Main parent) {
         super(parent);
     }
 
@@ -25,11 +24,6 @@ public final class MountsModule extends PluginModule {
 
     @Override
     public void onDisable() {
-
-    }
-
-    @Override
-    public ConfigLoader getConfig() {
-        return this.config;
+        // NOP
     }
 }

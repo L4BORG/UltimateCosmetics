@@ -1,9 +1,6 @@
 package com.j0ach1mmall3.ultimatecosmetics.modules.pets;
 
 import com.j0ach1mmall3.jlib.integration.Placeholders;
-import com.j0ach1mmall3.ultimatecosmetics.Main;
-import com.j0ach1mmall3.ultimatecosmetics.api.Cosmetic;
-import com.j0ach1mmall3.ultimatecosmetics.api.CosmeticType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -48,7 +45,7 @@ public final class PetsListener implements Listener {
         if (e.getCause() == EntityDamageEvent.DamageCause.SUFFOCATION) {
             if (e.getEntity() instanceof Player) {
                 Player p = (Player) e.getEntity();
-                if(((Main) this.module.getParent()).getApi().hasCosmetics(p, CosmeticType.PET)) e.setCancelled(true);
+                if(this.module.getParent().getApi().hasCosmetics(p, Pet.class)) e.setCancelled(true);
             }
         }
     }
@@ -57,7 +54,7 @@ public final class PetsListener implements Listener {
     public void onInventoryOpen(InventoryOpenEvent e) {
         if (e.getInventory() instanceof HorseInventory) {
             Player p = (Player) e.getPlayer();
-            if(((Main) this.module.getParent()).getApi().hasCosmetics(p, CosmeticType.PET)) e.setCancelled(true);
+            if(this.module.getParent().getApi().hasCosmetics(p, Pet.class)) e.setCancelled(true);
         }
     }
 
@@ -104,10 +101,10 @@ public final class PetsListener implements Listener {
     @EventHandler
     public void onPlayerInteractEntity(PlayerInteractEntityEvent e) {
         Player p = e.getPlayer();
-        for(Cosmetic cosmetic : ((Main) this.module.getParent()).getApi().getCosmetics(p, CosmeticType.PET)) {
+        for(Pet cosmetic : this.module.getParent().getApi().getCosmetics(p, Pet.class)) {
             e.setCancelled(true);
-            if (e.getRightClicked().getUniqueId().equals(((Pet) cosmetic).getEntity().getUniqueId()) && p.hasPermission("uc.renamepet") && !this.renamingPlayers.contains(p)) {
-                String renamePet = ((Main) this.module.getParent()).getLang().getRenamePet();
+            if (e.getRightClicked().getUniqueId().equals(cosmetic.getEntity().getUniqueId()) && p.hasPermission("uc.renamepet") && !this.renamingPlayers.contains(p)) {
+                String renamePet = this.module.getParent().getLang().getRenamePet();
                 if(!renamePet.isEmpty()) p.sendMessage(Placeholders.parse(renamePet, p));
                 this.renamingPlayers.add(p);
             }
@@ -119,13 +116,13 @@ public final class PetsListener implements Listener {
         Player p = e.getPlayer();
         if(this.renamingPlayers.contains(p)) {
             this.renamingPlayers.remove(p);
-            for(Cosmetic cosmetic : ((Main) this.module.getParent()).getApi().getCosmetics(p, CosmeticType.PET)) {
+            for(Pet cosmetic : this.module.getParent().getApi().getCosmetics(p, Pet.class)) {
                 e.setCancelled(true);
-                ((Pet) cosmetic).getEntity().setCustomName(Placeholders.parse(e.getMessage(), p));
-                ((Main) this.module.getParent()).getDataLoader().setPetName(p, e.getMessage());
+                cosmetic.getEntity().setCustomName(Placeholders.parse(e.getMessage(), p));
+                this.module.getParent().getDataLoader().setPetName(p, e.getMessage());
 
             }
-            String successfulRename = ((Main) this.module.getParent()).getLang().getSuccessfulRename();
+            String successfulRename = this.module.getParent().getLang().getSuccessfulRename();
             if(!successfulRename.isEmpty()) p.sendMessage(Placeholders.parse(successfulRename, p).replace("%petname%", Placeholders.parse(e.getMessage(), p)));
         }
     }
@@ -143,8 +140,8 @@ public final class PetsListener implements Listener {
     @EventHandler
     public void onPlayerTeleport(PlayerTeleportEvent e) {
         Player p = e.getPlayer();
-        for(Cosmetic cosmetic : ((Main) this.module.getParent()).getApi().getCosmetics(p, CosmeticType.PET)) {
-            ((Pet) cosmetic).getEntity().teleport(p);
+        for(Pet cosmetic : this.module.getParent().getApi().getCosmetics(p, Pet.class)) {
+            cosmetic.getEntity().teleport(p);
         }
     }
 

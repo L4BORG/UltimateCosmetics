@@ -18,6 +18,6 @@ public final class MorphsListener1_9 implements Listener {
 
     @EventHandler
     public void onPlayerSwapItems(PlayerSwapHandItemsEvent e) {
-        if (((Morphs) this.module.getConfig()).isAbilityItem(e.getOffHandItem())) e.setCancelled(true);
+        if (this.module.getConfig().isAbilityItem(e.getOffHandItem())) e.setCancelled(true);
     }
 }

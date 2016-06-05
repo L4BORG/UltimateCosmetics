@@ -1,15 +1,14 @@
 package com.j0ach1mmall3.ultimatecosmetics.modules.fireworks;
 
-import com.j0ach1mmall3.jlib.plugin.modularization.ModularizedPlugin;
 import com.j0ach1mmall3.jlib.plugin.modularization.PluginModule;
-import com.j0ach1mmall3.jlib.storage.file.yaml.ConfigLoader;
+import com.j0ach1mmall3.ultimatecosmetics.Main;
 
 /**
  * @author j0ach1mmall3 (business.j0ach1mmall3@gmail.com)
  * @since 8/03/2016
  */
-public final class FireworksModule extends PluginModule {
-    public FireworksModule(ModularizedPlugin parent) {
+public final class FireworksModule extends PluginModule<Main, Fireworks> {
+    public FireworksModule(Main parent) {
         super(parent);
     }
 
@@ -20,11 +19,6 @@ public final class FireworksModule extends PluginModule {
 
     @Override
     public void onDisable() {
-
-    }
-
-    @Override
-    public ConfigLoader getConfig() {
-        return this.config;
+        // NOP
     }
 }

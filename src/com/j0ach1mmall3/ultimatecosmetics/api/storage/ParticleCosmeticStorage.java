@@ -2,11 +2,15 @@ package com.j0ach1mmall3.ultimatecosmetics.api.storage;
 
 import com.j0ach1mmall3.jlib.inventory.GuiItem;
 import com.j0ach1mmall3.ultimatecosmetics.Main;
-import com.j0ach1mmall3.ultimatecosmetics.api.CosmeticType;
+import com.j0ach1mmall3.ultimatecosmetics.api.Cosmetic;
+import com.j0ach1mmall3.ultimatecosmetics.modules.bowtrails.BowTrail;
+import com.j0ach1mmall3.ultimatecosmetics.modules.cloaks.Cloak;
+import com.j0ach1mmall3.ultimatecosmetics.modules.particles.Particle;
 import org.bukkit.Effect;
 
 import java.util.Arrays;
-import java.util.EnumSet;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * @author j0ach1mmall3 (business.j0ach1mmall3@gmail.com)
@@ -49,27 +53,27 @@ public final class ParticleCosmeticStorage extends CosmeticStorage {
     }
 
     public enum Shape {
-        RANDOM(CosmeticType.PARTICLE),
-        HELIX(CosmeticType.PARTICLE),
-        DOUBLEHELIX(CosmeticType.PARTICLE),
-        DOME(CosmeticType.PARTICLE),
-        CROSS(CosmeticType.PARTICLE),
-        DOUBLECROSS(CosmeticType.PARTICLE),
-        SPHERE(CosmeticType.PARTICLE),
-        CYLINDER(CosmeticType.PARTICLE),
-        CONE(CosmeticType.PARTICLE),
-        TRAIL(CosmeticType.PARTICLE, CosmeticType.BOWTRAIL),
-        HALO(CosmeticType.CLOAK),
-        FLAT(CosmeticType.CLOAK),
-        WINGS(CosmeticType.CLOAK);
-        private final EnumSet<CosmeticType> types = EnumSet.noneOf(CosmeticType.class);
+        RANDOM(Particle.class),
+        HELIX(Particle.class),
+        DOUBLEHELIX(Particle.class),
+        DOME(Particle.class),
+        CROSS(Particle.class),
+        DOUBLECROSS(Particle.class),
+        SPHERE(Particle.class),
+        CYLINDER(Particle.class),
+        CONE(Particle.class),
+        TRAIL(Particle.class, BowTrail.class),
+        HALO(Cloak.class),
+        FLAT(Cloak.class),
+        WINGS(Cloak.class);
+        private final Set<Class> types = new HashSet<>();
 
-        Shape(CosmeticType... types) {
-            this.types.addAll(Arrays.asList(types));
+        Shape(Class... classes) {
+            this.types.addAll(Arrays.asList(classes));
         }
 
-        public boolean isCosmeticType(CosmeticType type) {
-            return this.types.contains(type);
+        public boolean isCosmeticType(Class<? extends Cosmetic> clazz) {
+            return this.types.contains(clazz);
         }
     }
 }

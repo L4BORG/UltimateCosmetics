@@ -4,9 +4,7 @@ import com.j0ach1mmall3.jlib.integration.Placeholders;
 import com.j0ach1mmall3.jlib.inventory.CustomItem;
 import com.j0ach1mmall3.jlib.methods.Parsing;
 import com.j0ach1mmall3.jlib.methods.Random;
-import com.j0ach1mmall3.ultimatecosmetics.Main;
-import com.j0ach1mmall3.ultimatecosmetics.api.Cosmetic;
-import com.j0ach1mmall3.ultimatecosmetics.api.CosmeticType;
+import com.j0ach1mmall3.ultimatecosmetics.Methods;
 import com.j0ach1mmall3.ultimatecosmetics.api.storage.CooldownCosmeticStorage;
 import me.libraryaddict.disguise.disguisetypes.DisguiseType;
 import org.bukkit.Effect;
@@ -71,7 +69,7 @@ public final class MorphsListener implements Listener {
             Player p = (Player) e.getEntity();
             double damage = e.getDamage();
             if (damage >= p.getHealth()) {
-                for(Cosmetic cosmetic : ((Main) this.module.getParent()).getApi().getCosmetics(p, CosmeticType.MORPH)) {
+                for(Morph cosmetic : this.module.getParent().getApi().getCosmetics(p, Morph.class)) {
                     cosmetic.remove();
                 }
                 return;
@@ -85,7 +83,7 @@ public final class MorphsListener implements Listener {
         if (e.getDamager().hasMetadata("AbilityProjectile")) {
             e.setCancelled(true);
             e.getDamager().remove();
-            ((Main) this.module.getParent()).removeEntity(e.getDamager());
+            this.module.getParent().removeEntity(e.getDamager());
             return;
         }
         if (e.getDamager().hasMetadata("MorphAbility") || (e.getEntity() instanceof LivingEntity && this.isEntity(e.getEntity()))) e.setCancelled(true);
@@ -96,41 +94,41 @@ public final class MorphsListener implements Listener {
         if (e.getEntity().hasMetadata("AbilityProjectile")) {
             e.setCancelled(true);
             e.getEntity().remove();
-            ((Main) this.module.getParent()).removeEntity(e.getEntity());
+            this.module.getParent().removeEntity(e.getEntity());
         }
     }
 
     @EventHandler
     public void onDrop(PlayerDropItemEvent e) {
-        if (((Morphs) this.module.getConfig()).isAbilityItem(e.getItemDrop().getItemStack())) e.setCancelled(true);
+        if (this.module.getConfig().isAbilityItem(e.getItemDrop().getItemStack())) e.setCancelled(true);
     }
 
     @EventHandler
     public void onInventoryClick(InventoryClickEvent e) {
-        if (((Morphs) this.module.getConfig()).isAbilityItem(e.getCurrentItem())) e.setCancelled(true);
+        if (this.module.getConfig().isAbilityItem(e.getCurrentItem())) e.setCancelled(true);
     }
 
     @EventHandler
     public void onProjectileHit(ProjectileHitEvent e) {
         if (e.getEntity().hasMetadata("AbilityEgg")) {
-            ((Main) this.module.getParent()).removeEntity(e.getEntity());
+            this.module.getParent().removeEntity(e.getEntity());
             e.getEntity().remove();
             int duration = e.getEntity().getMetadata("AbilityEgg").get(0).asInt();
             final Ageable chicken = (Ageable) e.getEntity().getWorld().spawnEntity(e.getEntity().getLocation(), EntityType.CHICKEN);
             chicken.setBaby();
             chicken.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, duration * 20, 1));
-            ((Main) this.module.getParent()).queueEntity(chicken);
+            this.module.getParent().queueEntity(chicken);
             new BukkitRunnable() {
                 @Override
                 public void run() {
-                    ((Main) MorphsListener.this.module.getParent()).removeEntity(chicken);
+                    MorphsListener.this.module.getParent().removeEntity(chicken);
                     chicken.remove();
                 }
             }.runTaskLater(this.module.getParent(), 20 * duration);
             return;
         }
         if (e.getEntity().hasMetadata("AbilityProjectile")) {
-            ((Main) this.module.getParent()).removeEntity(e.getEntity());
+            this.module.getParent().removeEntity(e.getEntity());
             e.getEntity().remove();
         }
     }
@@ -172,8 +170,9 @@ public final class MorphsListener implements Listener {
     @SuppressWarnings("deprecation")
     public void onInteract(PlayerInteractEvent e) {
         final Player p = e.getPlayer();
-        Morphs config = (Morphs) this.module.getConfig();
-        if (((Main) this.module.getParent()).getApi().hasCosmetics(p, CosmeticType.MORPH) && config.isAbilityItem(p.getItemInHand())) {
+        if(e.getAction() == Action.PHYSICAL || p.getItemInHand() == null) return;
+        Morphs config = this.module.getConfig();
+        if (this.module.getParent().getApi().hasCosmetics(p, Morph.class) && config.isAbilityItem(p.getItemInHand())) {
             MorphStorage morph = config.getMorphByAbilityItem(p.getItemInHand());
             if (e.getAction() != Action.PHYSICAL) e.setCancelled(true);
             if (this.isInCooldown(p, morph)) return;
@@ -202,7 +201,7 @@ public final class MorphsListener implements Listener {
                     Fireball fireball = p.launchProjectile(Fireball.class, velocity);
                     fireball.setMetadata("AbilityProjectile", playerValue);
                     fireball.setIsIncendiary(false);
-                    ((Main) this.module.getParent()).queueEntity(fireball);
+                    this.module.getParent().queueEntity(fireball);
                     break;
                 case SPIDER:
                 case CAVE_SPIDER:
@@ -216,7 +215,7 @@ public final class MorphsListener implements Listener {
                         velocity.setZ(velocity.getZ() + 0.5 * Random.getDouble(true));
                         Egg egg = p.launchProjectile(Egg.class, velocity);
                         egg.setMetadata("AbilityEgg", durationValue);
-                        ((Main) this.module.getParent()).queueEntity(egg);
+                        this.module.getParent().queueEntity(egg);
                     }
                     break;
                 case COW:
@@ -252,7 +251,7 @@ public final class MorphsListener implements Listener {
                     final Set<Zombie> zombies = new HashSet<>();
                     for (int i = 0; i < 5; i++) {
                         final Zombie zombie = (Zombie) p.getWorld().spawnEntity(p.getLocation(), EntityType.ZOMBIE);
-                        ((Main) this.module.getParent()).queueEntity(zombie);
+                        this.module.getParent().queueEntity(zombie);
                         zombie.addPotionEffect(speed);
                         zombie.setBaby(false);
                         zombie.setMetadata("MorphAbility", playerValue);
@@ -262,7 +261,7 @@ public final class MorphsListener implements Listener {
                         @Override
                         public void run() {
                             for(Zombie zombie : zombies) {
-                                ((Main) MorphsListener.this.module.getParent()).removeEntity(zombie);
+                                MorphsListener.this.module.getParent().removeEntity(zombie);
                                 zombie.remove();
                             }
                         }
@@ -286,7 +285,7 @@ public final class MorphsListener implements Listener {
                     final Set<Zombie> pigZombies = new HashSet<>();
                     for (int i = 0; i < 5; i++) {
                         final Zombie zombie = (Zombie) p.getWorld().spawnEntity(p.getLocation(), EntityType.PIG_ZOMBIE);
-                        ((Main) this.module.getParent()).queueEntity(zombie);
+                        this.module.getParent().queueEntity(zombie);
                         zombie.setBaby(true);
                         zombie.addPotionEffect(speed);
                         zombie.setMetadata("MorphAbility", playerValue);
@@ -296,7 +295,7 @@ public final class MorphsListener implements Listener {
                         @Override
                         public void run() {
                             for(Zombie zombie : pigZombies) {
-                                ((Main) MorphsListener.this.module.getParent()).removeEntity(zombie);
+                                MorphsListener.this.module.getParent().removeEntity(zombie);
                                 zombie.remove();
                             }
                         }
@@ -314,7 +313,7 @@ public final class MorphsListener implements Listener {
                         velocity.setZ(velocity.getZ() + 0.5 * Random.getDouble(true));
                         Arrow arrow = p.launchProjectile(Arrow.class, velocity);
                         arrow.setMetadata("AbilityProjectile", playerValue);
-                        ((Main) this.module.getParent()).queueEntity(arrow);
+                        this.module.getParent().queueEntity(arrow);
                     }
                     break;
                 case SNOWMAN:
@@ -325,14 +324,14 @@ public final class MorphsListener implements Listener {
                         velocity.setZ(velocity.getZ() + 0.5 * Random.getDouble(true));
                         Snowball snowball = p.launchProjectile(Snowball.class, velocity);
                         snowball.setMetadata("AbilityProjectile", playerValue);
-                        ((Main) this.module.getParent()).queueEntity(snowball);
+                        this.module.getParent().queueEntity(snowball);
                     }
                     break;
                 case VILLAGER:
                     final Set<Villager> villagers = new HashSet<>();
                     for (int i = 0; i < 5; i++) {
                         final Villager villager = (Villager) p.getWorld().spawnEntity(p.getLocation(), EntityType.VILLAGER);
-                        ((Main) this.module.getParent()).queueEntity(villager);
+                        this.module.getParent().queueEntity(villager);
                         villager.setBaby();
                         villager.addPotionEffect(speed);
                         villagers.add(villager);
@@ -341,7 +340,7 @@ public final class MorphsListener implements Listener {
                         @Override
                         public void run() {
                             for(Villager villager : villagers) {
-                                ((Main) MorphsListener.this.module.getParent()).removeEntity(villager);
+                                MorphsListener.this.module.getParent().removeEntity(villager);
                                 villager.remove();
                             }
                         }
@@ -362,14 +361,14 @@ public final class MorphsListener implements Listener {
                     skull.setMetadata("AbilityProjectile", playerValue);
                     skull.setCharged(true);
                     skull.setIsIncendiary(false);
-                    ((Main) this.module.getParent()).queueEntity(skull);
+                    this.module.getParent().queueEntity(skull);
                     break;
                 case ZOMBIE:
                 case ZOMBIE_VILLAGER:
                     final Set<Zombie> babyZombies = new HashSet<>();
                     for (int i = 0; i < 5; i++) {
                         final Zombie zombie = (Zombie) p.getWorld().spawnEntity(p.getLocation(), EntityType.ZOMBIE);
-                        ((Main) this.module.getParent()).queueEntity(zombie);
+                        this.module.getParent().queueEntity(zombie);
                         zombie.addPotionEffect(speed);
                         zombie.setBaby(true);
                         zombie.setVillager(morph.getMorphType() != DisguiseType.ZOMBIE);
@@ -380,7 +379,7 @@ public final class MorphsListener implements Listener {
                         @Override
                         public void run() {
                             for(Zombie zombie : babyZombies) {
-                                ((Main) MorphsListener.this.module.getParent()).removeEntity(zombie);
+                                MorphsListener.this.module.getParent().removeEntity(zombie);
                                 zombie.remove();
                             }
                         }
@@ -392,9 +391,9 @@ public final class MorphsListener implements Listener {
     }
 
     private boolean isEntity(Entity ent) {
-        if (ent.hasMetadata("AbilityItem") || ent instanceof LivingEntity && ((LivingEntity) ent).getCustomName() != null && ((LivingEntity) ent).getCustomName().endsWith("AbilityItem"))
+        if (ent.hasMetadata("AbilityItem") || ent instanceof LivingEntity && ent.getCustomName() != null && ent.getCustomName().endsWith("AbilityItem"))
             return true;
-        for (Entity e : ((Main) this.module.getParent()).getEntitiesQueue()) {
+        for (Entity e : this.module.getParent().getEntitiesQueue()) {
             if (ent.getUniqueId().equals(e.getUniqueId())) return true;
         }
         return false;
@@ -402,7 +401,7 @@ public final class MorphsListener implements Listener {
 
     private boolean isInCooldown(Player p, CooldownCosmeticStorage storage) {
         if (this.cooldownPlayers.get(p) != null && this.cooldownPlayers.get(p).split(":")[0].equals(storage.getIdentifier())) {
-            ((Main) this.module.getParent()).informPlayerNoPermission(p, Placeholders.parse(((Main) this.module.getParent()).getLang().getGadgetsCooldown().replace("%timeleft%", String.valueOf(storage.getCooldown() - (System.currentTimeMillis() - Long.valueOf(this.cooldownPlayers.get(p).split(":")[1])) / 1000))));
+            Methods.informPlayerNoPermission(p, Placeholders.parse(this.module.getParent().getLang().getGadgetsCooldown().replace("%timeleft%", String.valueOf(storage.getCooldown() - (System.currentTimeMillis() - Long.valueOf(this.cooldownPlayers.get(p).split(":")[1])) / 1000))));
             return true;
         }
         return false;
@@ -430,14 +429,14 @@ public final class MorphsListener implements Listener {
             Item item = p.getWorld().dropItemNaturally(p.getEyeLocation(), is);
             item.setVelocity(velocity);
             item.setMetadata("AbilityItem", metadataValue);
-            ((Main) this.module.getParent()).queueEntity(item);
+            this.module.getParent().queueEntity(item);
             items.add(item);
         }
         new BukkitRunnable() {
             @Override
             public void run() {
                 for(Item item : items) {
-                    ((Main) MorphsListener.this.module.getParent()).removeEntity(item);
+                    MorphsListener.this.module.getParent().removeEntity(item);
                     item.remove();
                 }
             }
@@ -458,7 +457,7 @@ public final class MorphsListener implements Listener {
             Item item = p.getWorld().dropItemNaturally(p.getEyeLocation(), is);
             item.setVelocity(velocity);
             item.setMetadata("AbilityItem", metadataValue);
-            ((Main) this.module.getParent()).queueEntity(item);
+            this.module.getParent().queueEntity(item);
             items.add(item);
         }
 
@@ -466,7 +465,7 @@ public final class MorphsListener implements Listener {
             @Override
             public void run() {
                 for(Item item : items) {
-                    ((Main) MorphsListener.this.module.getParent()).removeEntity(item);
+                    MorphsListener.this.module.getParent().removeEntity(item);
                     item.remove();
                 }
 

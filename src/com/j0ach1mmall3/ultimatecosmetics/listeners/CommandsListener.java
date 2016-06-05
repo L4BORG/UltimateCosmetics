@@ -1,9 +1,9 @@
 package com.j0ach1mmall3.ultimatecosmetics.listeners;
 
 import com.j0ach1mmall3.jlib.methods.Sounds;
+import com.j0ach1mmall3.jlib.plugin.modularization.PluginModule;
 import com.j0ach1mmall3.ultimatecosmetics.Main;
-import com.j0ach1mmall3.ultimatecosmetics.api.CosmeticType;
-import com.j0ach1mmall3.ultimatecosmetics.config.Config;
+import com.j0ach1mmall3.ultimatecosmetics.Methods;
 import com.j0ach1mmall3.ultimatecosmetics.config.CosmeticConfig;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -30,20 +30,19 @@ public final class CommandsListener implements Listener {
         //Debug boolean if ever needed
         boolean debug = false;
         if(debug) return;
-        if (message.equalsIgnoreCase(((Config) this.plugin.getBabies()).getCosmeticsCommand())) {
+        if (message.equalsIgnoreCase(this.plugin.getBabies().getCosmeticsCommand())) {
             e.setCancelled(true);
             this.plugin.getGuiHandler().openMainGui(p);
-            if(((Config) this.plugin.getBabies()).getGuiOpenSound() != null) Sounds.playSound(p, ((Config) this.plugin.getBabies()).getGuiOpenSound());
+            if(this.plugin.getBabies().getGuiOpenSound() != null) Sounds.playSound(p, this.plugin.getBabies().getGuiOpenSound());
             return;
         }
-        for(CosmeticType type : CosmeticType.values()) {
-            CosmeticConfig config = this.plugin.getConfigByType(type);
-            if(config != null && config.getCommand().equalsIgnoreCase(message)) {
+        for(PluginModule<Main, CosmeticConfig> pluginModule : this.plugin.getModules()) {
+            if(pluginModule.isEnabled() && pluginModule.getConfig().getCommand().equalsIgnoreCase(message)) {
                 e.setCancelled(true);
-                if(((Config) this.plugin.getBabies()).getWorldsBlacklist().contains(p.getWorld().getName()) || config.getWorldsBlacklist().contains(p.getWorld().getName())) this.plugin.informPlayerNotEnabled(p);
+                if(this.plugin.getBabies().getWorldsBlacklist().contains(p.getWorld().getName()) || pluginModule.getConfig().getWorldsBlacklist().contains(p.getWorld().getName())) Methods.informPlayerNoPermission(p, this.plugin.getLang().getNotEnabled());
                 else {
-                    this.plugin.getGuiHandler().openGui(p, type, 0);
-                    if(((Config) this.plugin.getBabies()).getGuiOpenSound() != null) Sounds.playSound(p, ((Config) this.plugin.getBabies()).getGuiOpenSound());
+                    this.plugin.getGuiHandler().openGui(p, pluginModule.getConfig(), 0);
+                    if(this.plugin.getBabies().getGuiOpenSound() != null) Sounds.playSound(p, this.plugin.getBabies().getGuiOpenSound());
                 }
                 break;
             }

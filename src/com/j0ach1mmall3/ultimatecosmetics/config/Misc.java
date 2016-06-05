@@ -16,7 +16,7 @@ import java.util.List;
  * @author j0ach1mmall3 (business.j0ach1mmall3@gmail.com)
  * @since 23/08/2015
  */
-public final class Misc extends ConfigLoader {
+public final class Misc extends ConfigLoader<Main> {
     private final boolean stackerEnabled;
     private final String stackerPermission;
     private final String stackerNoPermissionMessage;
@@ -49,7 +49,7 @@ public final class Misc extends ConfigLoader {
 
     private List<DoubleJumpStorage> getDoubleJumpGroupsInternal() {
         List<DoubleJumpStorage> doubleJumpz = new ArrayList<>();
-        for(String s : this.customConfig.getKeys("DoubleJump.Groups")) {
+        for(String s : this.storage.getKeys("DoubleJump.Groups")) {
             doubleJumpz.add(this.getDoubleJumpGroupByIdentifier(s));
         }
         return doubleJumpz;
@@ -58,7 +58,7 @@ public final class Misc extends ConfigLoader {
     private DoubleJumpStorage getDoubleJumpGroupByIdentifier(String identifier) {
         String path = "DoubleJump.Groups." + identifier + '.';
         return new DoubleJumpStorage(
-                (Main) this.storage.getPlugin(),
+                this.storage.getPlugin(),
                 identifier,
                 this.config.getString(path + "Permission"),
                 this.config.getInt(path + "Multiplier"),

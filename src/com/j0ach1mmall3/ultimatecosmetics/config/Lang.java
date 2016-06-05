@@ -9,7 +9,7 @@ import org.bukkit.ChatColor;
  * @author j0ach1mmall3 (business.j0ach1mmall3@gmail.com)
  * @since 21/08/2015
  */
-public final class Lang extends ConfigLoader {
+public final class Lang extends ConfigLoader<Main> {
     private final String notEnabled;
     private final String commandNoPermission;
     private final String alreadyOnHead;

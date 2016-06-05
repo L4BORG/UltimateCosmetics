@@ -1,6 +1,5 @@
 package com.j0ach1mmall3.ultimatecosmetics.modules.auras;
 
-import com.j0ach1mmall3.ultimatecosmetics.Main;
 import com.j0ach1mmall3.ultimatecosmetics.api.Cosmetic;
 import com.j0ach1mmall3.ultimatecosmetics.api.storage.CosmeticStorage;
 import com.j0ach1mmall3.ultimatecosmetics.config.CosmeticConfig;
@@ -10,7 +9,7 @@ import org.bukkit.entity.Player;
  * @author j0ach1mmall3 (business.j0ach1mmall3@gmail.com)
  * @since 20/08/2015
  */
-public final class Auras extends CosmeticConfig {
+public final class Auras extends CosmeticConfig<AuraStorage> {
     private final int updateInterval;
 
     public Auras(AurasModule module) {
@@ -19,18 +18,23 @@ public final class Auras extends CosmeticConfig {
     }
 
     @Override
-    public Cosmetic getCosmetic(CosmeticStorage cosmeticStorage, Player player) {
-        return new Aura(this, player, (AuraStorage) cosmeticStorage);
+    public Class<? extends Cosmetic> getCosmeticClass() {
+        return Aura.class;
+    }
+
+    @Override
+    public Cosmetic getCosmetic(AuraStorage cosmeticStorage, Player player) {
+        return new Aura(this, player, cosmeticStorage);
     }
 
     @Override
     protected CosmeticStorage getCosmeticStorageByIdentifier(String section, String identifier) {
         String path = section + '.' + identifier + '.';
         return new AuraStorage(
-                (Main) this.storage.getPlugin(),
+                this.storage.getPlugin(),
                 identifier,
                 this.config.getString(path + "Permission"),
-                this.customConfig.getGuiItemNew(this.config, path),
+                this.storage.getGuiItemNew(this.config, path),
                 AuraStorage.Color.valueOf(this.config.getString(path + "Color").toUpperCase())
         );
     }

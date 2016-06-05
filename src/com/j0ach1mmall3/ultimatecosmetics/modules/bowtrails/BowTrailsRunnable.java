@@ -26,7 +26,7 @@ public final class BowTrailsRunnable extends BukkitRunnable {
         for (Map.Entry<Arrow, Cosmetic> entry : this.module.getArrowsMap().entrySet()) {
             Location l = entry.getKey().getLocation();
             ParticleCosmeticStorage particleCosmeticStorage = (ParticleCosmeticStorage) entry.getValue().getCosmeticStorage();
-            Methods.broadcastSafeParticle(l, particleCosmeticStorage.getParticle(), particleCosmeticStorage.getId(), particleCosmeticStorage.getData(), particleCosmeticStorage.getSpeed(), 1, ((BowTrails) this.module.getConfig()).getViewDistance());
+            Methods.broadcastSafeParticle(l, particleCosmeticStorage.getParticle(), particleCosmeticStorage.getId(), particleCosmeticStorage.getData(), particleCosmeticStorage.getSpeed(), 1, this.module.getConfig().getViewDistance());
         }
     }
 }

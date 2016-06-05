@@ -1,7 +1,5 @@
 package com.j0ach1mmall3.ultimatecosmetics.modules.banners;
 
-import com.j0ach1mmall3.ultimatecosmetics.Main;
-import com.j0ach1mmall3.ultimatecosmetics.api.CosmeticType;
 import com.j0ach1mmall3.ultimatecosmetics.api.Cosmetic;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -29,7 +27,7 @@ public final class BannersListener implements Listener {
     @EventHandler
     public void onInvClick(InventoryClickEvent e) {
         Player p = (Player) e.getWhoClicked();
-        if (((Main) this.module.getParent()).getApi().hasCosmetics(p, CosmeticType.BANNER)) {
+        if (this.module.getParent().getApi().hasCosmetics(p, Banner.class)) {
             if (e.getRawSlot() == 5) {
                 e.setCancelled(true);
                 p.updateInventory();
@@ -39,10 +37,10 @@ public final class BannersListener implements Listener {
 
     @EventHandler
     public void onPlayerDeath(PlayerDeathEvent e) {
-        if (((Banners) this.module.getConfig()).isKeepOnDeath()) {
+        if (this.module.getConfig().isKeepOnDeath()) {
             Player p = e.getEntity();
-            if (((Main) this.module.getParent()).getApi().hasCosmetics(p, CosmeticType.BANNER)) {
-                for(Cosmetic banner : ((Main) this.module.getParent()).getApi().getCosmetics(p, CosmeticType.BANNER)) {
+            if (this.module.getParent().getApi().hasCosmetics(p, Banner.class)) {
+                for(Cosmetic banner : this.module.getParent().getApi().getCosmetics(p, Banner.class)) {
                     this.bannerMap.put(p, banner);
                     e.getDrops().remove(banner.getCosmeticStorage().getGuiItem().getItem());
                 }

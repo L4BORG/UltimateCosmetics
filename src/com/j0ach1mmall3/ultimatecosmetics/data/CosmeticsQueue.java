@@ -1,14 +1,14 @@
 package com.j0ach1mmall3.ultimatecosmetics.data;
 
+import com.j0ach1mmall3.jlib.plugin.modularization.PluginModule;
 import com.j0ach1mmall3.jlib.storage.serialization.JSerializable;
 import com.j0ach1mmall3.ultimatecosmetics.Main;
 import com.j0ach1mmall3.ultimatecosmetics.api.Cosmetic;
-import com.j0ach1mmall3.ultimatecosmetics.api.CosmeticType;
 import com.j0ach1mmall3.ultimatecosmetics.config.CosmeticConfig;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
-import java.util.EnumMap;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -18,29 +18,27 @@ import java.util.Set;
  */
 public final class CosmeticsQueue {
     private final Main plugin;
-    private final EnumMap<CosmeticType, String> cosmetics;
+    private final HashMap<Class<? extends Cosmetic>, String> cosmetics;
 
     public CosmeticsQueue(Main plugin, Player player) {
         this.plugin = plugin;
-        this.cosmetics = new EnumMap<>(CosmeticType.class);
-        for(CosmeticType type : CosmeticType.values()) {
-            for(Cosmetic cosmetic : plugin.getApi().getCosmetics(player, type)) {
-                this.cosmetics.put(type, cosmetic.getCosmeticStorage().getIdentifier());
-            }
+        this.cosmetics = new HashMap<>();
+        for(Cosmetic cosmetic : plugin.getApi().getCosmetics(player)) {
+            this.cosmetics.put(cosmetic.getClass(), cosmetic.getCosmeticStorage().getIdentifier());
         }
     }
 
     CosmeticsQueue(Main plugin) {
         this.plugin = plugin;
-        this.cosmetics = new EnumMap<>(CosmeticType.class);
+        this.cosmetics = new HashMap<>();
     }
 
     CosmeticsQueue(Main plugin, String cosmetics) {
         this.plugin = plugin;
-        EnumMap o = new EnumMap<>(CosmeticType.class);
+        HashMap o = new HashMap<>();
         if(cosmetics != null) {
             try {
-                o = new JSerializable<EnumMap>(cosmetics).getObject();
+                o = new JSerializable<HashMap>(cosmetics).getObject();
             } catch (Exception e) {
                 // NOP
             }
@@ -50,7 +48,7 @@ public final class CosmeticsQueue {
 
     public String asString() {
         try {
-            return new JSerializable<EnumMap>(this.cosmetics).getString();
+            return new JSerializable<HashMap>(this.cosmetics).getString();
         } catch (Exception e) {
             // NOP
             return "";
@@ -59,11 +57,10 @@ public final class CosmeticsQueue {
 
     public void giveBack(Player player) {
         final Set<Cosmetic> cosmetics = new HashSet<>();
-        for(CosmeticType type : CosmeticType.values()) {
-            CosmeticConfig cosmeticConfig = this.plugin.getConfigByType(type);
-            String identifier = this.cosmetics.get(type);
-            if(cosmeticConfig != null && identifier != null && !identifier.isEmpty()) {
-                cosmetics.add(cosmeticConfig.getCosmetic(cosmeticConfig.getByIdentifier(identifier), player));
+        for(PluginModule<Main, CosmeticConfig> pluginModule : this.plugin.getModules()) {
+            if(pluginModule.isEnabled()) {
+                String identifier = this.cosmetics.get(pluginModule.getConfig().getCosmeticClass());
+                if(identifier != null && !identifier.isEmpty()) cosmetics.add(pluginModule.getConfig().getCosmetic(pluginModule.getConfig().getByIdentifier(identifier), player));
             }
         }
         Bukkit.getScheduler().scheduleSyncDelayedTask(this.plugin, new Runnable() {

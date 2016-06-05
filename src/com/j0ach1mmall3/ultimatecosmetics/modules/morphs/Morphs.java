@@ -1,7 +1,6 @@
 package com.j0ach1mmall3.ultimatecosmetics.modules.morphs;
 
 import com.j0ach1mmall3.jlib.methods.General;
-import com.j0ach1mmall3.ultimatecosmetics.Main;
 import com.j0ach1mmall3.ultimatecosmetics.api.Cosmetic;
 import com.j0ach1mmall3.ultimatecosmetics.api.storage.CosmeticStorage;
 import com.j0ach1mmall3.ultimatecosmetics.config.CosmeticConfig;
@@ -13,7 +12,7 @@ import org.bukkit.inventory.ItemStack;
  * @author j0ach1mmall3 (business.j0ach1mmall3@gmail.com)
  * @since 1/10/2015
  */
-public final class Morphs extends CosmeticConfig {
+public final class Morphs extends CosmeticConfig<MorphStorage> {
     private final boolean enableAbilities;
     private final boolean checkInSlot;
     private final int abilitySlot;
@@ -26,7 +25,12 @@ public final class Morphs extends CosmeticConfig {
     }
 
     @Override
-    public Cosmetic getCosmetic(CosmeticStorage cosmeticStorage, Player player) {
+    public Class<? extends Cosmetic> getCosmeticClass() {
+        return Morph.class;
+    }
+
+    @Override
+    public Cosmetic getCosmetic(MorphStorage cosmeticStorage, Player player) {
         return new Morph(this, player, (MorphStorage) cosmeticStorage);
     }
 
@@ -34,14 +38,14 @@ public final class Morphs extends CosmeticConfig {
     protected CosmeticStorage getCosmeticStorageByIdentifier(String section, String identifier) {
         String path = section + '.' + identifier + '.';
         return new MorphStorage(
-                (Main) this.storage.getPlugin(),
+                this.storage.getPlugin(),
                 identifier,
                 this.config.getString(path + "Permission"),
-                this.customConfig.getGuiItemNew(this.config, path),
+                this.storage.getGuiItemNew(this.config, path),
                 this.config.getInt(path + "Ability.Cooldown"),
                 DisguiseType.valueOf(this.config.getString(path + "MorphType")),
                 this.config.getBoolean(path + "Ability.Enabled"),
-                this.customConfig.getItemNew(this.config, path + "Ability.Item"),
+                this.storage.getItemNew(this.config, path + "Ability.Item"),
                 this.config.getInt(path + "Ability.Duration")
         );
     }

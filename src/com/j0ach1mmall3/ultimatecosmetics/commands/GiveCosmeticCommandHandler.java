@@ -2,9 +2,9 @@ package com.j0ach1mmall3.ultimatecosmetics.commands;
 
 import com.j0ach1mmall3.jlib.commands.CommandHandler;
 import com.j0ach1mmall3.jlib.methods.General;
+import com.j0ach1mmall3.jlib.plugin.modularization.PluginModule;
 import com.j0ach1mmall3.ultimatecosmetics.Main;
 import com.j0ach1mmall3.ultimatecosmetics.api.Cosmetic;
-import com.j0ach1mmall3.ultimatecosmetics.api.CosmeticType;
 import com.j0ach1mmall3.ultimatecosmetics.api.storage.CosmeticStorage;
 import com.j0ach1mmall3.ultimatecosmetics.config.CosmeticConfig;
 import org.bukkit.ChatColor;
@@ -33,26 +33,18 @@ public final class GiveCosmeticCommandHandler extends CommandHandler {
             commandSender.sendMessage(ChatColor.RED + "Player not found!");
             return true;
         }
-        CosmeticType type;
-        try {
-            type = CosmeticType.valueOf(strings[1].toUpperCase());
-        } catch (Exception e) {
-            commandSender.sendMessage(ChatColor.RED + "Invalid CosmeticType!");
-            return true;
+        for(PluginModule<Main, CosmeticConfig> pluginModule : this.plugin.getModules()) {
+            if(pluginModule.isEnabled() && pluginModule.getConfig().getCosmeticClass().getSimpleName().equalsIgnoreCase(strings[1])) {
+                CosmeticStorage cosmeticStorage = pluginModule.getConfig().getByIdentifier(strings[2]);
+                if(cosmeticStorage == null) {
+                    commandSender.sendMessage(ChatColor.RED + "Invalid Cosmetic!");
+                    return true;
+                }
+                Cosmetic cosmetic = pluginModule.getConfig().getCosmetic(cosmeticStorage, player);
+                cosmetic.give();
+                commandSender.sendMessage(ChatColor.GREEN + "Successfully gave " + strings[1] + ' ' + cosmeticStorage.getIdentifier() + " to " + player.getName());
+            }
         }
-        CosmeticConfig config = this.plugin.getConfigByType(type);
-        if(config == null) {
-            commandSender.sendMessage(ChatColor.RED + "CosmeticType isn't enabled!");
-            return true;
-        }
-        CosmeticStorage cosmeticStorage = config.getByIdentifier(strings[2]);
-        if(cosmeticStorage == null) {
-            commandSender.sendMessage(ChatColor.RED + "Invalid Cosmetic!");
-            return true;
-        }
-        Cosmetic cosmetic = config.getCosmetic(cosmeticStorage, player);
-        cosmetic.give();
-        commandSender.sendMessage(ChatColor.GREEN + "Successfully gave " + type.name() + ' ' + cosmeticStorage.getIdentifier() + " to " + player.getName());
         return true;
     }
 }

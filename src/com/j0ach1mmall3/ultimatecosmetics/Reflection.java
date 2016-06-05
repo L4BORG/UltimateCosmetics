@@ -1,11 +1,13 @@
 package com.j0ach1mmall3.ultimatecosmetics;
 
 import com.j0ach1mmall3.jlib.methods.ReflectionAPI;
+import com.j0ach1mmall3.jlib.nms.pathfinding.WrappedPathfinderGoalSelector;
 import com.j0ach1mmall3.ultimatecosmetics.api.storage.EntityCosmeticStorage;
 import org.bukkit.DyeColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Ageable;
+import org.bukkit.entity.Creature;
 import org.bukkit.entity.Creeper;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Horse;
@@ -19,10 +21,7 @@ import org.bukkit.entity.Zombie;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.Colorable;
 
-import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.util.Collection;
 import java.util.EnumSet;
 
 /**
@@ -31,8 +30,6 @@ import java.util.EnumSet;
  */
 public final class Reflection {
     private static final Class<?> NAVIGATIONABSTRACTCLASS = ReflectionAPI.getNmsClass("NavigationAbstract");
-    private static final Class<?> PGSCLASS = ReflectionAPI.getNmsClass("PathfinderGoalSelector");
-    private static final Class<?> PATHFINDERGOALCLASS = ReflectionAPI.getNmsClass("PathfinderGoal");
     private static final Class<?> HUMANCLASS = ReflectionAPI.getNmsClass("EntityHuman");
     private static final Class<?> ENTITYINSENTIENTCLASS = ReflectionAPI.getNmsClass("EntityInsentient");
     private static final Class<?> ENTITYCREATURECLASS = ReflectionAPI.getNmsClass("EntityCreature");
@@ -43,54 +40,31 @@ public final class Reflection {
     private Reflection() {
     }
 
-    private static Object getGoalSelector(Object o) {
-        Object obj = null;
+    public static void removeGoalSelectors(Creature creature) {
         try {
-            Field goalSelector = ENTITYINSENTIENTCLASS.getDeclaredField("goalSelector");
-            goalSelector.setAccessible(true);
-            obj = goalSelector.get(o);
-        } catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException e) {
-            e.printStackTrace();
-        }
-        return obj;
-    }
+            WrappedPathfinderGoalSelector goalSelector = new WrappedPathfinderGoalSelector(WrappedPathfinderGoalSelector.Type.GOAL_SELECTOR, creature);
+            goalSelector.getActive().clear();
+            goalSelector.getInactive().clear();
+            goalSelector.apply(creature);
 
-    private static Object getTargetSelector(Object o) {
-        Object obj = null;
-        try {
-            Field targetSelector = ENTITYINSENTIENTCLASS.getDeclaredField("targetSelector");
-            targetSelector.setAccessible(true);
-            obj = targetSelector.get(o);
-        } catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException e) {
-            e.printStackTrace();
-        }
-        return obj;
-    }
-
-    public static void removeGoalSelectors(Entity ent) {
-        Object o = ReflectionAPI.getHandle((Object) ent);
-        try {
-            Field b = PGSCLASS.getDeclaredField("b");
-            Field c = PGSCLASS.getDeclaredField("c");
-            b.setAccessible(true);
-            c.setAccessible(true);
-            ((Collection) b.get(getGoalSelector(o))).clear();
-            ((Collection) b.get(getTargetSelector(o))).clear();
-            ((Collection) c.get(getGoalSelector(o))).clear();
-            ((Collection) c.get(getTargetSelector(o))).clear();
-        } catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException e) {
+            WrappedPathfinderGoalSelector targetSelector = new WrappedPathfinderGoalSelector(WrappedPathfinderGoalSelector.Type.TARGET_SELECTOR, creature);
+            targetSelector.getActive().clear();
+            targetSelector.getInactive().clear();
+            targetSelector.apply(creature);
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    public static void addGoalSelectors(Entity ent) {
-        Object o = ReflectionAPI.getHandle((Object) ent);
+    public static void addGoalSelectors(Creature creature) {
+        Object o = ReflectionAPI.getHandle((Object) creature);
         try {
-            Method a = PGSCLASS.getMethod("a", int.class, PATHFINDERGOALCLASS);
-            a.invoke(getGoalSelector(o), 0, PGFCLASS.getConstructor(ENTITYINSENTIENTCLASS).newInstance(o));
-            a.invoke(getGoalSelector(o), 2, PGMACLASS.getConstructor(ENTITYCREATURECLASS, double.class, boolean.class).newInstance(o, 1.0D, true));
-            a.invoke(getGoalSelector(o), 8, PGLAPCLASS.getConstructor(ENTITYINSENTIENTCLASS, Class.class, float.class).newInstance(o, HUMANCLASS, 8.0F));
-        } catch (IllegalArgumentException | IllegalAccessException | InvocationTargetException | InstantiationException | NoSuchMethodException | SecurityException e) {
+            WrappedPathfinderGoalSelector goalSelector = new WrappedPathfinderGoalSelector(WrappedPathfinderGoalSelector.Type.GOAL_SELECTOR, creature);
+            goalSelector.add(0, PGFCLASS.getConstructor(ENTITYINSENTIENTCLASS).newInstance(o));
+            goalSelector.add(2, PGMACLASS.getConstructor(ENTITYCREATURECLASS, double.class, boolean.class).newInstance(o, 1.0, true));
+            goalSelector.add(8, PGLAPCLASS.getConstructor(ENTITYINSENTIENTCLASS, Class.class, float.class).newInstance(o, HUMANCLASS, 8.0F));
+            goalSelector.apply(creature);
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }

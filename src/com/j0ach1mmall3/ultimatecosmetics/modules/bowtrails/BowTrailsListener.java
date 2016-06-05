@@ -1,8 +1,5 @@
 package com.j0ach1mmall3.ultimatecosmetics.modules.bowtrails;
 
-import com.j0ach1mmall3.ultimatecosmetics.Main;
-import com.j0ach1mmall3.ultimatecosmetics.api.CosmeticType;
-import com.j0ach1mmall3.ultimatecosmetics.api.Cosmetic;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -28,8 +25,8 @@ public final class BowTrailsListener implements Listener {
             Arrow arrow = (Arrow) e.getEntity();
             if (arrow.getShooter() instanceof Player) {
                 Player p = (Player) arrow.getShooter();
-                if (((Main) this.module.getParent()).getApi().hasCosmetics(p, CosmeticType.BOWTRAIL)) {
-                    for(Cosmetic cosmetic : ((Main) this.module.getParent()).getApi().getCosmetics(p, CosmeticType.BOWTRAIL)) {
+                if (this.module.getParent().getApi().hasCosmetics(p, BowTrail.class)) {
+                    for(BowTrail cosmetic : this.module.getParent().getApi().getCosmetics(p, BowTrail.class)) {
                         this.module.getArrowsMap().put(arrow, cosmetic);
                     }
                 }

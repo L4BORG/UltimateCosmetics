@@ -4,12 +4,14 @@ import com.j0ach1mmall3.jlib.storage.Cache;
 import com.j0ach1mmall3.jlib.storage.database.CallbackHandler;
 import com.j0ach1mmall3.jlib.storage.database.mongodb.MongoDBLoader;
 import com.j0ach1mmall3.ultimatecosmetics.Main;
+import com.j0ach1mmall3.ultimatecosmetics.Methods;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
 import org.bson.BSONObject;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.concurrent.Callable;
@@ -18,14 +20,14 @@ import java.util.concurrent.Callable;
  * @author j0ach1mmall3 (business.j0ach1mmall3@gmail.com)
  * @since 5/11/2015
  */
-public final class MongoDBDataLoader extends MongoDBLoader implements DataLoader {
+public final class MongoDBDataLoader extends MongoDBLoader<Main> implements DataLoader {
     private final Cache<Map<String, Integer>> cache = new Cache<Map<String, Integer>>() {
         @Override
         public void getOffline(String s, final CallbackHandler<Map<String, Integer>> callbackHandler) {
             MongoDBDataLoader.this.mongoDB.getObject(new BasicDBObject("player", s), MongoDBDataLoader.this.ammoName, new CallbackHandler<DBObject>() {
                 @Override
                 public void callback(DBObject o) {
-                    Map<String, Integer> map = ((Main) MongoDBDataLoader.this.storage.getPlugin()).getDefaultAmmo();
+                    Map<String, Integer> map = new HashMap<>(Methods.DEFAULT_AMMO);
                     if(o != null) {
                         DBObject ammoObject = (DBObject) o.get("ammo");
                         if(ammoObject != null) {
@@ -70,10 +72,10 @@ public final class MongoDBDataLoader extends MongoDBLoader implements DataLoader
 
         @Override
         public Map<String, Integer> createOffline(String s) {
-            Map<String, Integer> map = ((Main) MongoDBDataLoader.this.storage.getPlugin()).getDefaultAmmo();
+            Map<String, Integer> map = new HashMap<>(Methods.DEFAULT_AMMO);
             DBObject object = new BasicDBObject("player", s);
             BSONObject ammoObject = new BasicDBObject();
-            for (String gadget : ((Main) MongoDBDataLoader.this.storage.getPlugin()).getDefaultAmmo().keySet()) {
+            for (String gadget : map.keySet()) {
                 ammoObject.put(gadget, 0);
             }
             object.put("ammo", ammoObject);
@@ -125,7 +127,7 @@ public final class MongoDBDataLoader extends MongoDBLoader implements DataLoader
             @Override
             public void callback(DBObject o) {
                 if (o != null) {
-                    final CosmeticsQueue queue =  new CosmeticsQueue((Main) MongoDBDataLoader.this.storage.getPlugin(), (String) o.get("queue"));
+                    final CosmeticsQueue queue =  new CosmeticsQueue(MongoDBDataLoader.this.storage.getPlugin(), (String) o.get("queue"));
                     Bukkit.getScheduler().callSyncMethod(MongoDBDataLoader.this.storage.getPlugin(), new Callable<Void>() {
                         @Override
                         public Void call() {

@@ -1,6 +1,5 @@
 package com.j0ach1mmall3.ultimatecosmetics.modules.hearts;
 
-import com.j0ach1mmall3.ultimatecosmetics.Main;
 import com.j0ach1mmall3.ultimatecosmetics.api.Cosmetic;
 import com.j0ach1mmall3.ultimatecosmetics.api.storage.CosmeticStorage;
 import com.j0ach1mmall3.ultimatecosmetics.config.CosmeticConfig;
@@ -10,7 +9,7 @@ import org.bukkit.entity.Player;
  * @author j0ach1mmall3 (business.j0ach1mmall3@gmail.com)
  * @since 23/08/2015
  */
-public final class Hearts extends CosmeticConfig {
+public final class Hearts extends CosmeticConfig<HeartStorage> {
     private final boolean keepOnDeath;
     private final boolean scaleDamage;
 
@@ -21,7 +20,12 @@ public final class Hearts extends CosmeticConfig {
     }
 
     @Override
-    public Cosmetic getCosmetic(CosmeticStorage cosmeticStorage, Player player) {
+    public Class<? extends Cosmetic> getCosmeticClass() {
+        return Heart.class;
+    }
+
+    @Override
+    public Cosmetic getCosmetic(HeartStorage cosmeticStorage, Player player) {
         return new Heart(this, player, (HeartStorage) cosmeticStorage);
     }
 
@@ -29,10 +33,10 @@ public final class Hearts extends CosmeticConfig {
     protected CosmeticStorage getCosmeticStorageByIdentifier(String section, String identifier) {
         String path = section + '.' + identifier + '.';
         return new HeartStorage(
-                (Main) this.storage.getPlugin(),
+                this.storage.getPlugin(),
                 identifier,
                 this.config.getString(path + "Permission"),
-                this.customConfig.getGuiItemNew(this.config, path),
+                this.storage.getGuiItemNew(this.config, path),
                 this.config.getInt(path + "Rows"),
                 HeartStorage.Color.valueOf(this.config.getString(path + "Color").toUpperCase()),
                 HeartStorage.Effect.valueOf(this.config.getString(path + "Effect").toUpperCase())

@@ -1,9 +1,6 @@
 package com.j0ach1mmall3.ultimatecosmetics.modules.mounts;
 
-import com.j0ach1mmall3.ultimatecosmetics.Main;
 import com.j0ach1mmall3.ultimatecosmetics.Reflection;
-import com.j0ach1mmall3.ultimatecosmetics.api.Cosmetic;
-import com.j0ach1mmall3.ultimatecosmetics.api.CosmeticType;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
@@ -23,8 +20,8 @@ public final class MountsRunnable extends BukkitRunnable {
 
     @Override
     public void run() {
-        for (Cosmetic cosmetic : ((Main) this.module.getParent()).getApi().getCosmetics(CosmeticType.MOUNT)) {
-            Entity ent = ((Mount) cosmetic).getEntity();
+        for (Mount cosmetic : this.module.getParent().getApi().getAllCosmetics(Mount.class)) {
+            Entity ent = cosmetic.getEntity();
             Player p = cosmetic.getPlayer();
             if (ent.getPassenger() == null) {
                 cosmetic.remove();
@@ -32,7 +29,7 @@ public final class MountsRunnable extends BukkitRunnable {
             }
             Vector v = p.getLocation().getDirection().setY(0).normalize().multiply(4);
             Location loc = p.getLocation().add(v);
-            Reflection.setNavigation(ent, loc, ((Mounts) this.module.getConfig()).getMountSpeed());
+            Reflection.setNavigation(ent, loc, this.module.getConfig().getMountSpeed());
         }
     }
 }

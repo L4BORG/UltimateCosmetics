@@ -1,6 +1,6 @@
 package com.j0ach1mmall3.ultimatecosmetics;
 
-import com.j0ach1mmall3.ultimatecosmetics.api.CosmeticType;
+import com.j0ach1mmall3.jlib.plugin.modularization.PluginModule;
 import com.j0ach1mmall3.ultimatecosmetics.config.Config;
 import com.j0ach1mmall3.ultimatecosmetics.config.CosmeticConfig;
 import org.bukkit.Bukkit;
@@ -32,16 +32,17 @@ public final class GuiHandler implements Listener {
     public void onInventoryClick(InventoryClickEvent e) {
         Player p = (Player) e.getWhoClicked();
         if(!this.pages.containsKey(p)) return;
-        if(((Config) this.plugin.getBabies()).getCosmeticsGui().hasClicked(e)) {
+        if(this.plugin.getBabies().getCosmeticsGui().hasClicked(e)) {
             e.setCancelled(true);
-            String cmd = ((Config) this.plugin.getBabies()).getCommandBySlot(e.getSlot());
-            PlayerCommandPreprocessEvent event = new PlayerCommandPreprocessEvent(p, cmd);
-            Bukkit.getPluginManager().callEvent(event);
-            if(!event.isCancelled()) p.performCommand(cmd);
+            String cmd = this.plugin.getBabies().getCommandBySlot(e.getSlot());
+            if(cmd != null) {
+                PlayerCommandPreprocessEvent event = new PlayerCommandPreprocessEvent(p, cmd);
+                Bukkit.getPluginManager().callEvent(event);
+                if(!event.isCancelled()) p.performCommand(cmd);
+            }
         }
-        for(CosmeticType type : CosmeticType.values()) {
-            CosmeticConfig config = this.plugin.getConfigByType(type);
-            if(config != null) config.handleClick(type, e, this.pages.get(p));
+        for(PluginModule<Main, CosmeticConfig> pluginModule : this.plugin.getModules()) {
+            if(pluginModule.isEnabled()) pluginModule.getConfig().handleClick(e, this.pages.get(p));
         }
     }
 
@@ -56,16 +57,13 @@ public final class GuiHandler implements Listener {
     }
 
     public void openMainGui(Player player) {
-        Config config = (Config) this.plugin.getBabies();
+        Config config = this.plugin.getBabies();
         config.getCosmeticsGui().open(player);
         this.pages.put(player, 0);
     }
 
-    public void openGui(Player player, CosmeticType cosmeticType, int page) {
-        CosmeticConfig config = this.plugin.getConfigByType(cosmeticType);
-        if(config != null) {
-            config.openGui(cosmeticType, player, page);
-            this.pages.put(player, page);
-        }
+    public void openGui(Player player, CosmeticConfig cosmeticConfig, int page) {
+        cosmeticConfig.openGui(player, page);
+        this.pages.put(player, page);
     }
 }

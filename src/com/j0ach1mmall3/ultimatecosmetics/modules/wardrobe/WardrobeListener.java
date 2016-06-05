@@ -1,8 +1,5 @@
 package com.j0ach1mmall3.ultimatecosmetics.modules.wardrobe;
 
-import com.j0ach1mmall3.ultimatecosmetics.Main;
-import com.j0ach1mmall3.ultimatecosmetics.api.Cosmetic;
-import com.j0ach1mmall3.ultimatecosmetics.api.CosmeticType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -21,7 +18,7 @@ import java.util.Map;
  */
 public final class WardrobeListener implements Listener {
     private final WardrobeModule module;
-    private final Map<Player, Cosmetic> outfitMap = new HashMap<>();
+    private final Map<Player, Outfit> outfitMap = new HashMap<>();
 
     public WardrobeListener(WardrobeModule module) {
         this.module = module;
@@ -30,18 +27,18 @@ public final class WardrobeListener implements Listener {
 
     @EventHandler
     public void onInvClick(InventoryClickEvent e) {
-        if (((Main) this.module.getParent()).getApi().hasCosmetics((Player) e.getWhoClicked(), CosmeticType.OUTFIT) && (e.getRawSlot() == 6 || e.getRawSlot() == 7 || e.getRawSlot() == 8)) e.setCancelled(true);
+        if (this.module.getParent().getApi().hasCosmetics((Player) e.getWhoClicked(), Outfit.class) && (e.getRawSlot() == 6 || e.getRawSlot() == 7 || e.getRawSlot() == 8)) e.setCancelled(true);
     }
 
     @EventHandler
     public void onPlayerDeath(PlayerDeathEvent e) {
-        if (((Wardrobe) this.module.getConfig()).isKeepOnDeath()) {
+        if (this.module.getConfig().isKeepOnDeath()) {
             Player p = e.getEntity();
-            for(Cosmetic cosmetic : ((Main) this.module.getParent()).getApi().getCosmetics(p, CosmeticType.OUTFIT)) {
+            for(Outfit cosmetic : this.module.getParent().getApi().getCosmetics(p, Outfit.class)) {
                 this.outfitMap.put(p, cosmetic);
                 e.getDrops().remove(cosmetic.getCosmeticStorage().getGuiItem().getItem());
-                e.getDrops().remove(((OutfitStorage) cosmetic.getCosmeticStorage()).getLeggingsItem());
-                e.getDrops().remove(((OutfitStorage) cosmetic.getCosmeticStorage()).getBootsItem());
+                e.getDrops().remove(cosmetic.getCosmeticStorage().getLeggingsItem());
+                e.getDrops().remove(cosmetic.getCosmeticStorage().getBootsItem());
             }
         }
     }
@@ -50,7 +47,7 @@ public final class WardrobeListener implements Listener {
     public void onPlayerDamage(EntityDamageEvent e) {
         if (e.getEntity() instanceof Player) {
             Player p = (Player) e.getEntity();
-            if (((Main) this.module.getParent()).getApi().hasCosmetics(p, CosmeticType.OUTFIT)) {
+            if (this.module.getParent().getApi().hasCosmetics(p, Outfit.class)) {
                 ItemStack chestplate = p.getInventory().getChestplate();
                 if (chestplate != null) chestplate.setDurability((short) 0);
                 p.getInventory().setChestplate(chestplate);
@@ -68,10 +65,10 @@ public final class WardrobeListener implements Listener {
     public void onPlayerRespawn(PlayerRespawnEvent e) {
         Player p = e.getPlayer();
         if (this.outfitMap.containsKey(p)) {
-            Cosmetic cosmetic = this.outfitMap.get(p);
+            Outfit cosmetic = this.outfitMap.get(p);
             p.getInventory().setChestplate(cosmetic.getCosmeticStorage().getGuiItem().getItem());
-            p.getInventory().setLeggings(((OutfitStorage) cosmetic.getCosmeticStorage()).getLeggingsItem());
-            p.getInventory().setBoots(((OutfitStorage) cosmetic.getCosmeticStorage()).getBootsItem());
+            p.getInventory().setLeggings(cosmetic.getCosmeticStorage().getLeggingsItem());
+            p.getInventory().setBoots(cosmetic.getCosmeticStorage().getBootsItem());
             this.outfitMap.remove(p);
         }
     }

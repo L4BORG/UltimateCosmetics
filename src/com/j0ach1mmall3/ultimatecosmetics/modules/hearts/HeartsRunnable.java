@@ -1,8 +1,5 @@
 package com.j0ach1mmall3.ultimatecosmetics.modules.hearts;
 
-import com.j0ach1mmall3.ultimatecosmetics.Main;
-import com.j0ach1mmall3.ultimatecosmetics.api.Cosmetic;
-import com.j0ach1mmall3.ultimatecosmetics.api.CosmeticType;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -19,9 +16,9 @@ public final class HeartsRunnable extends BukkitRunnable {
 
     @Override
     public void run() {
-        for (Cosmetic cosmetic : ((Main) this.module.getParent()).getApi().getCosmetics(CosmeticType.HEART)) {
+        for (Heart cosmetic : this.module.getParent().getApi().getAllCosmetics(Heart.class)) {
             Player p = cosmetic.getPlayer();
-            Heart heart = (Heart) cosmetic;
+            Heart heart = cosmetic;
             if (heart.getColorEffect() != null && !p.hasPotionEffect(heart.getColorEffect().getType()) || heart.getEffectsEffect() != null && !p.hasPotionEffect(heart.getEffectsEffect().getType())) heart.regive();
         }
     }

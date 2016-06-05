@@ -8,10 +8,7 @@ import com.j0ach1mmall3.jlib.effectsapi.DoubleCrossEffect;
 import com.j0ach1mmall3.jlib.effectsapi.DoubleHelixEffect;
 import com.j0ach1mmall3.jlib.effectsapi.HelixEffect;
 import com.j0ach1mmall3.jlib.effectsapi.SphereEffect;
-import com.j0ach1mmall3.ultimatecosmetics.Main;
 import com.j0ach1mmall3.ultimatecosmetics.Methods;
-import com.j0ach1mmall3.ultimatecosmetics.api.Cosmetic;
-import com.j0ach1mmall3.ultimatecosmetics.api.CosmeticType;
 import com.j0ach1mmall3.ultimatecosmetics.api.storage.ParticleCosmeticStorage;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -32,41 +29,41 @@ public final class ParticlesRunnable extends BukkitRunnable {
 
     @Override
     public void run() {
-        for (Cosmetic cosmetic : ((Main) this.module.getParent()).getApi().getCosmetics(CosmeticType.PARTICLE)) {
+        for (Particle cosmetic : this.module.getParent().getApi().getAllCosmetics(Particle.class)) {
             Player p = cosmetic.getPlayer();
             long lastWalked = ((com.j0ach1mmall3.jlib.Main) Bukkit.getPluginManager().getPlugin("JLib")).getJoinListener().getLastWalked(p);
-            ParticleCosmeticStorage pcs = (ParticleCosmeticStorage) cosmetic.getCosmeticStorage();
-            if(pcs.getShape() != ParticleCosmeticStorage.Shape.RANDOM && pcs.getShape() != ParticleCosmeticStorage.Shape.TRAIL && lastWalked != 0 && TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis() - lastWalked) < ((Particles) this.module.getConfig()).getGiveDelay()) return;
+            ParticleCosmeticStorage pcs = cosmetic.getCosmeticStorage();
+            if(pcs.getShape() != ParticleCosmeticStorage.Shape.RANDOM && pcs.getShape() != ParticleCosmeticStorage.Shape.TRAIL && lastWalked != 0 && TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis() - lastWalked) < this.module.getConfig().getGiveDelay()) return;
             switch (pcs.getShape()) {
                 case CROSS:
-                    new CrossEffect(p.getLocation(), pcs.getParticle(), pcs.getId(), pcs.getData(), pcs.getSpeed(), ((Particles) this.module.getConfig()).getViewDistance(), 1, 32, 2).play(this.module.getParent());
+                    new CrossEffect(p.getLocation(), pcs.getParticle(), pcs.getId(), pcs.getData(), pcs.getSpeed(), this.module.getConfig().getViewDistance(), 1, 32, 2).play(this.module.getParent());
                     break;
                 case DOUBLECROSS:
-                    new DoubleCrossEffect(p.getLocation(), pcs.getParticle(), pcs.getId(), pcs.getData(), pcs.getSpeed(), ((Particles) this.module.getConfig()).getViewDistance(), 1, 32, 2).play(this.module.getParent());
+                    new DoubleCrossEffect(p.getLocation(), pcs.getParticle(), pcs.getId(), pcs.getData(), pcs.getSpeed(), this.module.getConfig().getViewDistance(), 1, 32, 2).play(this.module.getParent());
                     break;
                 case DOME:
-                    new DomeEffect(p.getLocation(), pcs.getParticle(), pcs.getId(), pcs.getData(), pcs.getSpeed(), ((Particles) this.module.getConfig()).getViewDistance(), 2, 256).play(this.module.getParent());
+                    new DomeEffect(p.getLocation(), pcs.getParticle(), pcs.getId(), pcs.getData(), pcs.getSpeed(), this.module.getConfig().getViewDistance(), 2, 256).play(this.module.getParent());
                     break;
                 case SPHERE:
-                    new SphereEffect(p.getLocation(), pcs.getParticle(), pcs.getId(), pcs.getData(), pcs.getSpeed(), ((Particles) this.module.getConfig()).getViewDistance(), 2, 256).play(this.module.getParent());
+                    new SphereEffect(p.getLocation(), pcs.getParticle(), pcs.getId(), pcs.getData(), pcs.getSpeed(), this.module.getConfig().getViewDistance(), 2, 256).play(this.module.getParent());
                     break;
                 case CONE:
-                    new ConeEffect(p.getLocation(), pcs.getParticle(), pcs.getId(), pcs.getData(), pcs.getSpeed(), ((Particles) this.module.getConfig()).getViewDistance(), 1, 32, 2.5).play(this.module.getParent());
+                    new ConeEffect(p.getLocation(), pcs.getParticle(), pcs.getId(), pcs.getData(), pcs.getSpeed(), this.module.getConfig().getViewDistance(), 1, 32, 2.5).play(this.module.getParent());
                     break;
                 case CYLINDER:
-                    new CylinderEffect(p.getLocation(), pcs.getParticle(), pcs.getId(), pcs.getData(), pcs.getSpeed(), ((Particles) this.module.getConfig()).getViewDistance(), 1, 32, 2).play(this.module.getParent());
+                    new CylinderEffect(p.getLocation(), pcs.getParticle(), pcs.getId(), pcs.getData(), pcs.getSpeed(), this.module.getConfig().getViewDistance(), 1, 32, 2).play(this.module.getParent());
                     break;
                 case HELIX:
-                    new HelixEffect(p.getLocation(), pcs.getParticle(), pcs.getId(), pcs.getData(), pcs.getSpeed(), ((Particles) this.module.getConfig()).getViewDistance(), 1, 32, 2).play(this.module.getParent());
+                    new HelixEffect(p.getLocation(), pcs.getParticle(), pcs.getId(), pcs.getData(), pcs.getSpeed(), this.module.getConfig().getViewDistance(), 1, 32, 2).play(this.module.getParent());
                     break;
                 case DOUBLEHELIX:
-                    new DoubleHelixEffect(p.getLocation(), pcs.getParticle(), pcs.getId(), pcs.getData(), pcs.getSpeed(), ((Particles) this.module.getConfig()).getViewDistance(), 1, 32, 2).play(this.module.getParent());
+                    new DoubleHelixEffect(p.getLocation(), pcs.getParticle(), pcs.getId(), pcs.getData(), pcs.getSpeed(), this.module.getConfig().getViewDistance(), 1, 32, 2).play(this.module.getParent());
                     break;
                 case RANDOM:
-                    Methods.broadcastSafeParticle(p.getLocation().add(0, 0.75, 0), pcs.getParticle(), pcs.getId(), pcs.getData(), 0.5F, 0.5F, 0.5F, pcs.getSpeed(), 16, ((Particles) this.module.getConfig()).getViewDistance());
+                    Methods.broadcastSafeParticle(p.getLocation().add(0, 0.75, 0), pcs.getParticle(), pcs.getId(), pcs.getData(), 0.5F, 0.5F, 0.5F, pcs.getSpeed(), 16, this.module.getConfig().getViewDistance());
                     break;
                 case TRAIL:
-                    Methods.broadcastSafeParticle(p.getLocation().add(0, 0.75, 0), pcs.getParticle(), pcs.getId(), pcs.getData(), pcs.getSpeed(), 1, ((Particles) this.module.getConfig()).getViewDistance());
+                    Methods.broadcastSafeParticle(p.getLocation().add(0, 0.75, 0), pcs.getParticle(), pcs.getId(), pcs.getData(), pcs.getSpeed(), 1, this.module.getConfig().getViewDistance());
                     break;
             }
         }

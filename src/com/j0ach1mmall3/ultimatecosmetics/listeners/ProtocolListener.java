@@ -3,10 +3,6 @@ package com.j0ach1mmall3.ultimatecosmetics.listeners;
 import com.comphenix.tinyprotocol.TinyProtocol;
 import com.j0ach1mmall3.jlib.methods.ReflectionAPI;
 import com.j0ach1mmall3.ultimatecosmetics.Main;
-import com.j0ach1mmall3.ultimatecosmetics.api.CosmeticType;
-import com.j0ach1mmall3.ultimatecosmetics.config.CosmeticConfig;
-import com.j0ach1mmall3.ultimatecosmetics.modules.balloons.Balloons;
-import com.j0ach1mmall3.ultimatecosmetics.modules.gadgets.Gadgets;
 import io.netty.channel.Channel;
 import org.bukkit.entity.Player;
 
@@ -38,9 +34,7 @@ public final class ProtocolListener extends TinyProtocol {
                     Object key = b.get(soundEffect);
                     name = ((String) key.getClass().getMethod("toString").invoke(key)).split(":")[1];
                 } else name = (String) f.get(packet);
-                CosmeticConfig balloons = this.plugin.getConfigByType(CosmeticType.BALLOON);
-                CosmeticConfig gadgets = this.plugin.getConfigByType(CosmeticType.GADGET);
-                if ("mob.bat.idle".equals(name) && ((balloons != null && ((Balloons) balloons).isDisableBatSounds()) || (gadgets != null && ((Gadgets) gadgets).isDisableBatSounds()))) return null;
+                if ("mob.bat.idle".equals(name) && this.plugin.getBabies().isDisableBatSounds()) return null;
             } catch (Exception e) {
                 e.printStackTrace();
             }

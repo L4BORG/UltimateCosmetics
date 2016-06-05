@@ -7,10 +7,7 @@ import com.j0ach1mmall3.jlib.methods.Random;
 import com.j0ach1mmall3.jlib.methods.ReflectionAPI;
 import com.j0ach1mmall3.jlib.methods.Sounds;
 import com.j0ach1mmall3.jlib.visual.Title;
-import com.j0ach1mmall3.ultimatecosmetics.Main;
 import com.j0ach1mmall3.ultimatecosmetics.Methods;
-import com.j0ach1mmall3.ultimatecosmetics.api.Cosmetic;
-import com.j0ach1mmall3.ultimatecosmetics.api.CosmeticType;
 import com.j0ach1mmall3.ultimatecosmetics.api.storage.CooldownCosmeticStorage;
 import com.j0ach1mmall3.ultimatecosmetics.config.Lang;
 import com.j0ach1mmall3.ultimatecosmetics.data.DataLoader;
@@ -121,13 +118,13 @@ public final class GadgetsListener implements Listener {
                 CustomItem customItem = new CustomItem(Material.DIAMOND, 1, 0);
 
                 for (Player p : GadgetsListener.this.diamondShowerPlayers) {
-                    Sounds.broadcastSound(((Gadgets) GadgetsListener.this.module.getConfig()).getSound("DiamondShower", "Sound"), p.getLocation());
+                    Sounds.broadcastSound(GadgetsListener.this.module.getConfig().getSound("DiamondShower", "Sound"), p.getLocation());
                     Location l = p.getLocation();
                     l.setY(l.getY() + 2.0);
                     customItem.setName(Random.getString(16, true, true));
                     final Item i = l.getWorld().dropItemNaturally(l, customItem);
                     i.setPickupDelay(Integer.MAX_VALUE);
-                    ((Main) GadgetsListener.this.module.getParent()).queueEntity(i);
+                    GadgetsListener.this.module.getParent().queueEntity(i);
                     items.add(i);
                 }
 
@@ -136,27 +133,27 @@ public final class GadgetsListener implements Listener {
                     public void run() {
                         for (Item i : items) {
                             i.remove();
-                            ((Main) GadgetsListener.this.module.getParent()).removeEntity(i);
+                            GadgetsListener.this.module.getParent().removeEntity(i);
                         }
                     }
                 }.runTaskLater(GadgetsListener.this.module.getParent(), 20L);
             }
-        }.runTaskTimer(module.getParent(), 0L, ((Gadgets) this.module.getConfig()).getIntValue("DiamondShower", "Interval"));
+        }.runTaskTimer(module.getParent(), 0L, this.module.getConfig().getIntValue("DiamondShower", "Interval"));
     }
 
     @EventHandler
     @SuppressWarnings("deprecation")
     public void onInteract(final PlayerInteractEvent e) {
-        if(e.getAction() == Action.PHYSICAL) return;
         final Player p = e.getPlayer();
-        final Gadgets config = ((Gadgets) this.module.getConfig());
+        if(e.getAction() == Action.PHYSICAL || p.getItemInHand() == null) return;
+        final Gadgets config = this.module.getConfig();
         if (config.isGadgetItem(p.getItemInHand())) {
             GadgetStorage gadget = config.getGadgetStorage(p.getItemInHand());
             e.setCancelled(true);
             p.updateInventory();
 
             if (p.isInsideVehicle()) {
-                ((Main) this.module.getParent()).informPlayerNoPermission(p, ((Main) this.module.getParent()).getLang().getDismountVehicle());
+                Methods.informPlayerNoPermission(p, this.module.getParent().getLang().getDismountVehicle());
                 p.updateInventory();
                 return;
             }
@@ -209,8 +206,8 @@ public final class GadgetsListener implements Listener {
                     pig.setNoDamageTicks(Integer.MAX_VALUE);
                     bat.setPassenger(pig);
                     pig.setPassenger(p);
-                    ((Main) this.module.getParent()).queueEntity(bat);
-                    ((Main) this.module.getParent()).queueEntity(pig);
+                    this.module.getParent().queueEntity(bat);
+                    this.module.getParent().queueEntity(pig);
                     break;
 
                 case "BatBlaster":
@@ -220,7 +217,7 @@ public final class GadgetsListener implements Listener {
                         final Bat b = (Bat) p.getWorld().spawnEntity(l, EntityType.BAT);
                         b.setVelocity(l.getDirection().multiply(config.getIntValue("BatBlaster", "Speed")));
                         b.setNoDamageTicks(20 * config.getIntValue("BatBlaster", "RemoveDelay"));
-                        ((Main) this.module.getParent()).queueEntity(b);
+                        this.module.getParent().queueEntity(b);
                         bats.add(b);
                     }
 
@@ -229,7 +226,7 @@ public final class GadgetsListener implements Listener {
                         public void run() {
                             for(Bat b : bats) {
                                 b.damage(1000.0);
-                                ((Main) GadgetsListener.this.module.getParent()).removeEntity(b);
+                                GadgetsListener.this.module.getParent().removeEntity(b);
                             }
                         }
                     }.runTaskLater(this.module.getParent(), 20 * config.getIntValue("BatBlaster", "RemoveDelay"));
@@ -247,7 +244,7 @@ public final class GadgetsListener implements Listener {
                         v.setZ(Random.getDouble());
                         cat.setVelocity(v);
                         cat.setNoDamageTicks(Integer.MAX_VALUE);
-                        ((Main) this.module.getParent()).queueEntity(cat);
+                        this.module.getParent().queueEntity(cat);
                         cats.add(cat);
                     }
 
@@ -257,7 +254,7 @@ public final class GadgetsListener implements Listener {
                             for(Ocelot cat : cats) {
                                 cat.getWorld().playEffect(cat.getLocation(), Effect.EXPLOSION_HUGE, 0);
                                 cat.remove();
-                                ((Main) GadgetsListener.this.module.getParent()).removeEntity(cat);
+                                GadgetsListener.this.module.getParent().removeEntity(cat);
                             }
                         }
                     }.runTaskLater(this.module.getParent(), 20 * config.getIntValue("CATapult", "ExplosionDelay"));
@@ -322,7 +319,7 @@ public final class GadgetsListener implements Listener {
                         customItem.setName(Random.getString(16, true, true));
                         final Item item = l.getWorld().dropItemNaturally(l.add(x , 15, z), customItem);
                         item.setPickupDelay(Integer.MAX_VALUE);
-                        ((Main) this.module.getParent()).queueEntity(item);
+                        this.module.getParent().queueEntity(item);
                         items.add(item);
                     }
 
@@ -332,7 +329,7 @@ public final class GadgetsListener implements Listener {
                             for(Item item : items) {
                                 Methods.broadcastSafeParticle(item.getLocation(), Effect.SMOKE, 0, 0, 2.0F, 10, 100);
                                 item.remove();
-                                ((Main) GadgetsListener.this.module.getParent()).removeEntity(item);
+                                GadgetsListener.this.module.getParent().removeEntity(item);
                             }
                         }
                     }.runTaskLater(this.module.getParent(), config.getIntValue("PoopBomb", "RemoveDelay") * 20);
@@ -361,7 +358,7 @@ public final class GadgetsListener implements Listener {
                         slime.setSize(Random.getInt(1, 4));
                         slime.setNoDamageTicks(Integer.MAX_VALUE);
                         slime.setMetadata("SlimeVasion", metadataValue);
-                        ((Main) this.module.getParent()).queueEntity(slime);
+                        this.module.getParent().queueEntity(slime);
                         slimes.add(slime);
                     }
 
@@ -370,7 +367,7 @@ public final class GadgetsListener implements Listener {
                         public void run() {
                             for(Slime slime : slimes) {
                                 slime.remove();
-                                ((Main) GadgetsListener.this.module.getParent()).removeEntity(slime);
+                                GadgetsListener.this.module.getParent().removeEntity(slime);
                             }
                         }
                     }.runTaskLater(this.module.getParent(), config.getIntValue("SlimeVasion", "RemoveDelay") * 20);
@@ -394,7 +391,7 @@ public final class GadgetsListener implements Listener {
                     item.setVelocity(l.getDirection().multiply(1.5f));
                     item.setMetadata("UCEntity", new FixedMetadataValue(this.module.getParent(), gadget.getIdentifier()));
                     item.setPickupDelay(Integer.MAX_VALUE);
-                    ((Main) this.module.getParent()).queueEntity(item);
+                    this.module.getParent().queueEntity(item);
                     break;
 
                 case "FireTrail":
@@ -434,7 +431,7 @@ public final class GadgetsListener implements Listener {
 
     @EventHandler
     public void onInvClick(InventoryClickEvent e) {
-        if (((Gadgets) this.module.getConfig()).isGadgetItem(e.getCurrentItem())) e.setCancelled(true);
+        if (this.module.getConfig().isGadgetItem(e.getCurrentItem())) e.setCancelled(true);
     }
 
     @EventHandler
@@ -442,14 +439,14 @@ public final class GadgetsListener implements Listener {
         Player p = e.getPlayer();
         if (this.firePlayers.contains(p)) {
             Block b = p.getLocation().getBlock();
-            if (b.getType() == Material.AIR) this.setFakeBlock(b, new MaterialData(Material.FIRE), ((Gadgets) this.module.getConfig()).getIntValue("FireTrail", "RemoveDelay"));
+            if (b.getType() == Material.AIR) this.setFakeBlock(b, new MaterialData(Material.FIRE), this.module.getConfig().getIntValue("FireTrail", "RemoveDelay"));
         }
-        if (this.paintTrailPlayers.contains(p)) this.setRandomClay(p.getLocation().getBlock().getRelative(BlockFace.DOWN), ((Gadgets) this.module.getConfig()).getIntValue("PaintTrail", "RestoreDelay"));
+        if (this.paintTrailPlayers.contains(p)) this.setRandomClay(p.getLocation().getBlock().getRelative(BlockFace.DOWN), this.module.getConfig().getIntValue("PaintTrail", "RestoreDelay"));
     }
 
     @EventHandler
     public void onPlayerDrop(PlayerDropItemEvent e) {
-        if (((Gadgets) this.module.getConfig()).isGadgetItem(e.getItemDrop().getItemStack())) e.setCancelled(true);
+        if (this.module.getConfig().isGadgetItem(e.getItemDrop().getItemStack())) e.setCancelled(true);
     }
 
     @EventHandler
@@ -457,7 +454,7 @@ public final class GadgetsListener implements Listener {
         if (e.getItem().hasMetadata("UCEntity") && "MelonSlice".equals(e.getItem().getMetadata("UCEntity").get(0).asString())) {
             e.setCancelled(true);
             e.getItem().remove();
-            e.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.SPEED, ((Gadgets) this.module.getConfig()).getIntValue("MelonThrower", "Speed.Duration") * 20, ((Gadgets) this.module.getConfig()).getIntValue("MelonThrower", "Speed.Multiplier") - 1));
+            e.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.SPEED, this.module.getConfig().getIntValue("MelonThrower", "Speed.Duration") * 20, this.module.getConfig().getIntValue("MelonThrower", "Speed.Multiplier") - 1));
         }
         if (this.isEntity(e.getItem())) {
             e.setCancelled(true);
@@ -482,7 +479,7 @@ public final class GadgetsListener implements Listener {
             Player p = (Player) e.getEntity();
             double damage = e.getDamage();
             if (damage >= p.getHealth()) {
-                for(Cosmetic cosmetic : ((Main) this.module.getParent()).getApi().getCosmetics(p, CosmeticType.GADGET)) {
+                for(Gadget cosmetic : this.module.getParent().getApi().getCosmetics(p, Gadget.class)) {
                     cosmetic.remove();
                 }
                 return;
@@ -495,14 +492,14 @@ public final class GadgetsListener implements Listener {
     public void onHangingBreakByEntity(HangingBreakByEntityEvent e) {
         Entity ent = e.getRemover();
         if(ent instanceof Player) {
-            if(((Main) this.module.getParent()).getApi().hasCosmetics(((Player) ent), CosmeticType.GADGET)) e.setCancelled(true);
+            if(this.module.getParent().getApi().hasCosmetics(((Player) ent), Gadget.class)) e.setCancelled(true);
         }
     }
 
     @EventHandler
     public void onPlayerInteractEntity(PlayerInteractEntityEvent e) {
         Entity ent = e.getRightClicked();
-        if((ent instanceof Painting || ent instanceof ItemFrame) && ((Main) this.module.getParent()).getApi().hasCosmetics(e.getPlayer(), CosmeticType.GADGET)) e.setCancelled(true);
+        if((ent instanceof Painting || ent instanceof ItemFrame) && this.module.getParent().getApi().hasCosmetics(e.getPlayer(), Gadget.class)) e.setCancelled(true);
     }
 
     @EventHandler
@@ -511,7 +508,7 @@ public final class GadgetsListener implements Listener {
             e.setCancelled(true);
         if (e.getDamager().hasMetadata("GrapplingHook")) {
             e.setCancelled(true);
-            if (((Gadgets) this.module.getConfig()).getBooleanValue("GrapplingHook", "PullPlayers") && e.getEntity() instanceof Player) {
+            if (this.module.getConfig().getBooleanValue("GrapplingHook", "PullPlayers") && e.getEntity() instanceof Player) {
                 Player p = (Player) e.getEntity();
                 Player shooter = Bukkit.getPlayer(e.getDamager().getMetadata("GrapplingHook").get(0).asString());
                 e.getDamager().remove();
@@ -546,11 +543,11 @@ public final class GadgetsListener implements Listener {
         }
         if (ent.hasMetadata("Paintball")) {
             Location l = ent.getLocation();
-            Sounds.broadcastSound(((Gadgets) this.module.getConfig()).getSound("PaintTrail", "Sound"), l);
-            Iterator<Block> iterator = new BlockIterator(l.getWorld(), l.toVector(), ent.getVelocity().normalize(), 0.0D, ((Gadgets) this.module.getConfig()).getIntValue("PaintballGun", "PaintSize"));
+            Sounds.broadcastSound(this.module.getConfig().getSound("PaintTrail", "Sound"), l);
+            Iterator<Block> iterator = new BlockIterator(l.getWorld(), l.toVector(), ent.getVelocity().normalize(), 0.0D, this.module.getConfig().getIntValue("PaintballGun", "PaintSize"));
             while (iterator.hasNext()) {
                 Block block = iterator.next();
-                this.setRandomClay(block, ((Gadgets) this.module.getConfig()).getIntValue("PaintballGun", "RestoreDelay"));
+                this.setRandomClay(block, this.module.getConfig().getIntValue("PaintballGun", "RestoreDelay"));
             }
             return;
         }
@@ -565,7 +562,7 @@ public final class GadgetsListener implements Listener {
         if (ent.hasMetadata("FunGun")) {
             Location l = ent.getLocation();
             ent.remove();
-            Sounds.broadcastSound(((Gadgets) this.module.getConfig()).getSound("CATapult", "Sound"), l);
+            Sounds.broadcastSound(this.module.getConfig().getSound("CATapult", "Sound"), l);
             Methods.broadcastSafeParticle(l, Effect.HEART, 0, 0, 0.0F, 0.2F, 0.0F, 0.0F, 1, 100);
             Methods.broadcastSafeParticle(l, Effect.LAVA_POP, 0, 0, 0.7F, 0.7F, 0.7F, 0.0F, 10, 100);
         }
@@ -632,27 +629,27 @@ public final class GadgetsListener implements Listener {
     private void handleMelon(Entity ent) {
         MetadataValue metadataValue = new FixedMetadataValue(this.module.getParent(), "MelonSlice");
         Location l = ent.getLocation();
-        ((Main) this.module.getParent()).removeEntity(ent);
+        this.module.getParent().removeEntity(ent);
         ent.remove();
-        Sounds.broadcastSound(((Gadgets) this.module.getConfig()).getSound("SelfDestruct", "Sound"), l);
+        Sounds.broadcastSound(this.module.getConfig().getSound("SelfDestruct", "Sound"), l);
         Methods.broadcastSafeParticle(l, Effect.STEP_SOUND, 103, 103, 0.7F, 0.7F, 0.7F, 0.0F, 10, 100);
-        for (int a = 0; a < ((Gadgets) this.module.getConfig()).getIntValue("MelonThrower", "Amount"); a++) {
+        for (int a = 0; a < this.module.getConfig().getIntValue("MelonThrower", "Amount"); a++) {
             final Item i = l.getWorld().dropItemNaturally(l, new CustomItem(Material.MELON, 1, 0, Random.getString(16, true, true)));
-            ((Main) this.module.getParent()).queueEntity(i);
+            this.module.getParent().queueEntity(i);
             i.setMetadata("UCEntity", metadataValue);
             new BukkitRunnable() {
                 @Override
                 public void run() {
                     i.remove();
-                    ((Main) GadgetsListener.this.module.getParent()).removeEntity(i);
+                    GadgetsListener.this.module.getParent().removeEntity(i);
                 }
-            }.runTaskLater(this.module.getParent(), ((Gadgets) this.module.getConfig()).getIntValue("MelonThrower", "RemoveDelay") * 20);
+            }.runTaskLater(this.module.getParent(), this.module.getConfig().getIntValue("MelonThrower", "RemoveDelay") * 20);
         }
     }
 
     private void handleColorBomb(Entity ent) {
         final Location l = ent.getLocation();
-        ((Main) this.module.getParent()).removeEntity(ent);
+        this.module.getParent().removeEntity(ent);
         ent.remove();
         new BukkitRunnable() {
             private int count = 0;
@@ -660,20 +657,20 @@ public final class GadgetsListener implements Listener {
             @Override
             public void run() {
                 this.count++;
-                if (this.count > ((Gadgets) GadgetsListener.this.module.getConfig()).getIntValue("ColorBomb", "RemoveDelay") * 20) this.cancel();
+                if (this.count > GadgetsListener.this.module.getConfig().getIntValue("ColorBomb", "RemoveDelay") * 20) this.cancel();
                 else {
-                    Sounds.broadcastSound(((Gadgets) GadgetsListener.this.module.getConfig()).getSound("ColorBomb", "Sound"), l);
-                    String item = ((Gadgets) GadgetsListener.this.module.getConfig()).getStringList("ColorBomb", "Items").get(Random.getInt(((Gadgets) GadgetsListener.this.module.getConfig()).getStringList("ColorBomb", "Items").size() - 1));
+                    Sounds.broadcastSound(GadgetsListener.this.module.getConfig().getSound("ColorBomb", "Sound"), l);
+                    String item = GadgetsListener.this.module.getConfig().getStringList("ColorBomb", "Items").get(Random.getInt(GadgetsListener.this.module.getConfig().getStringList("ColorBomb", "Items").size() - 1));
                     final Item i = l.getWorld().dropItemNaturally(l, new CustomItem(Parsing.parseMaterial(item), 1, Parsing.parseData(item), Random.getInt() + "UCEntity"));
                     i.setMetadata("UCEntity", new FixedMetadataValue(GadgetsListener.this.module.getParent(), "ColorBomb"));
-                    ((Main) GadgetsListener.this.module.getParent()).queueEntity(i);
+                    GadgetsListener.this.module.getParent().queueEntity(i);
                     i.setVelocity(i.getVelocity().setY(0.75));
                     i.setPickupDelay(Integer.MAX_VALUE);
                     new BukkitRunnable() {
                         @Override
                         public void run() {
                             i.remove();
-                            ((Main) GadgetsListener.this.module.getParent()).removeEntity(i);
+                            GadgetsListener.this.module.getParent().removeEntity(i);
                         }
                     }.runTaskLater(GadgetsListener.this.module.getParent(), 5L);
                 }
@@ -683,7 +680,7 @@ public final class GadgetsListener implements Listener {
 
     private void handleGoldFountain(Entity ent) {
         final Location l = ent.getLocation();
-        ((Main) this.module.getParent()).removeEntity(ent);
+        this.module.getParent().removeEntity(ent);
         ent.remove();
         new BukkitRunnable() {
             private int count = 0;
@@ -691,19 +688,19 @@ public final class GadgetsListener implements Listener {
             @Override
             public void run() {
                 this.count++;
-                if (this.count > ((Gadgets) GadgetsListener.this.module.getConfig()).getIntValue("GoldFountain", "RemoveDelay") * 20) this.cancel();
+                if (this.count > GadgetsListener.this.module.getConfig().getIntValue("GoldFountain", "RemoveDelay") * 20) this.cancel();
                 else {
-                    Sounds.broadcastSound(((Gadgets) GadgetsListener.this.module.getConfig()).getSound("GoldFountain", "Sound"), l);
+                    Sounds.broadcastSound(GadgetsListener.this.module.getConfig().getSound("GoldFountain", "Sound"), l);
                     final Item i = l.getWorld().dropItemNaturally(l, new CustomItem(Material.GOLD_INGOT, 1, 0, Random.getInt() + "UCEntity"));
                     i.setMetadata("UCEntity", new FixedMetadataValue(GadgetsListener.this.module.getParent(), "GoldFountain"));
-                    ((Main) GadgetsListener.this.module.getParent()).queueEntity(i);
+                    GadgetsListener.this.module.getParent().queueEntity(i);
                     i.setVelocity(i.getVelocity().setY(0.75));
                     i.setPickupDelay(Integer.MAX_VALUE);
                     new BukkitRunnable() {
                         @Override
                         public void run() {
                             i.remove();
-                            ((Main) GadgetsListener.this.module.getParent()).removeEntity(i);
+                            GadgetsListener.this.module.getParent().removeEntity(i);
                         }
                     }.runTaskLater(GadgetsListener.this.module.getParent(), 5L);
                 }
@@ -712,9 +709,9 @@ public final class GadgetsListener implements Listener {
     }
 
     private boolean isEntity(Entity ent) {
-        if (ent.hasMetadata("UCEntity") || ent instanceof LivingEntity && ((LivingEntity) ent).getCustomName() != null && ((LivingEntity) ent).getCustomName().endsWith("UCEntity"))
+        if (ent.hasMetadata("UCEntity") || ent instanceof LivingEntity && ent.getCustomName() != null && ent.getCustomName().endsWith("UCEntity"))
             return true;
-        for (Entity e : ((Main) this.module.getParent()).getEntitiesQueue()) {
+        for (Entity e : this.module.getParent().getEntitiesQueue()) {
             if (ent.getUniqueId().equals(e.getUniqueId())) return true;
         }
         return false;
@@ -739,7 +736,7 @@ public final class GadgetsListener implements Listener {
 
     private boolean isInCooldown(Player p, CooldownCosmeticStorage storage) {
         if (this.cooldownPlayers.get(p) != null && this.cooldownPlayers.get(p).split(":")[0].equals(storage.getIdentifier())) {
-            ((Main) this.module.getParent()).informPlayerNoPermission(p, Placeholders.parse(((Main) this.module.getParent()).getLang().getGadgetsCooldown().replace("%timeleft%", String.valueOf(storage.getCooldown() - (System.currentTimeMillis() - Long.valueOf(this.cooldownPlayers.get(p).split(":")[1])) / 1000))));
+            Methods.informPlayerNoPermission(p, Placeholders.parse(this.module.getParent().getLang().getGadgetsCooldown().replace("%timeleft%", String.valueOf(storage.getCooldown() - (System.currentTimeMillis() - Long.valueOf(this.cooldownPlayers.get(p).split(":")[1])) / 1000))));
             return true;
         }
         return false;
@@ -756,12 +753,12 @@ public final class GadgetsListener implements Listener {
     }
 
     private boolean checkAmmo(Player p, GadgetStorage gadget) {
-        DataLoader dataLoader = ((Main) this.module.getParent()).getDataLoader();
-        Lang lang = ((Main) this.module.getParent()).getLang();
+        DataLoader dataLoader = this.module.getParent().getDataLoader();
+        Lang lang = this.module.getParent().getLang();
         if (gadget.isUseAmmo() && !p.hasPermission("uc.unlimitedammo")) {
             int i = dataLoader.getAmmoCache().get(p).get(gadget.getIdentifier());
             if (i <= 0) {
-                ((Main) this.module.getParent()).informPlayerNoPermission(p, Placeholders.parse(lang.getNotEnoughAmmo(), p).replace("%ammoname%", gadget.getAmmoName()));
+                Methods.informPlayerNoPermission(p, Placeholders.parse(lang.getNotEnoughAmmo(), p).replace("%ammoname%", gadget.getAmmoName()));
                 return true;
             } else {
                 dataLoader.takeAmmo(gadget.getIdentifier(), p, 1);

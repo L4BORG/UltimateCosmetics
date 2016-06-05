@@ -18,6 +18,6 @@ public final class GadgetsListener1_9 implements Listener {
 
     @EventHandler
     public void onPlayerSwapItems(PlayerSwapHandItemsEvent e) {
-        if (((Gadgets) this.module.getConfig()).isGadgetItem(e.getOffHandItem())) e.setCancelled(true);
+        if (this.module.getConfig().isGadgetItem(e.getOffHandItem())) e.setCancelled(true);
     }
 }

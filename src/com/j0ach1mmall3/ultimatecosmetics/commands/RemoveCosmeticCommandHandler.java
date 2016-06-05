@@ -4,7 +4,6 @@ import com.j0ach1mmall3.jlib.commands.CommandHandler;
 import com.j0ach1mmall3.jlib.methods.General;
 import com.j0ach1mmall3.ultimatecosmetics.Main;
 import com.j0ach1mmall3.ultimatecosmetics.api.Cosmetic;
-import com.j0ach1mmall3.ultimatecosmetics.api.CosmeticType;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -31,17 +30,10 @@ public final class RemoveCosmeticCommandHandler extends CommandHandler {
             commandSender.sendMessage(ChatColor.RED + "Player not found!");
             return true;
         }
-        CosmeticType type;
-        try {
-            type = CosmeticType.valueOf(strings[1].toUpperCase());
-        } catch (Exception e) {
-            commandSender.sendMessage(ChatColor.RED + "Invalid CosmeticType!");
-            return true;
+        for(Cosmetic cosmetic : this.plugin.getApi().getCosmetics(player)) {
+            if(cosmetic.getClass().getSimpleName().equalsIgnoreCase(strings[1])) cosmetic.remove();
         }
-        for(Cosmetic cosmetic : this.plugin.getApi().getCosmetics(player, type)) {
-            cosmetic.remove();
-        }
-        commandSender.sendMessage(ChatColor.GREEN + "Successfully removed " + player.getName() + "'s " + type.name() + '!');
+        commandSender.sendMessage(ChatColor.GREEN + "Successfully removed " + player.getName() + "'s " + strings[1] + '!');
         return true;
     }
 }

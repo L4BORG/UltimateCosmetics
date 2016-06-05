@@ -18,6 +18,8 @@ RemoveCosmeticsOnLogOut: false
 WorldsBlacklist:
 - someworld
 - someotherworld
+# Should Bat sounds be completely disabled on the server?
+DisableBatSounds: true
 # Should an Item be given upon joining, that will display the GUI upon clicking? (It is advised to turn this off in a non-hub environment)
 GiveItemOnJoin: true
 JoinItem:
@@ -136,4 +138,4 @@ Cosmetics:
   Pets: true
   Trails: true
   Wardrobe: true
-DoNotChange: 4.0.0
+DoNotChange: 4.1.3

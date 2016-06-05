@@ -11,36 +11,29 @@ import org.bukkit.entity.Player;
  * @author j0ach1mmall3 (business.j0ach1mmall3@gmail.com)
  * @since 13/10/2015
  */
-public abstract class Cosmetic {
-    protected final CosmeticConfig cosmeticConfig;
+public abstract class Cosmetic<C extends CosmeticConfig, S extends CosmeticStorage> {
+    protected final C cosmeticConfig;
     protected final Player player;
-    protected final CosmeticStorage cosmeticStorage;
-    protected final CosmeticType cosmeticType;
+    protected final S cosmeticStorage;
 
-    public Cosmetic(CosmeticConfig cosmeticConfig, Player player, CosmeticStorage cosmeticStorage, CosmeticType cosmeticType) {
-        if(cosmeticStorage.getPlugin().getConfigByType(cosmeticType) == null) throw new IllegalStateException(cosmeticType.name().toLowerCase() + " aren't enabled!");
+    public Cosmetic(C cosmeticConfig, Player player, S cosmeticStorage) {
         this.cosmeticConfig = cosmeticConfig;
         this.player = player;
         this.cosmeticStorage = cosmeticStorage;
-        this.cosmeticType = cosmeticType;
     }
 
     public final Player getPlayer() {
         return this.player;
     }
 
-    public final CosmeticStorage getCosmeticStorage() {
+    public final S getCosmeticStorage() {
         return this.cosmeticStorage;
-    }
-
-    public final CosmeticType getCosmeticType() {
-        return this.cosmeticType;
     }
 
     public final void give() {
         CosmeticsAPI api = this.cosmeticStorage.getPlugin().getApi();
-        if (api.hasCosmetics(this.player, this.cosmeticType)) {
-            for(Cosmetic cosmetic : api.getCosmetics(this.player, this.cosmeticType)) {
+        if (api.hasCosmetics(this.player, this.getClass())) {
+            for(Cosmetic cosmetic : api.getCosmetics(this.player, this.getClass())) {
                 cosmetic.remove();
             }
             this.give();
@@ -48,17 +41,17 @@ public abstract class Cosmetic {
             CosmeticGiveEvent event = new CosmeticGiveEvent(this);
             Bukkit.getPluginManager().callEvent(event);
             if (event.isCancelled()) return;
-            if(this.giveInternal()) api.addCosmetics(this.player, this);
+            if(this.giveInternal()) api.addCosmetic(this.player, this);
         }
     }
 
     public final void remove() {
         CosmeticsAPI api = this.cosmeticStorage.getPlugin().getApi();
-        if (api.hasCosmetics(this.player, this.cosmeticType)) {
+        if (api.hasCosmetics(this.player, this.getClass())) {
             CosmeticRemoveEvent event = new CosmeticRemoveEvent(this);
             Bukkit.getPluginManager().callEvent(event);
             if (event.isCancelled()) return;
-            api.removeCosmetics(this.player, this.cosmeticType);
+            api.removeCosmetic(this.player, this);
             this.removeInternal();
         }
     }

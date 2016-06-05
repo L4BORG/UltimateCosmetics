@@ -9,7 +9,7 @@ import org.bukkit.entity.Player;
  * @author j0ach1mmall3 (business.j0ach1mmall3@gmail.com)
  * @since 23/08/2015
  */
-public final class Hats extends CosmeticConfig {
+public final class Hats extends CosmeticConfig<CosmeticStorage> {
     private final boolean checkOnHead;
     private final boolean keepOnDeath;
 
@@ -17,6 +17,11 @@ public final class Hats extends CosmeticConfig {
         super("hats.yml", module.getParent(), "Hats");
         this.checkOnHead = this.config.getBoolean("CheckOnHead");
         this.keepOnDeath = this.config.getBoolean("KeepOnDeath");
+    }
+
+    @Override
+    public Class<? extends Cosmetic> getCosmeticClass() {
+        return Hat.class;
     }
 
     @Override

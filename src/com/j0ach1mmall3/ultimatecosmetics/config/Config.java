@@ -16,12 +16,13 @@ import java.util.List;
  * @author j0ach1mmall3 (business.j0ach1mmall3@gmail.com)
  * @since 20/08/2015
  */
-public final class Config extends ConfigLoader {
+public final class Config extends ConfigLoader<Main> {
     private final boolean updateChecker;
     private final JLogger.LogLevel logLevel;
     private final boolean removeCosmeticsOnWorldChange;
     private final boolean removeCosmeticsOnLogOut;
     private final List<String> worldsBlacklist;
+    private final boolean disableBatSounds;
     private final boolean giveItemOnJoin;
     private final GuiItem joinItem;
     private Sound guiOpenSound;
@@ -57,8 +58,9 @@ public final class Config extends ConfigLoader {
         this.removeCosmeticsOnLogOut = this.config.getBoolean("RemoveCosmeticsOnLogOut");
         if (!this.removeCosmeticsOnLogOut) plugin.getjLogger().log(ChatColor.GOLD + "Removing Cosmetics on logout is not enabled! Players will keep their Cosmetics when they log out!", JLogger.LogLevel.EXTENDED);
         this.worldsBlacklist = this.config.getStringList("WorldsBlacklist");
+        this.disableBatSounds = this.config.getBoolean("DisableBatSounds");
         this.giveItemOnJoin = this.config.getBoolean("GiveItemOnJoin");
-        this.joinItem = this.customConfig.getGuiItemNew(this.config, "JoinItem");
+        this.joinItem = this.storage.getGuiItemNew(this.config, "JoinItem");
         if (!this.config.getString("GUIOpenSound").isEmpty()) this.guiOpenSound = Sound.valueOf(this.config.getString("GUIOpenSound"));
         if (!this.config.getString("GUIClickSound").isEmpty()) this.guiClickSound = Sound.valueOf(this.config.getString("GUIClickSound"));
         this.cosmeticsCommand = this.config.getString("CosmeticsCommand");
@@ -90,25 +92,25 @@ public final class Config extends ConfigLoader {
         switch (cosmetic) {
             case "Auras":
                 if(enabled && !ReflectionAPI.verBiggerThan(1, 9)) {
-                    ((Main) this.storage.getPlugin()).getjLogger().log(ChatColor.RED + "Auras are enabled in the config, but you are running 1.8 or lower. Adjusting that value.", JLogger.LogLevel.MINIMAL);
+                    this.storage.getPlugin().getjLogger().log(ChatColor.RED + "Auras are enabled in the config, but you are running 1.8 or lower. Adjusting that value.", JLogger.LogLevel.MINIMAL);
                     enabled = false;
                 }
                 break;
             case "BannerCapes":
                 if(enabled && !ReflectionAPI.verBiggerThan(1, 8)) {
-                    ((Main) this.storage.getPlugin()).getjLogger().log(ChatColor.RED + "BannerCapes are enabled in the config, but you are running 1.7 or lower. Adjusting that value.", JLogger.LogLevel.MINIMAL);
+                    this.storage.getPlugin().getjLogger().log(ChatColor.RED + "BannerCapes are enabled in the config, but you are running 1.7 or lower. Adjusting that value.", JLogger.LogLevel.MINIMAL);
                     enabled = false;
                 }
                 break;
             case "Banners":
                 if(enabled && !ReflectionAPI.verBiggerThan(1, 8)) {
-                    ((Main) this.storage.getPlugin()).getjLogger().log(ChatColor.RED + "Banners are enabled in the config, but you are running 1.7 or lower. Adjusting that value.", JLogger.LogLevel.MINIMAL);
+                    this.storage.getPlugin().getjLogger().log(ChatColor.RED + "Banners are enabled in the config, but you are running 1.7 or lower. Adjusting that value.", JLogger.LogLevel.MINIMAL);
                     enabled = false;
                 }
                 break;
             case "Morphs":
                 if(enabled && this.storage.getPlugin().getServer().getPluginManager().getPlugin("LibsDisguises") == null) {
-                    ((Main) this.storage.getPlugin()).getjLogger().log(ChatColor.RED + "Morphs are enabled in the config, but LibsDisguises isn't installed. Adjusting that value.", JLogger.LogLevel.MINIMAL);
+                    this.storage.getPlugin().getjLogger().log(ChatColor.RED + "Morphs are enabled in the config, but LibsDisguises isn't installed. Adjusting that value.", JLogger.LogLevel.MINIMAL);
                     enabled = false;
                 }
                 break;
@@ -120,17 +122,17 @@ public final class Config extends ConfigLoader {
         String name = Placeholders.parse(this.config.getString("CosmeticsGUI.Name"));
         int size = this.config.getInt("CosmeticsGUI.Size");
         GUI gui = new GUI(name, size);
-        for(String s : this.customConfig.getKeys("CosmeticsGUI.Items")) {
-            gui.setItem(this.customConfig.getGuiItemNew(this.config, "CosmeticsGUI.Items." + s));
+        for(String s : this.storage.getKeys("CosmeticsGUI.Items")) {
+            gui.setItem(this.storage.getGuiItemNew(this.config, "CosmeticsGUI.Items." + s));
         }
         return gui;
     }
 
     public String getCommandBySlot(int slot) {
-        for (String s : this.customConfig.getKeys("CosmeticsGUI.Items")) {
+        for (String s : this.storage.getKeys("CosmeticsGUI.Items")) {
             if (this.config.getInt("CosmeticsGUI.Items." + s + ".Position") == slot) return this.config.getString("CosmeticsGUI.Items." + s + ".Command");
         }
-        return "";
+        return null;
     }
 
     public boolean isUpdateChecker() {
@@ -151,6 +153,10 @@ public final class Config extends ConfigLoader {
 
     public List<String> getWorldsBlacklist() {
         return this.worldsBlacklist;
+    }
+
+    public boolean isDisableBatSounds() {
+        return this.disableBatSounds;
     }
 
     public boolean isGiveItemOnJoin() {

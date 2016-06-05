@@ -1,8 +1,5 @@
 package com.j0ach1mmall3.ultimatecosmetics.modules.balloons;
 
-import com.j0ach1mmall3.ultimatecosmetics.Main;
-import com.j0ach1mmall3.ultimatecosmetics.api.CosmeticType;
-import com.j0ach1mmall3.ultimatecosmetics.api.Cosmetic;
 import org.bukkit.entity.Bat;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -20,10 +17,10 @@ public final class BalloonsRunnable extends BukkitRunnable {
 
     @Override
     public void run() {
-        for (Cosmetic cosmetic : ((Main) this.module.getParent()).getApi().getCosmetics(CosmeticType.BALLOON)) {
-            Bat bat = ((Balloon) cosmetic).getBat();
+        for (Balloon cosmetic : this.module.getParent().getApi().getAllCosmetics(Balloon.class)) {
+            Bat bat = cosmetic.getBat();
             Player p = cosmetic.getPlayer();
-            if (!bat.getWorld().getName().equalsIgnoreCase(p.getWorld().getName()) || bat.getLocation().distance(p.getLocation()) >= ((Balloons) this.module.getConfig()).getTeleportDistance()) cosmetic.give();
+            if (!bat.getWorld().getName().equalsIgnoreCase(p.getWorld().getName()) || bat.getLocation().distance(p.getLocation()) >= this.module.getConfig().getTeleportDistance()) cosmetic.give();
         }
     }
 }

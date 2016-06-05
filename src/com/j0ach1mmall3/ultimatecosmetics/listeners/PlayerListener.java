@@ -8,13 +8,16 @@ import com.j0ach1mmall3.jlib.methods.ReflectionAPI;
 import com.j0ach1mmall3.jlib.methods.Sounds;
 import com.j0ach1mmall3.jlib.storage.database.CallbackHandler;
 import com.j0ach1mmall3.ultimatecosmetics.Main;
+import com.j0ach1mmall3.ultimatecosmetics.Methods;
 import com.j0ach1mmall3.ultimatecosmetics.api.Cosmetic;
-import com.j0ach1mmall3.ultimatecosmetics.api.CosmeticType;
 import com.j0ach1mmall3.ultimatecosmetics.api.CosmeticsAPI;
 import com.j0ach1mmall3.ultimatecosmetics.api.storage.unique.DoubleJumpStorage;
 import com.j0ach1mmall3.ultimatecosmetics.config.Config;
 import com.j0ach1mmall3.ultimatecosmetics.data.CosmeticsQueue;
 import com.j0ach1mmall3.ultimatecosmetics.data.DataLoader;
+import com.j0ach1mmall3.ultimatecosmetics.modules.balloons.Balloon;
+import com.j0ach1mmall3.ultimatecosmetics.modules.blockpets.BlockPet;
+import com.j0ach1mmall3.ultimatecosmetics.modules.pets.Pet;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
@@ -107,7 +110,7 @@ public final class PlayerListener implements Listener {
                                         if(!stackedPlayer.isEmpty()) p.sendMessage(Placeholders.parse(PlayerListener.this.plugin.getMisc().getStackerPrefix(), p) + Placeholders.parse(stackedPlayer, p).replace("%target%", clicked.getName()));
                                         String stackedByPlayer = PlayerListener.this.plugin.getLang().getStackedByPlayer();
                                         if(!stackedByPlayer.isEmpty()) clicked.sendMessage(Placeholders.parse(PlayerListener.this.plugin.getMisc().getStackerPrefix(), clicked) + Placeholders.parse(stackedByPlayer, clicked).replace("%stacker%", p.getName()));
-                                    } else PlayerListener.this.plugin.informPlayerNoPermission(p, Placeholders.parse(PlayerListener.this.plugin.getLang().getStackedNotEnabled().replace("%stacked%", clicked.getName()), p));
+                                    } else Methods.informPlayerNoPermission(p, Placeholders.parse(PlayerListener.this.plugin.getLang().getStackedNotEnabled().replace("%stacked%", clicked.getName()), p));
                                 }
                             });
                         } else if (!PlayerListener.this.plugin.getMisc().isStackerStackPlayersOnly() && e.getRightClicked() instanceof Creature && e.getRightClicked().getCustomName() == null && e.getRightClicked().getPassenger() == null) {
@@ -146,7 +149,7 @@ public final class PlayerListener implements Listener {
     public void onJoin(PlayerJoinEvent e) {
         final Player p = e.getPlayer();
         final DataLoader loader = this.plugin.getDataLoader();
-        final Config config = (Config) this.plugin.getBabies();
+        final Config config = this.plugin.getBabies();
         new BukkitRunnable() {
             @Override
             public void run() {
@@ -177,10 +180,10 @@ public final class PlayerListener implements Listener {
     public void onInteract(PlayerInteractEvent e) {
         if (e.getAction() != Action.PHYSICAL) {
             Player p = e.getPlayer();
-            if (General.areSimilar(((Config) this.plugin.getBabies()).getJoinItem().getItem(), p.getItemInHand())) {
+            if (General.areSimilar(this.plugin.getBabies().getJoinItem().getItem(), p.getItemInHand())) {
                 e.setCancelled(true);
                 this.plugin.getGuiHandler().openMainGui(p);
-                if(((Config) this.plugin.getBabies()).getGuiOpenSound() != null) Sounds.playSound(p, ((Config) this.plugin.getBabies()).getGuiOpenSound());
+                if(this.plugin.getBabies().getGuiOpenSound() != null) Sounds.playSound(p, this.plugin.getBabies().getGuiOpenSound());
             }
         }
     }
@@ -189,13 +192,19 @@ public final class PlayerListener implements Listener {
     public void onWorldChange(PlayerChangedWorldEvent e) {
         Player p = e.getPlayer();
         CosmeticsAPI api = this.plugin.getApi();
-        if (((Config) this.plugin.getBabies()).isRemoveCosmeticsOnWorldChange()) {
+        if (this.plugin.getBabies().isRemoveCosmeticsOnWorldChange()) {
             for(Cosmetic cosmetic : this.plugin.getApi().getCosmetics(p)) {
                 cosmetic.remove();
             }
         }
         else {
-            for(Cosmetic cosmetic : api.getCosmetics(p, CosmeticType.BALLOON, CosmeticType.BLOCKPET, CosmeticType.PET)) {
+            for(Balloon cosmetic : api.getCosmetics(p, Balloon.class)) {
+                cosmetic.give();
+            }
+            for(BlockPet cosmetic : api.getCosmetics(p, BlockPet.class)) {
+                cosmetic.give();
+            }
+            for(Pet cosmetic : api.getCosmetics(p, Pet.class)) {
                 cosmetic.give();
             }
         }

@@ -1,8 +1,5 @@
 package com.j0ach1mmall3.ultimatecosmetics.modules.mounts;
 
-import com.j0ach1mmall3.ultimatecosmetics.Main;
-import com.j0ach1mmall3.ultimatecosmetics.api.Cosmetic;
-import com.j0ach1mmall3.ultimatecosmetics.api.CosmeticType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -36,7 +33,7 @@ public final class MountsListener implements Listener {
     @EventHandler
     public void onPlayerDeath(PlayerDeathEvent e) {
         Player p = e.getEntity();
-        for(Cosmetic cosmetic : ((Main) this.module.getParent()).getApi().getCosmetics(p, CosmeticType.MOUNT)) {
+        for(Mount cosmetic : this.module.getParent().getApi().getCosmetics(p, Mount.class)) {
             cosmetic.remove();
         }
     }
@@ -47,7 +44,7 @@ public final class MountsListener implements Listener {
         if (e.getCause() == EntityDamageEvent.DamageCause.SUFFOCATION) {
             if (e.getEntity() instanceof Player) {
                 Player p = (Player) e.getEntity();
-                if(((Main) this.module.getParent()).getApi().hasCosmetics(p, CosmeticType.MOUNT)) e.setCancelled(true);
+                if(this.module.getParent().getApi().hasCosmetics(p, Mount.class)) e.setCancelled(true);
             }
         }
     }
@@ -56,7 +53,7 @@ public final class MountsListener implements Listener {
     public void onInventoryOpen(InventoryOpenEvent e) {
         if (e.getInventory() instanceof HorseInventory) {
             Player p = (Player) e.getPlayer();
-            if(((Main) this.module.getParent()).getApi().hasCosmetics(p, CosmeticType.MOUNT)) e.setCancelled(true);
+            if(this.module.getParent().getApi().hasCosmetics(p, Mount.class)) e.setCancelled(true);
         }
     }
 
@@ -103,7 +100,7 @@ public final class MountsListener implements Listener {
     @EventHandler
     public void onPlayerTeleport(PlayerTeleportEvent e) {
         Player p = e.getPlayer();
-        for(Cosmetic cosmetic : ((Main) this.module.getParent()).getApi().getCosmetics(p, CosmeticType.MOUNT)) {
+        for(Mount cosmetic : this.module.getParent().getApi().getCosmetics(p, Mount.class)) {
             cosmetic.remove();
         }
     }

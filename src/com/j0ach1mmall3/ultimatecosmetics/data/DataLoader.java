@@ -1,7 +1,6 @@
 package com.j0ach1mmall3.ultimatecosmetics.data;
 
 import com.j0ach1mmall3.jlib.storage.Cache;
-import com.j0ach1mmall3.jlib.storage.Storage;
 import com.j0ach1mmall3.jlib.storage.database.CallbackHandler;
 import org.bukkit.entity.Player;
 
@@ -38,6 +37,4 @@ public interface DataLoader {
     void setPetName(Player p, String name);
 
     void disconnectLoader();
-
-    Storage getStorage();
 }

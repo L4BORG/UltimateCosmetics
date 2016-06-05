@@ -1,6 +1,5 @@
 package com.j0ach1mmall3.ultimatecosmetics.modules.trails;
 
-import com.j0ach1mmall3.ultimatecosmetics.Main;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -64,7 +63,7 @@ public final class TrailsListener implements Listener {
     }
 
     private boolean isItem(Entity item) {
-        for (Entity ent : ((Main) this.module.getParent()).getEntitiesQueue()) {
+        for (Entity ent : this.module.getParent().getEntitiesQueue()) {
             if (item.getUniqueId().equals(ent.getUniqueId())) return true;
         }
         return false;

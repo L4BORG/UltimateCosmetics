@@ -6,10 +6,11 @@ import com.j0ach1mmall3.jlib.storage.database.mysql.MySQLLoader;
 import com.j0ach1mmall3.jlib.storage.database.wrapped.WrappedParameters;
 import com.j0ach1mmall3.jlib.storage.database.wrapped.WrappedResultSet;
 import com.j0ach1mmall3.ultimatecosmetics.Main;
+import com.j0ach1mmall3.ultimatecosmetics.Methods;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
-import java.util.HashSet;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.Callable;
 
@@ -17,7 +18,7 @@ import java.util.concurrent.Callable;
  * @author j0ach1mmall3 (business.j0ach1mmall3@gmail.com)
  * @since 5/11/2015
  */
-public final class MySQLDataLoader extends MySQLLoader implements DataLoader {
+public final class MySQLDataLoader extends MySQLLoader<Main> implements DataLoader {
     private final Cache<Map<String, Integer>> cache = new Cache<Map<String, Integer>>() {
         @Override
         public void getOffline(String s, final CallbackHandler<Map<String, Integer>> callbackHandler) {
@@ -26,9 +27,9 @@ public final class MySQLDataLoader extends MySQLLoader implements DataLoader {
             MySQLDataLoader.this.mySQL.executeQuery("SELECT * FROM " + MySQLDataLoader.this.ammoName + " WHERE Player = ?", params, new CallbackHandler<WrappedResultSet>() {
                 @Override
                 public void callback(WrappedResultSet o) {
-                    Map<String, Integer> map = ((Main) MySQLDataLoader.this.storage.getPlugin()).getDefaultAmmo();
+                    Map<String, Integer> map = new HashMap<>(Methods.DEFAULT_AMMO);
                     if(o.next()) {
-                        for(String s : new HashSet<>(map.keySet())) {
+                        for(String s : map.keySet()) {
                             map.put(s, (Integer) o.get(s));
                         }
                     }
@@ -72,7 +73,7 @@ public final class MySQLDataLoader extends MySQLLoader implements DataLoader {
             WrappedParameters params = new WrappedParameters();
             params.addParameter(1, s);
             MySQLDataLoader.this.mySQL.execute("INSERT INTO " + MySQLDataLoader.this.ammoName + " VALUES(?, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)", params);
-            return ((Main) MySQLDataLoader.this.storage.getPlugin()).getDefaultAmmo();
+            return new HashMap<>(Methods.DEFAULT_AMMO);
         }
     };
 
@@ -129,7 +130,7 @@ public final class MySQLDataLoader extends MySQLLoader implements DataLoader {
                     Bukkit.getScheduler().callSyncMethod(MySQLDataLoader.this.storage.getPlugin(), new Callable<Void>() {
                         @Override
                         public Void call() {
-                            new CosmeticsQueue((Main) MySQLDataLoader.this.storage.getPlugin(), (String) o.get("Queue")).giveBack(p);
+                            new CosmeticsQueue(MySQLDataLoader.this.storage.getPlugin(), (String) o.get("Queue")).giveBack(p);
                             return null;
                         }
                     });
@@ -166,7 +167,7 @@ public final class MySQLDataLoader extends MySQLLoader implements DataLoader {
         this.mySQL.executeQuery("SELECT * FROM " + this.stackerName + " WHERE Player = ?", params, new CallbackHandler<WrappedResultSet>() {
             @Override
             public void callback(WrappedResultSet o) {
-                if(o.next()) callbackHandler.callback((Boolean) o.get("Enabled"));
+                if(o.next()) callbackHandler.callback((boolean) o.get("Enabled"));
                 else callbackHandler.callback(false);
             }
         });

@@ -1,16 +1,15 @@
 package com.j0ach1mmall3.ultimatecosmetics.modules.morphs;
 
 import com.j0ach1mmall3.jlib.methods.ReflectionAPI;
-import com.j0ach1mmall3.jlib.plugin.modularization.ModularizedPlugin;
 import com.j0ach1mmall3.jlib.plugin.modularization.PluginModule;
-import com.j0ach1mmall3.jlib.storage.file.yaml.ConfigLoader;
+import com.j0ach1mmall3.ultimatecosmetics.Main;
 
 /**
  * @author j0ach1mmall3 (business.j0ach1mmall3@gmail.com)
  * @since 8/03/2016
  */
-public final class MorphsModule extends PluginModule {
-    public MorphsModule(ModularizedPlugin parent) {
+public final class MorphsModule extends PluginModule<Main, Morphs> {
+    public MorphsModule(Main parent) {
         super(parent);
     }
 
@@ -23,11 +22,6 @@ public final class MorphsModule extends PluginModule {
 
     @Override
     public void onDisable() {
-
-    }
-
-    @Override
-    public ConfigLoader getConfig() {
-        return this.config;
+        // NOP
     }
 }

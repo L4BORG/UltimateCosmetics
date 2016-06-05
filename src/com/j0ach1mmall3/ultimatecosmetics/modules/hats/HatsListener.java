@@ -1,8 +1,5 @@
 package com.j0ach1mmall3.ultimatecosmetics.modules.hats;
 
-import com.j0ach1mmall3.ultimatecosmetics.Main;
-import com.j0ach1mmall3.ultimatecosmetics.api.CosmeticType;
-import com.j0ach1mmall3.ultimatecosmetics.api.Cosmetic;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -19,7 +16,7 @@ import java.util.Map;
  */
 public final class HatsListener implements Listener {
     private final HatsModule module;
-    private final Map<Player, Cosmetic> hatMap = new HashMap<>();
+    private final Map<Player, Hat> hatMap = new HashMap<>();
 
     public HatsListener(HatsModule module) {
         this.module = module;
@@ -29,7 +26,7 @@ public final class HatsListener implements Listener {
     @EventHandler
     public void onInvClick(InventoryClickEvent e) {
         Player p = (Player) e.getWhoClicked();
-        if (((Main) this.module.getParent()).getApi().hasCosmetics(p, CosmeticType.HAT)) {
+        if (this.module.getParent().getApi().hasCosmetics(p, Hat.class)) {
             if (e.getRawSlot() == 5) {
                 e.setCancelled(true);
                 p.updateInventory();
@@ -39,12 +36,12 @@ public final class HatsListener implements Listener {
 
     @EventHandler
     public void onPlayerDeath(PlayerDeathEvent e) {
-        if (((Hats) this.module.getConfig()).isKeepOnDeath()) {
+        if (this.module.getConfig().isKeepOnDeath()) {
             Player p = e.getEntity();
-            if (((Main) this.module.getParent()).getApi().hasCosmetics(p, CosmeticType.HAT)) {
-                for(Cosmetic hat : ((Main) this.module.getParent()).getApi().getCosmetics(p, CosmeticType.HAT)) {
-                    this.hatMap.put(p, hat);
-                    e.getDrops().remove(hat.getCosmeticStorage().getGuiItem().getItem());
+            if (this.module.getParent().getApi().hasCosmetics(p, Hat.class)) {
+                for(Hat cosmetic : this.module.getParent().getApi().getCosmetics(p, Hat.class)) {
+                    this.hatMap.put(p, cosmetic);
+                    e.getDrops().remove(cosmetic.getCosmeticStorage().getGuiItem().getItem());
                 }
             }
         }

@@ -9,7 +9,7 @@ import org.bukkit.entity.Player;
  * @author j0ach1mmall3 (business.j0ach1mmall3@gmail.com)
  * @since 23/08/2015
  */
-public final class Trails extends CosmeticConfig {
+public final class Trails extends CosmeticConfig<CosmeticStorage> {
     private final int dropInterval;
     private final int removeDelay;
 
@@ -17,6 +17,11 @@ public final class Trails extends CosmeticConfig {
         super("trails.yml", module.getParent(), "Trails");
         this.dropInterval = this.config.getInt("DropInterval");
         this.removeDelay = this.config.getInt("RemoveDelay");
+    }
+
+    @Override
+    public Class<? extends Cosmetic> getCosmeticClass() {
+        return Trail.class;
     }
 
     @Override

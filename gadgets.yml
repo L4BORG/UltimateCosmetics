@@ -18,8 +18,6 @@ NoPermissionMessage: '&4You are not allowed to use this Gadget!'
 GiveSound: ENTITY_EXPERIENCE_ORB_PICKUP
 # The Sound to be played when a player's Gadget is removed
 RemoveSound: ENTITY_ENDERDRAGON_FLAP
-# Should Bat sounds be completely disabled on the server?
-DisableBatSounds: true
 # Should the Gadget be kept in the Slot?
 KeepGadget: true
 # Should we check if a player already has something in the Gadget Slot before replacing it?

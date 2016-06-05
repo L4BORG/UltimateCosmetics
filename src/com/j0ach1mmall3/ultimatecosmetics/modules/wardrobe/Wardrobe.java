@@ -1,8 +1,6 @@
 package com.j0ach1mmall3.ultimatecosmetics.modules.wardrobe;
 
-import com.j0ach1mmall3.ultimatecosmetics.Main;
 import com.j0ach1mmall3.ultimatecosmetics.api.Cosmetic;
-import com.j0ach1mmall3.ultimatecosmetics.api.storage.CosmeticStorage;
 import com.j0ach1mmall3.ultimatecosmetics.config.CosmeticConfig;
 import org.bukkit.entity.Player;
 
@@ -10,7 +8,7 @@ import org.bukkit.entity.Player;
  * @author j0ach1mmall3 (business.j0ach1mmall3@gmail.com)
  * @since 23/08/2015
  */
-public final class Wardrobe extends CosmeticConfig {
+public final class Wardrobe extends CosmeticConfig<OutfitStorage> {
     private final boolean checkOnBody;
     private final boolean keepOnDeath;
 
@@ -21,20 +19,25 @@ public final class Wardrobe extends CosmeticConfig {
     }
 
     @Override
-    public Cosmetic getCosmetic(CosmeticStorage cosmeticStorage, Player player) {
-        return new Outfit(this, player, (OutfitStorage) cosmeticStorage);
+    public Class<? extends Cosmetic> getCosmeticClass() {
+        return Outfit.class;
+    }
+
+    @Override
+    public Cosmetic getCosmetic(OutfitStorage cosmeticStorage, Player player) {
+        return new Outfit(this, player, cosmeticStorage);
     }
 
     @Override
     protected OutfitStorage getCosmeticStorageByIdentifier(String section, String identifier) {
         String path = section + '.' + identifier + '.';
         return new OutfitStorage(
-                (Main) this.storage.getPlugin(),
+                this.storage.getPlugin(),
                 identifier,
                 this.config.getString(path + "Permission"),
-                this.customConfig.getGuiItemNew(this.config, path),
-                this.customConfig.getItemNew(this.config, path + "Leggings"),
-                this.customConfig.getItemNew(this.config, path + "Boots")
+                this.storage.getGuiItemNew(this.config, path),
+                this.storage.getItemNew(this.config, path + "Leggings"),
+                this.storage.getItemNew(this.config, path + "Boots")
         );
     }
 

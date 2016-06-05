@@ -1,11 +1,9 @@
 package com.j0ach1mmall3.ultimatecosmetics;
 
 import com.j0ach1mmall3.jlib.commands.Command;
-import com.j0ach1mmall3.jlib.integration.Placeholders;
 import com.j0ach1mmall3.jlib.inventory.CustomEnchantment;
 import com.j0ach1mmall3.jlib.logging.DebugInfo;
 import com.j0ach1mmall3.jlib.logging.JLogger;
-import com.j0ach1mmall3.jlib.methods.Notes;
 import com.j0ach1mmall3.jlib.methods.ReflectionAPI;
 import com.j0ach1mmall3.jlib.plugin.modularization.ModularizedPlugin;
 import com.j0ach1mmall3.jlib.plugin.modularization.PluginModule;
@@ -13,7 +11,6 @@ import com.j0ach1mmall3.jlib.storage.StorageLoader;
 import com.j0ach1mmall3.jlib.storage.file.yaml.ConfigLoader;
 import com.j0ach1mmall3.jlib.storage.file.yaml.StorageConfigLoader;
 import com.j0ach1mmall3.ultimatecosmetics.api.Cosmetic;
-import com.j0ach1mmall3.ultimatecosmetics.api.CosmeticType;
 import com.j0ach1mmall3.ultimatecosmetics.api.CosmeticsAPI;
 import com.j0ach1mmall3.ultimatecosmetics.commands.GiveAmmoCommandHandler;
 import com.j0ach1mmall3.ultimatecosmetics.commands.GiveCosmeticCommandHandler;
@@ -23,7 +20,6 @@ import com.j0ach1mmall3.ultimatecosmetics.commands.RemoveCosmeticCommandHandler;
 import com.j0ach1mmall3.ultimatecosmetics.commands.StackerCommandHandler;
 import com.j0ach1mmall3.ultimatecosmetics.commands.UltimateCosmeticsCommandHandler;
 import com.j0ach1mmall3.ultimatecosmetics.config.Config;
-import com.j0ach1mmall3.ultimatecosmetics.config.CosmeticConfig;
 import com.j0ach1mmall3.ultimatecosmetics.config.Lang;
 import com.j0ach1mmall3.ultimatecosmetics.config.Misc;
 import com.j0ach1mmall3.ultimatecosmetics.data.DataLoader;
@@ -56,26 +52,21 @@ import com.j0ach1mmall3.ultimatecosmetics.modules.trails.TrailsModule;
 import com.j0ach1mmall3.ultimatecosmetics.modules.wardrobe.WardrobeModule;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.Instrument;
-import org.bukkit.Note;
-import org.bukkit.command.CommandSender;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
 
-import java.util.Arrays;
-import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 /**
  * @author j0ach1mmall3
  * @since 17/08/2015
  */
-public final class Main extends ModularizedPlugin {
+public final class Main extends ModularizedPlugin<Config> {
     public static final String BUKKIT_VERSION = Bukkit.getBukkitVersion().split("\\-")[0];
     public static final String MINECRAFT_VERSION = ReflectionAPI.getNmsVersion();
 
@@ -84,7 +75,7 @@ public final class Main extends ModularizedPlugin {
     private boolean protocolLib;
     private CosmeticsAPI api;
     private Lang lang;
-    private StorageConfigLoader storage;
+    private StorageConfigLoader<Main> storage;
     private DataLoader dataLoader;
     private Misc misc;
     private GuiHandler guiHandler;
@@ -97,13 +88,13 @@ public final class Main extends ModularizedPlugin {
         this.config = new Config(this);
         this.lang = new Lang(this);
 
-        this.jLogger.setLogLevel(((Config) this.config).getLogLevel());
+        this.jLogger.setLogLevel(this.config.getLogLevel());
 
         this.api = new CosmeticsAPI(this);
 
         this.jLogger.log(ChatColor.GOLD + "You are running Bukkit version " + BUKKIT_VERSION + " (MC " + MINECRAFT_VERSION + ')', JLogger.LogLevel.EXTENDED);
 
-        if (((Config) this.config).isUpdateChecker()) this.checkUpdate(5885);
+        if (this.config.isUpdateChecker()) this.checkUpdate(5885);
 
         if (this.getServer().getPluginManager().getPlugin("ProtocolLib") != null) {
             this.protocolLib = true;
@@ -190,14 +181,6 @@ public final class Main extends ModularizedPlugin {
         }
     }
 
-    public Map<String, Integer> getDefaultAmmo() {
-        Map<String, Integer> ammo = new HashMap<>();
-        for (String s : Arrays.asList("Enderbow", "EtherealPearl", "PaintballGun", "FlyingPig", "BatBlaster", "CATapult", "RailGun", "CryoTube", "Rocket", "PoopBomb", "GrapplingHook", "SelfDestruct", "Slimevasion", "FunGun", "MelonThrower", "ColorBomb", "FireTrail", "DiamondShower", "GoldFountain", "PaintTrail")) {
-            ammo.put(s, 0);
-        }
-        return ammo;
-    }
-
     public void reload() {
         for(Player p : Bukkit.getOnlinePlayers()) {
             this.dataLoader.getAmmoCache().unload(p);
@@ -218,7 +201,10 @@ public final class Main extends ModularizedPlugin {
         this.modules.clear();
         this.loadModules();
 
-        List<ConfigLoader> configs = Arrays.asList(this.config, this.lang, this.misc);
+        List<ConfigLoader> configs = new ArrayList<>();
+        configs.add(this.config);
+        configs.add(this.lang);
+        configs.add(this.misc);
         for(PluginModule module : this.modules) {
             configs.add(module.getConfig());
         }
@@ -228,67 +214,6 @@ public final class Main extends ModularizedPlugin {
         new CommandsListener(this);
         new PlayerListener(this);
         new EntityListener(this);
-    }
-
-    public void informPlayerNoPermission(CommandSender s, String message) {
-        if(message.isEmpty()) return;
-        if (s instanceof Player) {
-            Player p = (Player) s;
-            p.sendMessage(Placeholders.parse(message, p));
-            Notes.playNote(p, Instrument.BASS_DRUM, Note.Tone.A);
-        } else s.sendMessage(Placeholders.parse(message, null));
-    }
-
-    public void informPlayerNotEnabled(CommandSender s) {
-        String notEnabled = this.lang.getNotEnabled();
-        if(notEnabled.isEmpty()) return;
-        if (s instanceof Player) {
-            Player p = (Player) s;
-            p.sendMessage(Placeholders.parse(notEnabled, p));
-            Notes.playNote(p, Instrument.BASS_DRUM, Note.Tone.A);
-        } else s.sendMessage(Placeholders.parse(notEnabled, null));
-    }
-
-    public CosmeticConfig getConfigByType(CosmeticType type) {
-        switch (type) {
-            case AURA:
-                return ((Config) this.config).isAuras() ? (CosmeticConfig) this.modules.get(0).getConfig() : null;
-            case BALLOON:
-                return ((Config) this.config).isBalloons() ? (CosmeticConfig) this.modules.get(1).getConfig() : null;
-            case BANNERCAPE:
-                return ((Config) this.config).isBannercapes() ? (CosmeticConfig) this.modules.get(2).getConfig() : null;
-            case BANNER:
-                return ((Config) this.config).isBanners() ? (CosmeticConfig) this.modules.get(3).getConfig() : null;
-            case BLOCKPET:
-                return ((Config) this.config).isBlockpets() ? (CosmeticConfig) this.modules.get(4).getConfig() : null;
-            case BOWTRAIL:
-                return ((Config) this.config).isBowtrails() ? (CosmeticConfig) this.modules.get(5).getConfig() : null;
-            case CLOAK:
-                return ((Config) this.config).isCloaks() ? (CosmeticConfig) this.modules.get(6).getConfig() : null;
-            case FIREWORK:
-                return ((Config) this.config).isFireworks() ? (CosmeticConfig) this.modules.get(7).getConfig() : null;
-            case GADGET:
-                return ((Config) this.config).isGadgets() ? (CosmeticConfig) this.modules.get(8).getConfig() : null;
-            case HAT:
-                return ((Config) this.config).isHats() ? (CosmeticConfig) this.modules.get(9).getConfig() : null;
-            case HEART:
-                return ((Config) this.config).isHearts() ? (CosmeticConfig) this.modules.get(10).getConfig() : null;
-            case MORPH:
-                return ((Config) this.config).isMorphs() ? (CosmeticConfig) this.modules.get(11).getConfig() : null;
-            case MOUNT:
-                return ((Config) this.config).isMounts() ? (CosmeticConfig) this.modules.get(12).getConfig() : null;
-            case MUSIC:
-                return ((Config) this.config).isMusic() ? (CosmeticConfig) this.modules.get(13).getConfig() : null;
-            case PARTICLE:
-                return ((Config) this.config).isParticles() ? (CosmeticConfig) this.modules.get(14).getConfig() : null;
-            case PET:
-                return ((Config) this.config).isPets() ? (CosmeticConfig) this.modules.get(15).getConfig() : null;
-            case TRAIL:
-                return ((Config) this.config).isTrails() ? (CosmeticConfig) this.modules.get(16).getConfig() : null;
-            case OUTFIT:
-                return ((Config) this.config).isWardrobe() ? (CosmeticConfig) this.modules.get(17).getConfig() : null;
-        }
-        return null;
     }
 
     public void queueEntity(Entity entity) {
@@ -334,75 +259,75 @@ public final class Main extends ModularizedPlugin {
     private void loadModules() {
         this.jLogger.log(ChatColor.GREEN + "Loading Modules...", JLogger.LogLevel.NORMAL);
         PluginModule module = new AurasModule(this);
-        module.setEnabled(((Config) this.config).isAuras());
+        module.setEnabled(this.config.isAuras());
         this.registerModule(module);
 
         module = new BalloonsModule(this);
-        module.setEnabled(((Config) this.config).isBalloons());
+        module.setEnabled(this.config.isBalloons());
         this.registerModule(module);
 
         module = new BannerCapesModule(this);
-        module.setEnabled(((Config) this.config).isBannercapes());
+        module.setEnabled(this.config.isBannercapes());
         this.registerModule(module);
 
         module = new BannersModule(this);
-        module.setEnabled(((Config) this.config).isBanners());
+        module.setEnabled(this.config.isBanners());
         this.registerModule(module);
 
         module = new BlockPetsModule(this);
-        module.setEnabled(((Config) this.config).isBlockpets());
+        module.setEnabled(this.config.isBlockpets());
         this.registerModule(module);
 
         module = new BowTrailsModule(this);
-        module.setEnabled(((Config) this.config).isBowtrails());
+        module.setEnabled(this.config.isBowtrails());
         this.registerModule(module);
 
         module = new CloaksModule(this);
-        module.setEnabled(((Config) this.config).isCloaks());
+        module.setEnabled(this.config.isCloaks());
         this.registerModule(module);
 
         module = new FireworksModule(this);
-        module.setEnabled(((Config) this.config).isFireworks());
+        module.setEnabled(this.config.isFireworks());
         this.registerModule(module);
 
         module = new GadgetsModule(this);
-        module.setEnabled(((Config) this.config).isGadgets());
+        module.setEnabled(this.config.isGadgets());
         this.registerModule(module);
 
         module = new HatsModule(this);
-        module.setEnabled(((Config) this.config).isHats());
+        module.setEnabled(this.config.isHats());
         this.registerModule(module);
 
         module = new HeartsModule(this);
-        module.setEnabled(((Config) this.config).isHearts());
+        module.setEnabled(this.config.isHearts());
         this.registerModule(module);
 
         module = new MorphsModule(this);
-        module.setEnabled(((Config) this.config).isMorphs());
+        module.setEnabled(this.config.isMorphs());
         this.registerModule(module);
 
         module = new MountsModule(this);
-        module.setEnabled(((Config) this.config).isMounts());
+        module.setEnabled(this.config.isMounts());
         this.registerModule(module);
 
         module = new MusicModule(this);
-        module.setEnabled(((Config) this.config).isMusic());
+        module.setEnabled(this.config.isMusic());
         this.registerModule(module);
 
         module = new ParticlesModule(this);
-        module.setEnabled(((Config) this.config).isParticles());
+        module.setEnabled(this.config.isParticles());
         this.registerModule(module);
 
         module = new PetsModule(this);
-        module.setEnabled(((Config) this.config).isPets());
+        module.setEnabled(this.config.isPets());
         this.registerModule(module);
 
         module = new TrailsModule(this);
-        module.setEnabled(((Config) this.config).isTrails());
+        module.setEnabled(this.config.isTrails());
         this.registerModule(module);
 
         module = new WardrobeModule(this);
-        module.setEnabled(((Config) this.config).isWardrobe());
+        module.setEnabled(this.config.isWardrobe());
         this.registerModule(module);
     }
 }

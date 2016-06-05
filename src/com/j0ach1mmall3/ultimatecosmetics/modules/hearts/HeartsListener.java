@@ -1,8 +1,5 @@
 package com.j0ach1mmall3.ultimatecosmetics.modules.hearts;
 
-import com.j0ach1mmall3.ultimatecosmetics.Main;
-import com.j0ach1mmall3.ultimatecosmetics.api.Cosmetic;
-import com.j0ach1mmall3.ultimatecosmetics.api.CosmeticType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -21,7 +18,7 @@ import java.util.Map;
  */
 public final class HeartsListener implements Listener {
     private final HeartsModule module;
-    private final Map<Player, Cosmetic> heartsMap = new HashMap<>();
+    private final Map<Player, Heart> heartsMap = new HashMap<>();
 
     public HeartsListener(HeartsModule module) {
         this.module = module;
@@ -34,10 +31,10 @@ public final class HeartsListener implements Listener {
             Player p = (Player) e.getEntity();
             EntityDamageEvent.DamageCause cause = e.getCause();
             if (cause == null) return;
-            for(Cosmetic cosmetic : ((Main) this.module.getParent()).getApi().getCosmetics(p, CosmeticType.HEART)) {
-                HeartStorage heart = (HeartStorage) cosmetic.getCosmeticStorage();
+            for(Heart cosmetic : this.module.getParent().getApi().getCosmetics(p, Heart.class)) {
+                HeartStorage heart = cosmetic.getCosmeticStorage();
                 if(cause.name().equals(heart.getColor().getPotionEffect().getName())) e.setCancelled(true);
-                if (((Hearts) this.module.getConfig()).isScaleDamage()) {
+                if (this.module.getConfig().isScaleDamage()) {
                     int rows = heart.getRows();
                     e.setDamage(e.getDamage() * rows);
                 }
@@ -50,8 +47,8 @@ public final class HeartsListener implements Listener {
         if(e.getRegainReason() != EntityRegainHealthEvent.RegainReason.MAGIC_REGEN) return;
         if (e.getEntity() instanceof Player) {
             Player p = (Player) e.getEntity();
-            for(Cosmetic cosmetic : ((Main) this.module.getParent()).getApi().getCosmetics(p, CosmeticType.HEART)) {
-                HeartStorage heart = (HeartStorage) cosmetic.getCosmeticStorage();
+            for(Heart cosmetic : this.module.getParent().getApi().getCosmetics(p, Heart.class)) {
+                HeartStorage heart = cosmetic.getCosmeticStorage();
                 if(heart.getEffect() == HeartStorage.Effect.BOUNCING) e.setCancelled(true);
             }
         }
@@ -59,9 +56,9 @@ public final class HeartsListener implements Listener {
 
     @EventHandler
     public void onPlayerDeath(PlayerDeathEvent e) {
-        if (((Hearts) this.module.getConfig()).isKeepOnDeath()) {
+        if (this.module.getConfig().isKeepOnDeath()) {
             Player p = e.getEntity();
-            for(Cosmetic cosmetic : ((Main) this.module.getParent()).getApi().getCosmetics(p, CosmeticType.HEART)) {
+            for(Heart cosmetic : this.module.getParent().getApi().getCosmetics(p, Heart.class)) {
                 this.heartsMap.put(p, cosmetic);
                 cosmetic.remove();
             }

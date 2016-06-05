@@ -1,6 +1,5 @@
 package com.j0ach1mmall3.ultimatecosmetics.modules.mounts;
 
-import com.j0ach1mmall3.ultimatecosmetics.Main;
 import com.j0ach1mmall3.ultimatecosmetics.api.Cosmetic;
 import com.j0ach1mmall3.ultimatecosmetics.api.storage.CosmeticStorage;
 import com.j0ach1mmall3.ultimatecosmetics.api.storage.EntityCosmeticStorage;
@@ -14,7 +13,7 @@ import java.util.List;
  * @author j0ach1mmall3 (business.j0ach1mmall3@gmail.com)
  * @since 23/08/2015
  */
-public final class Mounts extends CosmeticConfig {
+public final class Mounts extends CosmeticConfig<EntityCosmeticStorage> {
     private final double mountSpeed;
 
     public Mounts(MountsModule module) {
@@ -23,7 +22,12 @@ public final class Mounts extends CosmeticConfig {
     }
 
     @Override
-    public Cosmetic getCosmetic(CosmeticStorage cosmeticStorage, Player player) {
+    public Class<? extends Cosmetic> getCosmeticClass() {
+        return Mount.class;
+    }
+
+    @Override
+    public Cosmetic getCosmetic(EntityCosmeticStorage cosmeticStorage, Player player) {
         return new Mount(this, player, (EntityCosmeticStorage) cosmeticStorage);
     }
 
@@ -31,10 +35,10 @@ public final class Mounts extends CosmeticConfig {
     protected CosmeticStorage getCosmeticStorageByIdentifier(String section, String identifier) {
         String path = section + '.' + identifier + '.';
         return new EntityCosmeticStorage(
-                (Main) this.storage.getPlugin(),
+                this.storage.getPlugin(),
                 identifier,
                 this.config.getString(path + "Permission"),
-                this.customConfig.getGuiItemNew(this.config, path),
+                this.storage.getGuiItemNew(this.config, path),
                 EntityCosmeticStorage.EntityType.valueOf(this.config.getString(path + "MountType").toUpperCase()),
                 this.getEntityData(this.config.getStringList(path + "MountData"))
         );

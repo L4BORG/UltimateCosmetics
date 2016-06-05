@@ -1,18 +1,17 @@
 package com.j0ach1mmall3.ultimatecosmetics.modules.bannercapes;
 
-import com.j0ach1mmall3.jlib.plugin.modularization.ModularizedPlugin;
 import com.j0ach1mmall3.jlib.plugin.modularization.PluginModule;
-import com.j0ach1mmall3.jlib.storage.file.yaml.ConfigLoader;
+import com.j0ach1mmall3.ultimatecosmetics.Main;
 import org.bukkit.scheduler.BukkitTask;
 
 /**
  * @author j0ach1mmall3 (business.j0ach1mmall3@gmail.com)
  * @since 8/03/2016
  */
-public final class BannerCapesModule extends PluginModule {
+public final class BannerCapesModule extends PluginModule<Main, BannerCapes> {
     private BukkitTask task;
 
-    public BannerCapesModule(ModularizedPlugin parent) {
+    public BannerCapesModule(Main parent) {
         super(parent);
     }
 
@@ -25,10 +24,5 @@ public final class BannerCapesModule extends PluginModule {
     @Override
     public void onDisable() {
         this.task.cancel();
-    }
-
-    @Override
-    public ConfigLoader getConfig() {
-        return this.config;
     }
 }

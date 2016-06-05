@@ -1,11 +1,6 @@
 package com.j0ach1mmall3.ultimatecosmetics.modules.blockpets;
 
 import com.j0ach1mmall3.jlib.integration.Placeholders;
-import com.j0ach1mmall3.ultimatecosmetics.Main;
-import com.j0ach1mmall3.ultimatecosmetics.api.Cosmetic;
-import com.j0ach1mmall3.ultimatecosmetics.api.CosmeticType;
-import com.j0ach1mmall3.ultimatecosmetics.api.CosmeticsAPI;
-import com.j0ach1mmall3.ultimatecosmetics.modules.pets.Pet;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
@@ -45,17 +40,16 @@ public final class BlockPetsListener implements Listener {
     @EventHandler
     public void onFallingBlockLand(EntityChangeBlockEvent e) {
         Entity ent = e.getEntity();
-        CosmeticsAPI api = ((Main) this.module.getParent()).getApi();
         if (ent.hasMetadata("BlockPet")) {
             Player owner = Bukkit.getPlayer(ent.getMetadata("BlockPet").get(0).asString());
-            for(Cosmetic cosmetic : api.getCosmetics(owner, CosmeticType.BLOCKPET)) {
+            for(BlockPet cosmetic : this.module.getParent().getApi().getCosmetics(owner, BlockPet.class)) {
                 cosmetic.give();
             }
             e.setCancelled(true);
         }
         if(ent.getVehicle() != null && ent.getVehicle().hasMetadata("BlockPet")) {
             Player owner = Bukkit.getPlayer(ent.getVehicle().getMetadata("BlockPet").get(0).asString());
-            for(Cosmetic cosmetic : api.getCosmetics(owner, CosmeticType.BLOCKPET)) {
+            for(BlockPet cosmetic : this.module.getParent().getApi().getCosmetics(owner, BlockPet.class)) {
                 cosmetic.give();
             }
             e.setCancelled(true);
@@ -65,16 +59,15 @@ public final class BlockPetsListener implements Listener {
     @EventHandler
     public void onEntityDismount(EntityDismountEvent e) {
         Entity ent = e.getEntity();
-        CosmeticsAPI api = ((Main) this.module.getParent()).getApi();
         if (ent.hasMetadata("BlockPet")) {
             Player owner = Bukkit.getPlayer(ent.getMetadata("BlockPet").get(0).asString());
-            for(Cosmetic cosmetic : api.getCosmetics(owner, CosmeticType.BLOCKPET)) {
+            for(BlockPet cosmetic : this.module.getParent().getApi().getCosmetics(owner, BlockPet.class)) {
                 cosmetic.give();
             }
         }
         if(ent.getVehicle() != null && ent.getVehicle().hasMetadata("BlockPet")) {
             Player owner = Bukkit.getPlayer(ent.getVehicle().getMetadata("BlockPet").get(0).asString());
-            for(Cosmetic cosmetic : api.getCosmetics(owner, CosmeticType.BLOCKPET)) {
+            for(BlockPet cosmetic : this.module.getParent().getApi().getCosmetics(owner, BlockPet.class)) {
                 cosmetic.give();
             }
         }
@@ -83,17 +76,16 @@ public final class BlockPetsListener implements Listener {
     @EventHandler
     public void onEntityPortal(EntityPortalEvent e) {
         Entity ent = e.getEntity();
-        CosmeticsAPI api = ((Main) this.module.getParent()).getApi();
         if (ent.hasMetadata("BlockPet")) {
             Player owner = Bukkit.getPlayer(ent.getMetadata("BlockPet").get(0).asString());
-            for(Cosmetic cosmetic : api.getCosmetics(owner, CosmeticType.BLOCKPET)) {
+            for(BlockPet cosmetic : this.module.getParent().getApi().getCosmetics(owner, BlockPet.class)) {
                 cosmetic.give();
             }
             e.setCancelled(true);
         }
         if(ent.getVehicle() != null && ent.getVehicle().hasMetadata("BlockPet")) {
             Player owner = Bukkit.getPlayer(ent.getVehicle().getMetadata("BlockPet").get(0).asString());
-            for(Cosmetic cosmetic : api.getCosmetics(owner, CosmeticType.BLOCKPET)) {
+            for(BlockPet cosmetic : this.module.getParent().getApi().getCosmetics(owner, BlockPet.class)) {
                 cosmetic.give();
             }
             e.setCancelled(true);
@@ -123,10 +115,10 @@ public final class BlockPetsListener implements Listener {
     @EventHandler
     public void onPlayerInteractEntity(PlayerInteractEntityEvent e) {
         Player p = e.getPlayer();
-        for(Cosmetic cosmetic : ((Main) this.module.getParent()).getApi().getCosmetics(p, CosmeticType.BLOCKPET)) {
+        for(BlockPet cosmetic : this.module.getParent().getApi().getCosmetics(p, BlockPet.class)) {
             e.setCancelled(true);
-            if (e.getRightClicked().getUniqueId().equals(((BlockPet) cosmetic).getBlock().getUniqueId()) && p.hasPermission("uc.renamepet") && !this.renamingPlayers.contains(p)) {
-                String renamePet = ((Main) this.module.getParent()).getLang().getRenamePet();
+            if (e.getRightClicked().getUniqueId().equals(cosmetic.getBlock().getUniqueId()) && p.hasPermission("uc.renamepet") && !this.renamingPlayers.contains(p)) {
+                String renamePet = this.module.getParent().getLang().getRenamePet();
                 if(!renamePet.isEmpty()) p.sendMessage(Placeholders.parse(renamePet, p));
                 this.renamingPlayers.add(p);
             }
@@ -138,12 +130,12 @@ public final class BlockPetsListener implements Listener {
         Player p = e.getPlayer();
         if(this.renamingPlayers.contains(p)) {
             this.renamingPlayers.remove(p);
-            for(Cosmetic cosmetic : ((Main) this.module.getParent()).getApi().getCosmetics(p, CosmeticType.BLOCKPET)) {
+            for(BlockPet cosmetic : this.module.getParent().getApi().getCosmetics(p, BlockPet.class)) {
                 e.setCancelled(true);
-                ((BlockPet) cosmetic).getBlock().setCustomName(Placeholders.parse(e.getMessage(), p));
-                ((Main) this.module.getParent()).getDataLoader().setPetName(p, e.getMessage());
+                cosmetic.getBlock().setCustomName(Placeholders.parse(e.getMessage(), p));
+                this.module.getParent().getDataLoader().setPetName(p, e.getMessage());
             }
-            String successfulRename = ((Main) this.module.getParent()).getLang().getSuccessfulRename();
+            String successfulRename = this.module.getParent().getLang().getSuccessfulRename();
             if(!successfulRename.isEmpty()) p.sendMessage(Placeholders.parse(successfulRename, p).replace("%petname%", Placeholders.parse(e.getMessage(), p)));
         }
     }
@@ -161,8 +153,8 @@ public final class BlockPetsListener implements Listener {
     @EventHandler
     public void onPlayerTeleport(PlayerTeleportEvent e) {
         Player p = e.getPlayer();
-        for(Cosmetic cosmetic : ((Main) this.module.getParent()).getApi().getCosmetics(p, CosmeticType.PET)) {
-            ((Pet) cosmetic).getEntity().teleport(p);
+        for(BlockPet cosmetic : this.module.getParent().getApi().getCosmetics(p, BlockPet.class)) {
+            cosmetic.getOcelot().teleport(p);
         }
     }
 

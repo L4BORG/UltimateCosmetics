@@ -9,7 +9,7 @@ import org.bukkit.entity.Player;
  * @author j0ach1mmall3 (business.j0ach1mmall3@gmail.com)
  * @since 20/08/2015
  */
-public final class BlockPets extends CosmeticConfig {
+public final class BlockPets extends CosmeticConfig<CosmeticStorage> {
     private final int teleportInterval;
     private final int teleportDistance;
 
@@ -17,6 +17,11 @@ public final class BlockPets extends CosmeticConfig {
         super("blockpets.yml", module.getParent(), "BlockPets");
         this.teleportInterval = this.config.getInt("TeleportInterval");
         this.teleportDistance = this.config.getInt("TeleportDistance");
+    }
+
+    @Override
+    public Class<? extends Cosmetic> getCosmeticClass() {
+        return BlockPet.class;
     }
 
     @Override
