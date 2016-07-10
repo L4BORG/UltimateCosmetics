@@ -3,7 +3,6 @@ package com.j0ach1mmall3.ultimatecosmetics.modules.bannercapes;
 import com.j0ach1mmall3.ultimatecosmetics.api.Cosmetic;
 import com.j0ach1mmall3.ultimatecosmetics.api.storage.CosmeticStorage;
 import com.j0ach1mmall3.ultimatecosmetics.config.CosmeticConfig;
-import com.j0ach1mmall3.ultimatecosmetics.modules.balloons.Balloon;
 import org.bukkit.entity.Player;
 
 /**

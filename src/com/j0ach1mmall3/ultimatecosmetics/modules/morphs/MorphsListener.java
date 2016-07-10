@@ -1,5 +1,11 @@
 package com.j0ach1mmall3.ultimatecosmetics.modules.morphs;
 
+import java.util.EnumSet;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+
 import com.j0ach1mmall3.jlib.integration.Placeholders;
 import com.j0ach1mmall3.jlib.inventory.CustomItem;
 import com.j0ach1mmall3.jlib.methods.Parsing;
@@ -43,12 +49,6 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
-
-import java.util.EnumSet;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
 
 /**
  * @author j0ach1mmall3 (business.j0ach1mmall3@gmail.com)
@@ -238,10 +238,12 @@ public final class MorphsListener implements Listener {
                 case SILVERFISH:
                 case SQUID:
                 case WOLF:
+                case POLAR_BEAR:
                     p.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, morph.getAbilityDuration() * 20, 1));
                     break;
                 case ENDERMAN:
                 case ENDERMITE:
+                case SHULKER:
                     Location loc = p.getTargetBlock(EnumSet.noneOf(Material.class), 50).getLocation();
                     loc = loc.getWorld().getHighestBlockAt(loc).getLocation();
                     p.teleport(loc);
@@ -401,7 +403,7 @@ public final class MorphsListener implements Listener {
 
     private boolean isInCooldown(Player p, CooldownCosmeticStorage storage) {
         if (this.cooldownPlayers.get(p) != null && this.cooldownPlayers.get(p).split(":")[0].equals(storage.getIdentifier())) {
-            Methods.informPlayerNoPermission(p, Placeholders.parse(this.module.getParent().getLang().getGadgetsCooldown().replace("%timeleft%", String.valueOf(storage.getCooldown() - (System.currentTimeMillis() - Long.valueOf(this.cooldownPlayers.get(p).split(":")[1])) / 1000))));
+            Methods.informPlayerNoPermission(p, Placeholders.parse(this.module.getParent().getLang().getAbilityCooldown().replace("%timeleft%", String.valueOf(storage.getCooldown() - (System.currentTimeMillis() - Long.valueOf(this.cooldownPlayers.get(p).split(":")[1])) / 1000))));
             return true;
         }
         return false;

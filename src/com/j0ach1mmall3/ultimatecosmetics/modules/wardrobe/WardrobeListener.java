@@ -26,7 +26,7 @@ public final class WardrobeListener implements Listener {
     }
 
     @EventHandler
-    public void onInvClick(InventoryClickEvent e) {
+    public void onInventoryClick(InventoryClickEvent e) {
         if (this.module.getParent().getApi().hasCosmetics((Player) e.getWhoClicked(), Outfit.class) && (e.getRawSlot() == 6 || e.getRawSlot() == 7 || e.getRawSlot() == 8)) e.setCancelled(true);
     }
 

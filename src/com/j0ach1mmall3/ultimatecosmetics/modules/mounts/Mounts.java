@@ -28,7 +28,7 @@ public final class Mounts extends CosmeticConfig<EntityCosmeticStorage> {
 
     @Override
     public Cosmetic getCosmetic(EntityCosmeticStorage cosmeticStorage, Player player) {
-        return new Mount(this, player, (EntityCosmeticStorage) cosmeticStorage);
+        return new Mount(this, player, cosmeticStorage);
     }
 
     @Override

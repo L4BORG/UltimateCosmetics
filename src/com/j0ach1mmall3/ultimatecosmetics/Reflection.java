@@ -1,5 +1,8 @@
 package com.j0ach1mmall3.ultimatecosmetics;
 
+import java.lang.reflect.InvocationTargetException;
+import java.util.EnumSet;
+
 import com.j0ach1mmall3.jlib.methods.ReflectionAPI;
 import com.j0ach1mmall3.jlib.nms.pathfinding.WrappedPathfinderGoalSelector;
 import com.j0ach1mmall3.ultimatecosmetics.api.storage.EntityCosmeticStorage;
@@ -21,9 +24,6 @@ import org.bukkit.entity.Zombie;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.Colorable;
 
-import java.lang.reflect.InvocationTargetException;
-import java.util.EnumSet;
-
 /**
  * @author j0ach1mmall3 (business.j0ach1mmall3@gmail.com)
  * @since 2/03/2016
@@ -31,6 +31,7 @@ import java.util.EnumSet;
 public final class Reflection {
     private static final Class<?> NAVIGATIONABSTRACTCLASS = ReflectionAPI.getNmsClass("NavigationAbstract");
     private static final Class<?> HUMANCLASS = ReflectionAPI.getNmsClass("EntityHuman");
+    private static final Class<?> ENTITYCLASS = ReflectionAPI.getNmsClass("Entity");
     private static final Class<?> ENTITYINSENTIENTCLASS = ReflectionAPI.getNmsClass("EntityInsentient");
     private static final Class<?> ENTITYCREATURECLASS = ReflectionAPI.getNmsClass("EntityCreature");
     private static final Class<?> PGFCLASS = ReflectionAPI.getNmsClass("PathfinderGoalFloat");
@@ -93,6 +94,7 @@ public final class Reflection {
             if(data.isType(EntityCosmeticStorage.EntityData.Type.HORSE_VARIANT) && ent instanceof Horse) ((Horse) ent).setVariant(Horse.Variant.valueOf(data.name()));
             if(data.isType(EntityCosmeticStorage.EntityData.Type.HORSE_STYLE) && ent instanceof Horse) ((Horse) ent).setStyle(Horse.Style.valueOf(data.name()));
             if(data.isType(EntityCosmeticStorage.EntityData.Type.RABBIT) && ReflectionAPI.verBiggerThan(1, 8) && ent instanceof org.bukkit.entity.Rabbit) ((org.bukkit.entity.Rabbit) ent).setRabbitType(org.bukkit.entity.Rabbit.Type.valueOf(data.name()));
+            if(data.isType(EntityCosmeticStorage.EntityData.Type.SKELETON) && ent instanceof Skeleton) ((Skeleton) ent).setSkeletonType(Skeleton.SkeletonType.valueOf(data.name()));
             switch (data) {
                 case BABY:
                     if (ent instanceof Ageable) {
@@ -105,39 +107,23 @@ public final class Reflection {
                     ent.setFireTicks(Integer.MAX_VALUE);
                     break;
                 case CHESTED:
-                    if (ent instanceof Horse) {
-                        ((Horse) ent).setCarryingChest(true);
-                    }
+                    if (ent instanceof Horse) ((Horse) ent).setCarryingChest(true);
                     break;
                 case POWER:
-                    if (ent instanceof Creeper) {
-                        ((Creeper) ent).setPowered(true);
-                    }
+                    if (ent instanceof Creeper) ((Creeper) ent).setPowered(true);
                     break;
                 case SADDLE:
-                    if (ent instanceof Pig) {
-                        ((Pig) ent).setSaddle(true);
-                    }
+                    if (ent instanceof Pig) ((Pig) ent).setSaddle(true);
                     break;
                 case SHEARED:
-                    if (ent instanceof Sheep) {
-                        ((Sheep) ent).setSheared(true);
-                    }
+                    if (ent instanceof Sheep) ((Sheep) ent).setSheared(true);
                     break;
                 case TAMED:
-                    if (ent instanceof Tameable) {
-                        ((Tameable) ent).setTamed(true);
-                    }
+                    if (ent instanceof Tameable) ((Tameable) ent).setTamed(true);
                     break;
                 case VILLAGER:
-                    if (ent instanceof Zombie) {
-                        ((Zombie) ent).setVillager(true);
-                    }
+                    if (ent instanceof Zombie) ((Zombie) ent).setVillager(true);
                     break;
-                case WITHER:
-                    if (ent instanceof Skeleton) {
-                        ((Skeleton) ent).setSkeletonType(Skeleton.SkeletonType.WITHER);
-                    }
             }
         }
     }

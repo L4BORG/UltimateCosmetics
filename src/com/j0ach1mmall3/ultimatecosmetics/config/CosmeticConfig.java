@@ -1,5 +1,8 @@
 package com.j0ach1mmall3.ultimatecosmetics.config;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.j0ach1mmall3.jlib.inventory.CustomItem;
 import com.j0ach1mmall3.jlib.inventory.GUI;
 import com.j0ach1mmall3.jlib.inventory.GuiItem;
@@ -16,9 +19,6 @@ import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * @author j0ach1mmall3 (business.j0ach1mmall3@gmail.com)
@@ -161,9 +161,8 @@ public abstract class CosmeticConfig<S extends CosmeticStorage> extends ConfigLo
             if(slot == this.removeItem.getPosition()) {
                 for(Cosmetic cosmetic : plugin.getApi().getCosmetics(p, this.getCosmeticClass())) {
                     cosmetic.remove();
-                    if(this.removeSound != null) Sounds.playSound(p, this.removeSound);
                 }
-                p.closeInventory();
+                if(this.removeSound != null) Sounds.playSound(p, this.removeSound);
                 return;
             }
             if(Methods.isNoPermissionItem(this.noPermissionItem, e.getCurrentItem())) {

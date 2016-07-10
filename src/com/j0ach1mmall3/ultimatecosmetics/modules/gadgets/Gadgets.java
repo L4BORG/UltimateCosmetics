@@ -4,7 +4,6 @@ import com.j0ach1mmall3.jlib.methods.General;
 import com.j0ach1mmall3.ultimatecosmetics.api.Cosmetic;
 import com.j0ach1mmall3.ultimatecosmetics.api.storage.CosmeticStorage;
 import com.j0ach1mmall3.ultimatecosmetics.config.CosmeticConfig;
-import com.j0ach1mmall3.ultimatecosmetics.modules.balloons.Balloon;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -34,7 +33,7 @@ public final class Gadgets extends CosmeticConfig<GadgetStorage> {
 
     @Override
     public Cosmetic getCosmetic(GadgetStorage cosmeticStorage, Player player) {
-        return new Gadget(this, player, (GadgetStorage) cosmeticStorage);
+        return new Gadget(this, player, cosmeticStorage);
     }
 
     @Override

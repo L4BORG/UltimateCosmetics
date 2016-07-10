@@ -31,7 +31,7 @@ public final class Cloaks extends CosmeticConfig<ParticleCosmeticStorage> {
 
     @Override
     public Cosmetic getCosmetic(ParticleCosmeticStorage cosmeticStorage, Player player) {
-        return new Cloak(this, player, (ParticleCosmeticStorage) cosmeticStorage);
+        return new Cloak(this, player, cosmeticStorage);
     }
 
     @Override

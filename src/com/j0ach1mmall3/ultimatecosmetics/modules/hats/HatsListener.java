@@ -24,7 +24,7 @@ public final class HatsListener implements Listener {
     }
 
     @EventHandler
-    public void onInvClick(InventoryClickEvent e) {
+    public void onInventoryClick(InventoryClickEvent e) {
         Player p = (Player) e.getWhoClicked();
         if (this.module.getParent().getApi().hasCosmetics(p, Hat.class)) {
             if (e.getRawSlot() == 5) {

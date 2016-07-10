@@ -18,8 +18,7 @@ public final class HeartsRunnable extends BukkitRunnable {
     public void run() {
         for (Heart cosmetic : this.module.getParent().getApi().getAllCosmetics(Heart.class)) {
             Player p = cosmetic.getPlayer();
-            Heart heart = cosmetic;
-            if (heart.getColorEffect() != null && !p.hasPotionEffect(heart.getColorEffect().getType()) || heart.getEffectsEffect() != null && !p.hasPotionEffect(heart.getEffectsEffect().getType())) heart.regive();
+            if (cosmetic.getColorEffect() != null && !p.hasPotionEffect(cosmetic.getColorEffect().getType()) || cosmetic.getEffectsEffect() != null && !p.hasPotionEffect(cosmetic.getEffectsEffect().getType())) cosmetic.regive();
         }
     }
 }

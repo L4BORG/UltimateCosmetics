@@ -118,24 +118,38 @@ CosmeticsGUI:
 Cosmetics:
   # Requires MC 1.9 or above
   Auras: true
+  # Requires MC 1.4 or above
   Balloons: true
   # Requires MC 1.8 or above
   BannerCapes: true
   # Requires MC 1.8 or above
   Banners: true
+  # Requires MC 1.4 or above
   BlockPets: true
+  # Requires MC 1.7 or above
   BowTrails: true
+  # Requires MC 1.7 or above
   Cloaks: true
+  # Requires MC 1.4 or above
   Fireworks: true
+  # Requires MC 1.4 or above
   Gadgets: true
+  # Requires MC 1.4 or above
   Hats: true
+  # Requires MC 1.4 or above
   Hearts: true
-  # Requires LibsDisguises
+  # Requires LibsDisguises & MC 1.4 or above
   Morphs: true
+  # Requires MC 1.4 or above
   Mounts: true
+  # Requires MC 1.4 or above
   Music: true
+  # Requires MC 1.7 or above
   Particles: true
+  # Requires MC 1.4 or above
   Pets: true
+  # Requires MC 1.4 or above
   Trails: true
+  # Requires MC 1.4 or above
   Wardrobe: true
 DoNotChange: 4.1.3

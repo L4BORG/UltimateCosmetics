@@ -58,7 +58,7 @@ public final class PlayerListener implements Listener {
         if (this.plugin.getMisc().isDoubleJumpEnabled()) {
             Player p = e.getPlayer();
             for (DoubleJumpStorage group : this.plugin.getMisc().getDoubleJumpGroups()) {
-                if (General.hasCustomPermission(p, group.getPermission()) && p.getGameMode() != GameMode.CREATIVE && p.getVehicle() == null) {
+                if (General.hasCustomPermission(p, group.getPermission()) && p.getGameMode() != GameMode.CREATIVE && p.getVehicle() == null && p.getPassenger() == null) {
                     e.setCancelled(true);
                     p.setAllowFlight(false);
                     p.setFlying(false);
@@ -76,7 +76,7 @@ public final class PlayerListener implements Listener {
         if (this.plugin.getMisc().isDoubleJumpEnabled()) {
             Player p = e.getPlayer();
             for (DoubleJumpStorage group : this.plugin.getMisc().getDoubleJumpGroups()) {
-                if (General.hasCustomPermission(p, group.getPermission()) && p.getGameMode() != GameMode.CREATIVE && p.getLocation().getBlock().getRelative(BlockFace.DOWN).getType() != Material.AIR && p.getVehicle() == null) {
+                if (General.hasCustomPermission(p, group.getPermission()) && p.getGameMode() != GameMode.CREATIVE && p.getLocation().getBlock().getRelative(BlockFace.DOWN).getType() != Material.AIR && p.getVehicle() == null && p.getPassenger() == null) {
                     p.setAllowFlight(true);
                     return;
                 }

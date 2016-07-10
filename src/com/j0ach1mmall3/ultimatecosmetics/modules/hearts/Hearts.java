@@ -26,7 +26,7 @@ public final class Hearts extends CosmeticConfig<HeartStorage> {
 
     @Override
     public Cosmetic getCosmetic(HeartStorage cosmeticStorage, Player player) {
-        return new Heart(this, player, (HeartStorage) cosmeticStorage);
+        return new Heart(this, player, cosmeticStorage);
     }
 
     @Override

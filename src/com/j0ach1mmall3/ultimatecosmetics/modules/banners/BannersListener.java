@@ -25,7 +25,7 @@ public final class BannersListener implements Listener {
     }
 
     @EventHandler
-    public void onInvClick(InventoryClickEvent e) {
+    public void onInventoryClick(InventoryClickEvent e) {
         Player p = (Player) e.getWhoClicked();
         if (this.module.getParent().getApi().hasCosmetics(p, Banner.class)) {
             if (e.getRawSlot() == 5) {

@@ -29,7 +29,7 @@ public final class BowTrails extends CosmeticConfig<ParticleCosmeticStorage> {
 
     @Override
     public Cosmetic getCosmetic(ParticleCosmeticStorage cosmeticStorage, Player player) {
-        return new BowTrail(this, player, (ParticleCosmeticStorage) cosmeticStorage);
+        return new BowTrail(this, player, cosmeticStorage);
     }
 
     @Override

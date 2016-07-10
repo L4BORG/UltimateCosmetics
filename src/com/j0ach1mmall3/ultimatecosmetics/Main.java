@@ -1,5 +1,10 @@
 package com.j0ach1mmall3.ultimatecosmetics;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 import com.j0ach1mmall3.jlib.commands.Command;
 import com.j0ach1mmall3.jlib.inventory.CustomEnchantment;
 import com.j0ach1mmall3.jlib.logging.DebugInfo;
@@ -20,6 +25,7 @@ import com.j0ach1mmall3.ultimatecosmetics.commands.RemoveCosmeticCommandHandler;
 import com.j0ach1mmall3.ultimatecosmetics.commands.StackerCommandHandler;
 import com.j0ach1mmall3.ultimatecosmetics.commands.UltimateCosmeticsCommandHandler;
 import com.j0ach1mmall3.ultimatecosmetics.config.Config;
+import com.j0ach1mmall3.ultimatecosmetics.config.CosmeticConfig;
 import com.j0ach1mmall3.ultimatecosmetics.config.Lang;
 import com.j0ach1mmall3.ultimatecosmetics.config.Misc;
 import com.j0ach1mmall3.ultimatecosmetics.data.DataLoader;
@@ -56,11 +62,6 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
-
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 
 /**
  * @author j0ach1mmall3
@@ -329,5 +330,13 @@ public final class Main extends ModularizedPlugin<Config> {
         module = new WardrobeModule(this);
         module.setEnabled(this.config.isWardrobe());
         this.registerModule(module);
+    }
+
+    public CosmeticConfig getConfigByIdentifier(String identifier) {
+        for(PluginModule<Main, CosmeticConfig> pluginModule : this.modules) {
+            CosmeticConfig cosmeticConfig = pluginModule.getConfig();
+            if(pluginModule.isEnabled() && cosmeticConfig.getCosmeticClass().getSimpleName().equalsIgnoreCase(identifier)) return cosmeticConfig;
+        }
+        return null;
     }
 }

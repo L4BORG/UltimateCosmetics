@@ -4,6 +4,7 @@ import com.j0ach1mmall3.jlib.commands.CommandHandler;
 import com.j0ach1mmall3.jlib.integration.Placeholders;
 import com.j0ach1mmall3.jlib.methods.General;
 import com.j0ach1mmall3.ultimatecosmetics.Main;
+import com.j0ach1mmall3.ultimatecosmetics.config.CosmeticConfig;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -44,12 +45,22 @@ public final class UltimateCosmeticsCommandHandler extends CommandHandler {
                     return true;
                 }
                 if(strings.length < 2) {
-                    commandSender.sendMessage(ChatColor.RED + "Usage: /uc openmenu <player>");
+                    commandSender.sendMessage(ChatColor.RED + "Usage: /uc openmenu <player> [cosmetic type]");
                     return true;
                 }
-                Player player = General.getPlayerByName(strings[0], false);
+                Player player = General.getPlayerByName(strings[1], false);
                 if(player == null) {
                     commandSender.sendMessage(ChatColor.RED + "Player not found!");
+                    return true;
+                }
+                if(strings.length > 2) {
+                    CosmeticConfig cosmeticConfig = this.plugin.getConfigByIdentifier(strings[2]);
+                    if (cosmeticConfig == null) {
+                        commandSender.sendMessage(ChatColor.RED + "Invalid cosmetic type");
+                        return true;
+                    }
+                    this.plugin.getGuiHandler().openGui(player, cosmeticConfig, 0);
+                    commandSender.sendMessage(ChatColor.GREEN + "Successfully opened the " + strings[2] + " Menu for " + player.getName() + '!');
                     return true;
                 }
                 this.plugin.getGuiHandler().openMainGui(player);

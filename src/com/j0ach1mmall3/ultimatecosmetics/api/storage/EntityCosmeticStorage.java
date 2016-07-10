@@ -1,11 +1,11 @@
 package com.j0ach1mmall3.ultimatecosmetics.api.storage;
 
+import java.util.Arrays;
+import java.util.EnumSet;
+
 import com.j0ach1mmall3.jlib.inventory.GuiItem;
 import com.j0ach1mmall3.ultimatecosmetics.Main;
 import org.bukkit.entity.Creature;
-
-import java.util.Arrays;
-import java.util.EnumSet;
 
 /**
  * @author j0ach1mmall3 (business.j0ach1mmall3@gmail.com)
@@ -43,7 +43,6 @@ public final class EntityCosmeticStorage extends CosmeticStorage {
         WITHER("org.bukkit.entity.Wither"),
         WITCH("org.bukkit.entity.Witch"),
         ENDERMITE("org.bukkit.entity.Endermite"),
-        GUARDIAN("org.bukkit.entity.Guardian"),
         PIG("org.bukkit.entity.Pig"),
         SHEEP("org.bukkit.entity.Sheep"),
         COW("org.bukkit.entity.Cow"),
@@ -55,6 +54,7 @@ public final class EntityCosmeticStorage extends CosmeticStorage {
         IRON_GOLEM("org.bukkit.entity.IronGolem"),
         HORSE("org.bukkit.entity.Horse"),
         RABBIT("org.bukkit.entity.Rabbit"),
+        POLAR_BEAR("org.bukkit.entity.PolarBear"),
         VILLAGER("org.bukkit.entity.Villager");
         private final String clazz;
 
@@ -93,6 +93,7 @@ public final class EntityCosmeticStorage extends CosmeticStorage {
         GREEN(Type.COLOR),
         GOLD(Type.HORSE_ARMOR, Type.RABBIT),
         HORSE(Type.HORSE_VARIANT),
+        HUSK(Type.PROFESSION),
         IRON(Type.HORSE_ARMOR),
         LIBRARIAN(Type.PROFESSION),
         LIGHT_BLUE(Type.COLOR),
@@ -112,6 +113,7 @@ public final class EntityCosmeticStorage extends CosmeticStorage {
         SIAMESE(Type.CAT),
         SILVER(Type.COLOR),
         SKELETON_HORSE(Type.HORSE_VARIANT),
+        STRAY(Type.SKELETON),
         TAMED(Type.BOOLEAN),
         THE_KILLER_BUNNY(Type.RABBIT),
         VILLAGER(Type.BOOLEAN),
@@ -119,7 +121,7 @@ public final class EntityCosmeticStorage extends CosmeticStorage {
         WHITE_DOTS(Type.HORSE_STYLE),
         WHITE(Type.COLOR, Type.HORSE_COLOR, Type.HORSE_STYLE, Type.RABBIT),
         WILD(Type.CAT),
-        WITHER(Type.BOOLEAN),
+        WITHER(Type.SKELETON),
         YELLOW(Type.COLOR),
         UNDEAD_HORSE(Type.HORSE_VARIANT);
         private final EnumSet<Type> types = EnumSet.noneOf(Type.class);
@@ -141,7 +143,8 @@ public final class EntityCosmeticStorage extends CosmeticStorage {
             HORSE_COLOR,
             HORSE_VARIANT,
             HORSE_STYLE,
-            RABBIT
+            RABBIT,
+            SKELETON
         }
     }
 }

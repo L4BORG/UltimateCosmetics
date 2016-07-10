@@ -31,7 +31,7 @@ public final class Morphs extends CosmeticConfig<MorphStorage> {
 
     @Override
     public Cosmetic getCosmetic(MorphStorage cosmeticStorage, Player player) {
-        return new Morph(this, player, (MorphStorage) cosmeticStorage);
+        return new Morph(this, player, cosmeticStorage);
     }
 
     @Override

@@ -84,7 +84,7 @@ import java.util.Set;
  */
 public final class GadgetsListener implements Listener {
     @SuppressWarnings("deprecation")
-    private static final EnumSet<Material> PAINTBALL_DENIED = EnumSet.of(Material.AIR, Material.getMaterial(166), Material.WALL_SIGN, Material.SIGN_POST);
+    private static final Set<Material> PAINTBALL_DENIED = EnumSet.of(Material.AIR, Material.getMaterial(166) == null ? Material.AIR : Material.getMaterial(166), Material.WALL_SIGN, Material.SIGN_POST);
 
     private final GadgetsModule module;
     private final Set<Player> firePlayers = new HashSet<>();
@@ -430,7 +430,7 @@ public final class GadgetsListener implements Listener {
     }
 
     @EventHandler
-    public void onInvClick(InventoryClickEvent e) {
+    public void onInventoryClick(InventoryClickEvent e) {
         if (this.module.getConfig().isGadgetItem(e.getCurrentItem())) e.setCancelled(true);
     }
 
