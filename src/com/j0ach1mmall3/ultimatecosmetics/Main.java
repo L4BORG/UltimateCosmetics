@@ -90,7 +90,7 @@ public final class Main extends ModularizedPlugin<Config> {
         Bukkit.getLogger().setFilter(new Filter() {
             @Override
             public boolean isLoggable(LogRecord record) {
-                return Bukkit.getLogger().getFilter().isLoggable(record) && !(record.getThrown() instanceof YAMLException);
+                return !(record.getThrown() instanceof YAMLException);
             }
         });
 
