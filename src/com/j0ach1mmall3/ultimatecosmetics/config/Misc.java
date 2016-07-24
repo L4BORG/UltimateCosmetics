@@ -1,16 +1,14 @@
 package com.j0ach1mmall3.ultimatecosmetics.config;
 
-import com.j0ach1mmall3.jlib.logging.JLogger;
-import com.j0ach1mmall3.jlib.storage.file.yaml.ConfigLoader;
-import com.j0ach1mmall3.ultimatecosmetics.HiddenPlayersRunnable;
-import com.j0ach1mmall3.ultimatecosmetics.Main;
-import com.j0ach1mmall3.ultimatecosmetics.api.storage.unique.DoubleJumpStorage;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.Sound;
-
 import java.util.ArrayList;
 import java.util.List;
+
+import com.j0ach1mmall3.jlib.logging.JLogger;
+import com.j0ach1mmall3.jlib.storage.file.yaml.ConfigLoader;
+import com.j0ach1mmall3.ultimatecosmetics.Main;
+import com.j0ach1mmall3.ultimatecosmetics.api.storage.unique.DoubleJumpStorage;
+import org.bukkit.ChatColor;
+import org.bukkit.Sound;
 
 /**
  * @author j0ach1mmall3 (business.j0ach1mmall3@gmail.com)
@@ -28,7 +26,6 @@ public final class Misc extends ConfigLoader<Main> {
     private final boolean earsEnabled;
     private final String earsPermission;
     private final List<DoubleJumpStorage> doubleJumpGroups;
-    private final HiddenPlayersRunnable runnable = new HiddenPlayersRunnable();
 
     public Misc(Main plugin) {
         super("misc.yml", plugin);
@@ -43,7 +40,6 @@ public final class Misc extends ConfigLoader<Main> {
         this.earsEnabled = this.config.getBoolean("Ears.Enabled");
         this.earsPermission = this.config.getString("Ears.Permission");
         this.doubleJumpGroups = this.getDoubleJumpGroupsInternal();
-        if(this.upsideDownEnabled || this.earsEnabled) Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin, this.runnable, 20L, 20L);
         plugin.getjLogger().log(ChatColor.GREEN + "Misc config successfully loaded!", JLogger.LogLevel.EXTENDED);
     }
 
@@ -108,9 +104,5 @@ public final class Misc extends ConfigLoader<Main> {
 
     public List<DoubleJumpStorage> getDoubleJumpGroups() {
         return this.doubleJumpGroups;
-    }
-
-    public HiddenPlayersRunnable getRunnable() {
-        return this.runnable;
     }
 }

@@ -24,7 +24,6 @@ public final class Heart extends Cosmetic<Hearts, HeartStorage> {
         HeartStorage.Color color = heartStorage.getColor();
         HeartStorage.Effect effect = heartStorage.getEffect();
         this.player.setMaxHealth(rows * 20);
-        this.player.setHealth(this.player.getMaxHealth());
         if (color == HeartStorage.Color.YELLOW) {
             this.player.setMaxHealth(1);
             this.colorEffect = new PotionEffect(color.getPotionEffect(), Integer.MAX_VALUE, rows * 5);
@@ -43,10 +42,7 @@ public final class Heart extends Cosmetic<Hearts, HeartStorage> {
         int rows = heartStorage.getRows();
         HeartStorage.Color color = heartStorage.getColor();
         HeartStorage.Effect effect = heartStorage.getEffect();
-        if (rows > 1 || color == HeartStorage.Color.YELLOW) {
-            this.player.setMaxHealth(20.0);
-            this.player.setHealth(20.0);
-        }
+        if (rows > 1 || color == HeartStorage.Color.YELLOW) this.player.setMaxHealth(20.0);
         if (color != HeartStorage.Color.RED && this.colorEffect != null) this.player.removePotionEffect(this.colorEffect.getType());
         if (effect != HeartStorage.Effect.NONE && this.effectsEffect != null) this.player.removePotionEffect(this.effectsEffect.getType());
     }

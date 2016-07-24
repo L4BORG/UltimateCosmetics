@@ -27,7 +27,6 @@ import org.bukkit.entity.Creature;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
@@ -145,7 +144,7 @@ public final class PlayerListener implements Listener {
         }
     }
 
-    @EventHandler(priority = EventPriority.HIGHEST)
+    @EventHandler
     public void onJoin(PlayerJoinEvent e) {
         final Player p = e.getPlayer();
         final DataLoader loader = this.plugin.getDataLoader();
@@ -213,7 +212,6 @@ public final class PlayerListener implements Listener {
     @EventHandler
     public void onPlayerLeave(PlayerQuitEvent e) {
         final Player p = e.getPlayer();
-        this.plugin.getMisc().getRunnable().removePlayer(p);
         final CosmeticsQueue queue =  new CosmeticsQueue(this.plugin, p);
         for(Cosmetic cosmetic : this.plugin.getApi().getCosmetics(p)) {
             cosmetic.remove();
@@ -230,7 +228,6 @@ public final class PlayerListener implements Listener {
     @EventHandler
     public void onPlayerKick(PlayerKickEvent e) {
         final Player p = e.getPlayer();
-        this.plugin.getMisc().getRunnable().removePlayer(p);
         final CosmeticsQueue queue =  new CosmeticsQueue(this.plugin, p);
         for(Cosmetic cosmetic : this.plugin.getApi().getCosmetics(p)) {
             cosmetic.remove();

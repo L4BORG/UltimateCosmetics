@@ -7,7 +7,6 @@ import com.j0ach1mmall3.ultimatecosmetics.Methods;
 import com.j0ach1mmall3.ultimatecosmetics.config.CosmeticConfig;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 
@@ -23,7 +22,7 @@ public final class CommandsListener implements Listener {
         plugin.getServer().getPluginManager().registerEvents(this, plugin);
     }
 
-    @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
+    @EventHandler
     public void onCommand(PlayerCommandPreprocessEvent e) {
         String message = e.getMessage();
         Player p = e.getPlayer();

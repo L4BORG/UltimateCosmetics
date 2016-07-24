@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.logging.Filter;
+import java.util.logging.LogRecord;
 
 import com.j0ach1mmall3.jlib.commands.Command;
 import com.j0ach1mmall3.jlib.inventory.CustomEnchantment;
@@ -62,6 +64,7 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
+import org.yaml.snakeyaml.error.YAMLException;
 
 /**
  * @author j0ach1mmall3
@@ -84,6 +87,13 @@ public final class Main extends ModularizedPlugin<Config> {
 
     @Override
     public void onEnable() {
+        Bukkit.getLogger().setFilter(new Filter() {
+            @Override
+            public boolean isLoggable(LogRecord record) {
+                return Bukkit.getLogger().getFilter().isLoggable(record) && !(record.getThrown() instanceof YAMLException);
+            }
+        });
+
         if(this.dataLoader != null) this.dataLoader.disconnectLoader();
 
         this.config = new Config(this);
@@ -215,6 +225,7 @@ public final class Main extends ModularizedPlugin<Config> {
         new CommandsListener(this);
         new PlayerListener(this);
         new EntityListener(this);
+        new GuiHandler(this);
     }
 
     public void queueEntity(Entity entity) {

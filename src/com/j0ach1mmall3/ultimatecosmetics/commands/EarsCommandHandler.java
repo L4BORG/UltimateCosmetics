@@ -1,13 +1,8 @@
 package com.j0ach1mmall3.ultimatecosmetics.commands;
 
 import com.j0ach1mmall3.jlib.commands.CommandHandler;
-import com.j0ach1mmall3.jlib.player.tagchanger.TagChanger;
 import com.j0ach1mmall3.ultimatecosmetics.Main;
-import com.j0ach1mmall3.ultimatecosmetics.listeners.PlayerListener;
-import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.ArmorStand;
-import org.bukkit.entity.Player;
 
 /**
  * @author j0ach1mmall3 (business.j0ach1mmall3@gmail.com)
@@ -22,7 +17,7 @@ public final class EarsCommandHandler extends CommandHandler {
 
     @Override
     protected boolean handleCommand(CommandSender commandSender, String[] strings) {
-        Player p = (Player) commandSender;
+        /*Player p = (Player) commandSender;
         if(this.plugin.getMisc().getRunnable().containsPlayer(p)) {
             TagChanger.unregisterTag(p.getUniqueId());
             if(p.getPassenger() instanceof ArmorStand) p.getPassenger().remove();
@@ -46,6 +41,6 @@ public final class EarsCommandHandler extends CommandHandler {
         }
         String toggled = this.plugin.getLang().getToggled();
         if(!toggled.isEmpty()) p.sendMessage(toggled.replace("%statuscolor%", (this.plugin.getMisc().getRunnable().containsPlayer(p) ? ChatColor.GREEN : ChatColor.RED).toString()).replace("%type%", "Ears"));
-        return true;
+        */return true;
     }
 }
