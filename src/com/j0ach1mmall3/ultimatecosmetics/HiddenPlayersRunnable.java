@@ -14,9 +14,6 @@ import java.util.Set;
 public final class HiddenPlayersRunnable implements Runnable {
     private final Set<String> hiddenPlayers = new HashSet<>();
 
-    public HiddenPlayersRunnable() {
-    }
-
     @SuppressWarnings("deprecation")
     @Override
     public void run() {

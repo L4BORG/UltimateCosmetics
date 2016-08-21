@@ -16,7 +16,7 @@ public abstract class Cosmetic<C extends CosmeticConfig, S extends CosmeticStora
     protected final Player player;
     protected final S cosmeticStorage;
 
-    public Cosmetic(C cosmeticConfig, Player player, S cosmeticStorage) {
+    protected Cosmetic(C cosmeticConfig, Player player, S cosmeticStorage) {
         this.cosmeticConfig = cosmeticConfig;
         this.player = player;
         this.cosmeticStorage = cosmeticStorage;

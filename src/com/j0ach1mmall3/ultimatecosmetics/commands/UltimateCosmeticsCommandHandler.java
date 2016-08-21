@@ -21,7 +21,7 @@ public final class UltimateCosmeticsCommandHandler extends CommandHandler {
     }
 
     @Override
-    protected boolean handleCommand(final CommandSender commandSender, String[] strings) {
+    protected boolean handleCommand(CommandSender commandSender, String[] strings) {
         if (strings.length == 0) {
             commandSender.sendMessage(ChatColor.GRAY.toString() + ChatColor.STRIKETHROUGH + "----------------------------------------------------");
             commandSender.sendMessage(ChatColor.GOLD + this.plugin.getDescription().getName() + ' ' + ChatColor.DARK_PURPLE + this.plugin.getDescription().getVersion());

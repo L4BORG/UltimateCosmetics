@@ -1,28 +1,17 @@
 package com.j0ach1mmall3.ultimatecosmetics;
 
-import java.lang.reflect.InvocationTargetException;
-import java.util.EnumSet;
-
 import com.j0ach1mmall3.jlib.methods.ReflectionAPI;
 import com.j0ach1mmall3.jlib.nms.pathfinding.WrappedPathfinderGoalSelector;
 import com.j0ach1mmall3.ultimatecosmetics.api.storage.EntityCosmeticStorage;
 import org.bukkit.DyeColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.entity.Ageable;
-import org.bukkit.entity.Creature;
-import org.bukkit.entity.Creeper;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.Horse;
-import org.bukkit.entity.Ocelot;
-import org.bukkit.entity.Pig;
-import org.bukkit.entity.Sheep;
-import org.bukkit.entity.Skeleton;
-import org.bukkit.entity.Tameable;
-import org.bukkit.entity.Villager;
-import org.bukkit.entity.Zombie;
+import org.bukkit.entity.*;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.Colorable;
+
+import java.lang.reflect.InvocationTargetException;
+import java.util.EnumSet;
 
 /**
  * @author j0ach1mmall3 (business.j0ach1mmall3@gmail.com)
@@ -124,6 +113,8 @@ public final class Reflection {
                 case VILLAGER:
                     if (ent instanceof Zombie) ((Zombie) ent).setVillager(true);
                     break;
+                default:
+                    // NOP
             }
         }
     }

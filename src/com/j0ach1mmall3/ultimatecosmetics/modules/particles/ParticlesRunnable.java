@@ -1,17 +1,11 @@
 package com.j0ach1mmall3.ultimatecosmetics.modules.particles;
 
-import com.j0ach1mmall3.jlib.effectsapi.ConeEffect;
-import com.j0ach1mmall3.jlib.effectsapi.CrossEffect;
-import com.j0ach1mmall3.jlib.effectsapi.CylinderEffect;
-import com.j0ach1mmall3.jlib.effectsapi.DomeEffect;
-import com.j0ach1mmall3.jlib.effectsapi.DoubleCrossEffect;
-import com.j0ach1mmall3.jlib.effectsapi.DoubleHelixEffect;
-import com.j0ach1mmall3.jlib.effectsapi.HelixEffect;
-import com.j0ach1mmall3.jlib.effectsapi.SphereEffect;
+import com.j0ach1mmall3.jlib.Main;
+import com.j0ach1mmall3.jlib.effectsapi.*;
 import com.j0ach1mmall3.ultimatecosmetics.Methods;
 import com.j0ach1mmall3.ultimatecosmetics.api.storage.ParticleCosmeticStorage;
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.concurrent.TimeUnit;
@@ -31,7 +25,7 @@ public final class ParticlesRunnable extends BukkitRunnable {
     public void run() {
         for (Particle cosmetic : this.module.getParent().getApi().getAllCosmetics(Particle.class)) {
             Player p = cosmetic.getPlayer();
-            long lastWalked = ((com.j0ach1mmall3.jlib.Main) Bukkit.getPluginManager().getPlugin("JLib")).getJoinListener().getLastWalked(p);
+            long lastWalked = JavaPlugin.getPlugin(Main.class).getPlayerListener().getLastWalked(p);
             ParticleCosmeticStorage pcs = cosmetic.getCosmeticStorage();
             if(pcs.getShape() != ParticleCosmeticStorage.Shape.RANDOM && pcs.getShape() != ParticleCosmeticStorage.Shape.TRAIL && lastWalked != 0 && TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis() - lastWalked) < this.module.getConfig().getGiveDelay()) return;
             switch (pcs.getShape()) {
@@ -65,6 +59,8 @@ public final class ParticlesRunnable extends BukkitRunnable {
                 case TRAIL:
                     Methods.broadcastSafeParticle(p.getLocation().add(0, 0.75, 0), pcs.getParticle(), pcs.getId(), pcs.getData(), pcs.getSpeed(), 1, this.module.getConfig().getViewDistance());
                     break;
+                default:
+                    // NOP
             }
         }
     }

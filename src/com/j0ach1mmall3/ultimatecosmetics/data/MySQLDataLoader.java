@@ -49,7 +49,7 @@ public final class MySQLDataLoader extends MySQLLoader<Main> implements DataLoad
                             WrappedParameters params = new WrappedParameters();
                             params.addParameter(1, String.valueOf(entry.getValue()));
                             params.addParameter(2, s);
-                            MySQLDataLoader.this.mySQL.execute("UPDATE " + MySQLDataLoader.this.ammoName + " SET " + entry.getKey() + "=? WHERE Player=?", params);
+                            MySQLDataLoader.this.mySQL.execute("UPDATE " + MySQLDataLoader.this.ammoName + " SET " + entry.getKey() + " = ? WHERE Player = ?", params);
                         }
                     } else createOffline(s);
                 }
@@ -90,7 +90,7 @@ public final class MySQLDataLoader extends MySQLLoader<Main> implements DataLoad
         this.stackerName = plugin.getStorage().getDatabasePrefix() + "stacker";
         this.petNamesName = plugin.getStorage().getDatabasePrefix() + "petnames";
         this.mySQL.execute("CREATE TABLE IF NOT EXISTS " + this.ammoName + "(Player VARCHAR(36), Enderbow INT(5), EtherealPearl INT(5), PaintballGun INT(5), FlyingPig INT(5), BatBlaster INT(5), CATapult INT(5), RailGun INT(5), CryoTube INT(5), Rocket INT(5), PoopBomb INT(5), GrapplingHook INT(5), SelfDestruct INT(5), SlimeVasion INT(5), FunGun INT(5), MelonThrower INT(5), ColorBomb INT(5), FireTrail INT(5), DiamondShower INT(5), GoldFountain INT(5), PaintTrail INT(5))", new WrappedParameters());
-        this.mySQL.execute("CREATE TABLE IF NOT EXISTS " + this.queueName + "(Player VARCHAR(36), Queue VARCHAR(1024))", new WrappedParameters());
+        this.mySQL.execute("CREATE TABLE IF NOT EXISTS " + this.queueName + "(Player VARCHAR(36), Queue VARCHAR(2048))", new WrappedParameters());
         this.mySQL.execute("CREATE TABLE IF NOT EXISTS " + this.stackerName + "(Player VARCHAR(36), Enabled TINYINT(1))", new WrappedParameters());
         this.mySQL.execute("CREATE TABLE IF NOT EXISTS " + this.petNamesName + "(Player VARCHAR(36), PetName VARCHAR(64))", new WrappedParameters());
     }
@@ -145,7 +145,7 @@ public final class MySQLDataLoader extends MySQLLoader<Main> implements DataLoad
         WrappedParameters params = new WrappedParameters();
         params.addParameter(1, s);
         params.addParameter(2, uuid);
-        this.mySQL.execute("UPDATE " + this.queueName + " SET Queue=? WHERE Player=?", params);
+        this.mySQL.execute("UPDATE " + this.queueName + " SET Queue = ? WHERE Player = ?", params);
     }
 
     @Override
@@ -155,7 +155,7 @@ public final class MySQLDataLoader extends MySQLLoader<Main> implements DataLoad
         this.mySQL.executeQuery("SELECT * FROM " + this.queueName + " WHERE Player = ?", params, new CallbackHandler<WrappedResultSet>() {
             @Override
             public void callback(WrappedResultSet o) {
-                if(!o.next()) MySQLDataLoader.this.mySQL.execute("INSERT INTO " + MySQLDataLoader.this.queueName + " VALUES(?, ?)", params);
+                if(!o.next()) MySQLDataLoader.this.mySQL.execute("INSERT INTO " + MySQLDataLoader.this.queueName + " VALUES(?, '')", params);
             }
         });
     }
@@ -178,7 +178,7 @@ public final class MySQLDataLoader extends MySQLLoader<Main> implements DataLoad
         WrappedParameters params = new WrappedParameters();
         params.addParameter(1, stacker);
         params.addParameter(2, p.getUniqueId().toString());
-        this.mySQL.execute("UPDATE " + this.stackerName + " SET Enabled=? WHERE Player=?", params);
+        this.mySQL.execute("UPDATE " + this.stackerName + " SET Enabled = ? WHERE Player = ?", params);
     }
 
     @Override

@@ -122,7 +122,7 @@ public final class GadgetsListener implements Listener {
                     Location l = p.getLocation();
                     l.setY(l.getY() + 2.0);
                     customItem.setName(Random.getString(16, true, true));
-                    final Item i = l.getWorld().dropItemNaturally(l, customItem);
+                    Item i = l.getWorld().dropItemNaturally(l, customItem);
                     i.setPickupDelay(Integer.MAX_VALUE);
                     GadgetsListener.this.module.getParent().queueEntity(i);
                     items.add(i);
@@ -143,7 +143,7 @@ public final class GadgetsListener implements Listener {
 
     @EventHandler
     @SuppressWarnings("deprecation")
-    public void onInteract(final PlayerInteractEvent e) {
+    public void onInteract(PlayerInteractEvent e) {
         final Player p = e.getPlayer();
         if(e.getAction() == Action.PHYSICAL || p.getItemInHand() == null) return;
         final Gadgets config = this.module.getConfig();
@@ -158,7 +158,7 @@ public final class GadgetsListener implements Listener {
                 return;
             }
 
-            if(!gadget.getIdentifier().equalsIgnoreCase("GrapplingHook")) {
+            if(!"GrapplingHook".equalsIgnoreCase(gadget.getIdentifier())) {
                 if(this.isInCooldown(p, gadget) || this.checkAmmo(p, gadget)) return;
                 this.addToCooldown(p, gadget);
             }
@@ -214,7 +214,7 @@ public final class GadgetsListener implements Listener {
                     final Set<Bat> bats = new HashSet<>();
 
                     for (int a = 0; a < config.getIntValue("BatBlaster", "Amount"); a++) {
-                        final Bat b = (Bat) p.getWorld().spawnEntity(l, EntityType.BAT);
+                        Bat b = (Bat) p.getWorld().spawnEntity(l, EntityType.BAT);
                         b.setVelocity(l.getDirection().multiply(config.getIntValue("BatBlaster", "Speed")));
                         b.setNoDamageTicks(20 * config.getIntValue("BatBlaster", "RemoveDelay"));
                         this.module.getParent().queueEntity(b);
@@ -236,7 +236,7 @@ public final class GadgetsListener implements Listener {
                     final List<Ocelot> cats = new ArrayList<>();
 
                     for (int a = 0; a < config.getIntValue("CATapult", "Amount"); a++) {
-                        final Ocelot cat = (Ocelot) p.getWorld().spawnEntity(l, EntityType.OCELOT);
+                        Ocelot cat = (Ocelot) p.getWorld().spawnEntity(l, EntityType.OCELOT);
                         cat.setTamed(true);
                         Vector v = l.getDirection().multiply(config.getIntValue("CATapult", "Speed"));
                         v.setX(Random.getDouble());
@@ -317,7 +317,7 @@ public final class GadgetsListener implements Listener {
                         int x = Random.getInt(config.getIntValue("PoopBomb", "Radius") << 1) - config.getIntValue("PoopBomb", "Radius");
                         int z = Random.getInt(config.getIntValue("PoopBomb", "Radius") << 1) - config.getIntValue("PoopBomb", "Radius");
                         customItem.setName(Random.getString(16, true, true));
-                        final Item item = l.getWorld().dropItemNaturally(l.add(x , 15, z), customItem);
+                        Item item = l.getWorld().dropItemNaturally(l.add(x , 15, z), customItem);
                         item.setPickupDelay(Integer.MAX_VALUE);
                         this.module.getParent().queueEntity(item);
                         items.add(item);
@@ -354,7 +354,7 @@ public final class GadgetsListener implements Listener {
                     final Set<Slime> slimes = new HashSet<>();
 
                     for (int a = 0; a < config.getIntValue("SlimeVasion", "Amount"); a++) {
-                        final Slime slime = (Slime) p.getWorld().spawnEntity(p.getLocation(), EntityType.SLIME);
+                        Slime slime = (Slime) p.getWorld().spawnEntity(p.getLocation(), EntityType.SLIME);
                         slime.setSize(Random.getInt(1, 4));
                         slime.setNoDamageTicks(Integer.MAX_VALUE);
                         slime.setMetadata("SlimeVasion", metadataValue);
@@ -492,7 +492,7 @@ public final class GadgetsListener implements Listener {
     public void onHangingBreakByEntity(HangingBreakByEntityEvent e) {
         Entity ent = e.getRemover();
         if(ent instanceof Player) {
-            if(this.module.getParent().getApi().hasCosmetics(((Player) ent), Gadget.class)) e.setCancelled(true);
+            if(this.module.getParent().getApi().hasCosmetics((Player) ent, Gadget.class)) e.setCancelled(true);
         }
     }
 
@@ -652,7 +652,7 @@ public final class GadgetsListener implements Listener {
         this.module.getParent().removeEntity(ent);
         ent.remove();
         new BukkitRunnable() {
-            private int count = 0;
+            private int count;
 
             @Override
             public void run() {
@@ -683,7 +683,7 @@ public final class GadgetsListener implements Listener {
         this.module.getParent().removeEntity(ent);
         ent.remove();
         new BukkitRunnable() {
-            private int count = 0;
+            private int count;
 
             @Override
             public void run() {

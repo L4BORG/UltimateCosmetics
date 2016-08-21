@@ -1,8 +1,5 @@
 package com.j0ach1mmall3.ultimatecosmetics.config;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.j0ach1mmall3.jlib.inventory.CustomItem;
 import com.j0ach1mmall3.jlib.inventory.GUI;
 import com.j0ach1mmall3.jlib.inventory.GuiItem;
@@ -19,6 +16,9 @@ import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author j0ach1mmall3 (business.j0ach1mmall3@gmail.com)
@@ -41,7 +41,7 @@ public abstract class CosmeticConfig<S extends CosmeticStorage> extends ConfigLo
     private final List<S> cosmetics;
     private final int maxPage;
 
-    public CosmeticConfig(String config, Main plugin, String section) {
+    protected CosmeticConfig(String config, Main plugin, String section) {
         super(config, plugin);
         this.worldsBlacklist = this.config.getStringList("WorldsBlacklist");
         this.command = this.config.getString("Command");
@@ -125,7 +125,7 @@ public abstract class CosmeticConfig<S extends CosmeticStorage> extends ConfigLo
                     if(cosmetic.getCosmeticStorage().getIdentifier().equals(cosmeticStorage.getIdentifier())) itemStack.addEnchantment(plugin.getGlow(), 1);
                 }
                 gui.setItem(position, itemStack);
-                if (this.isNoPermissionItemEnabled() && !General.hasCustomPermission(player, cosmeticStorage.getPermission())) gui.setItem(position, this.getNoPermissionItem(cosmeticStorage));
+                if (this.noPermissionItem_Enabled && !General.hasCustomPermission(player, cosmeticStorage.getPermission())) gui.setItem(position, this.getNoPermissionItem(cosmeticStorage));
             }
         }
         gui.open(player);

@@ -10,7 +10,7 @@ import com.j0ach1mmall3.ultimatecosmetics.Main;
 public abstract class CooldownCosmeticStorage extends CosmeticStorage {
     private final int cooldown;
 
-    public CooldownCosmeticStorage(Main plugin, String identifier, String permission, GuiItem guiItem, int cooldown) {
+    protected CooldownCosmeticStorage(Main plugin, String identifier, String permission, GuiItem guiItem, int cooldown) {
         super(plugin, identifier, permission, guiItem);
         this.cooldown = cooldown;
     }

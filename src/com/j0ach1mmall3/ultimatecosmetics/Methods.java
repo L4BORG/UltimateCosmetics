@@ -1,19 +1,15 @@
 package com.j0ach1mmall3.ultimatecosmetics;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import com.j0ach1mmall3.jlib.integration.Placeholders;
 import com.j0ach1mmall3.jlib.methods.Notes;
 import com.j0ach1mmall3.jlib.methods.ReflectionAPI;
-import org.bukkit.Bukkit;
-import org.bukkit.Effect;
-import org.bukkit.Instrument;
-import org.bukkit.Location;
-import org.bukkit.Note;
+import org.bukkit.*;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author j0ach1mmall3 (business.j0ach1mmall3@gmail.com)
@@ -21,7 +17,7 @@ import org.bukkit.inventory.ItemStack;
  */
 public final class Methods {
     public static final Map<String, Integer> DEFAULT_AMMO = new HashMap<String, Integer>() {{
-        for(String s :  new String[]{"Enderbow", "EtherealPearl", "PaintballGun", "FlyingPig", "BatBlaster", "CATapult", "RailGun", "CryoTube", "Rocket", "PoopBomb", "GrapplingHook", "SelfDestruct", "Slimevasion", "FunGun", "MelonThrower", "ColorBomb", "FireTrail", "DiamondShower", "GoldFountain", "PaintTrail"}) {
+        for(String s :  new String[]{"Enderbow", "EtherealPearl", "PaintballGun", "FlyingPig", "BatBlaster", "CATapult", "RailGun", "CryoTube", "Rocket", "PoopBomb", "GrapplingHook", "SelfDestruct", "SlimeVasion", "FunGun", "MelonThrower", "ColorBomb", "FireTrail", "DiamondShower", "GoldFountain", "PaintTrail"}) {
             this.put(s, 0);
         }
     }};

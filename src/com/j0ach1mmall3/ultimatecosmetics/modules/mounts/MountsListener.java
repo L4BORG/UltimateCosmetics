@@ -1,19 +1,10 @@
 package com.j0ach1mmall3.ultimatecosmetics.modules.mounts;
 
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.entity.EntityChangeBlockEvent;
-import org.bukkit.event.entity.EntityCombustEvent;
-import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.event.entity.EntityDamageEvent;
-import org.bukkit.event.entity.EntityExplodeEvent;
-import org.bukkit.event.entity.EntityInteractEvent;
-import org.bukkit.event.entity.EntityPortalEvent;
-import org.bukkit.event.entity.EntityTameEvent;
-import org.bukkit.event.entity.EntityTargetEvent;
-import org.bukkit.event.entity.EntityTeleportEvent;
-import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.event.entity.*;
 import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.inventory.HorseInventory;
@@ -28,6 +19,13 @@ public final class MountsListener implements Listener {
     public MountsListener(MountsModule module) {
         this.module = module;
         module.getParent().getServer().getPluginManager().registerEvents(this, module.getParent());
+    }
+
+    @EventHandler
+    public void onItemSpawn(ItemSpawnEvent e) {
+        for(Entity entity : e.getEntity().getNearbyEntities(1, 1, 1)) {
+            if(entity.hasMetadata("Mount")) e.setCancelled(true);
+        }
     }
 
     @EventHandler

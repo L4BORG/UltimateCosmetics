@@ -1,11 +1,5 @@
 package com.j0ach1mmall3.ultimatecosmetics.modules.morphs;
 
-import java.util.EnumSet;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-
 import com.j0ach1mmall3.jlib.integration.Placeholders;
 import com.j0ach1mmall3.jlib.inventory.CustomItem;
 import com.j0ach1mmall3.jlib.methods.Parsing;
@@ -16,20 +10,7 @@ import me.libraryaddict.disguise.disguisetypes.DisguiseType;
 import org.bukkit.Effect;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.entity.Ageable;
-import org.bukkit.entity.Arrow;
-import org.bukkit.entity.Egg;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.EntityType;
-import org.bukkit.entity.Fireball;
-import org.bukkit.entity.Item;
-import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Player;
-import org.bukkit.entity.Snowball;
-import org.bukkit.entity.ThrownPotion;
-import org.bukkit.entity.Villager;
-import org.bukkit.entity.WitherSkull;
-import org.bukkit.entity.Zombie;
+import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
@@ -49,6 +30,8 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
+
+import java.util.*;
 
 /**
  * @author j0ach1mmall3 (business.j0ach1mmall3@gmail.com)
@@ -252,7 +235,7 @@ public final class MorphsListener implements Listener {
                 case GIANT:
                     final Set<Zombie> zombies = new HashSet<>();
                     for (int i = 0; i < 5; i++) {
-                        final Zombie zombie = (Zombie) p.getWorld().spawnEntity(p.getLocation(), EntityType.ZOMBIE);
+                        Zombie zombie = (Zombie) p.getWorld().spawnEntity(p.getLocation(), EntityType.ZOMBIE);
                         this.module.getParent().queueEntity(zombie);
                         zombie.addPotionEffect(speed);
                         zombie.setBaby(false);
@@ -286,7 +269,7 @@ public final class MorphsListener implements Listener {
                 case PIG_ZOMBIE:
                     final Set<Zombie> pigZombies = new HashSet<>();
                     for (int i = 0; i < 5; i++) {
-                        final Zombie zombie = (Zombie) p.getWorld().spawnEntity(p.getLocation(), EntityType.PIG_ZOMBIE);
+                        Zombie zombie = (Zombie) p.getWorld().spawnEntity(p.getLocation(), EntityType.PIG_ZOMBIE);
                         this.module.getParent().queueEntity(zombie);
                         zombie.setBaby(true);
                         zombie.addPotionEffect(speed);
@@ -332,7 +315,7 @@ public final class MorphsListener implements Listener {
                 case VILLAGER:
                     final Set<Villager> villagers = new HashSet<>();
                     for (int i = 0; i < 5; i++) {
-                        final Villager villager = (Villager) p.getWorld().spawnEntity(p.getLocation(), EntityType.VILLAGER);
+                        Villager villager = (Villager) p.getWorld().spawnEntity(p.getLocation(), EntityType.VILLAGER);
                         this.module.getParent().queueEntity(villager);
                         villager.setBaby();
                         villager.addPotionEffect(speed);
@@ -369,7 +352,7 @@ public final class MorphsListener implements Listener {
                 case ZOMBIE_VILLAGER:
                     final Set<Zombie> babyZombies = new HashSet<>();
                     for (int i = 0; i < 5; i++) {
-                        final Zombie zombie = (Zombie) p.getWorld().spawnEntity(p.getLocation(), EntityType.ZOMBIE);
+                        Zombie zombie = (Zombie) p.getWorld().spawnEntity(p.getLocation(), EntityType.ZOMBIE);
                         this.module.getParent().queueEntity(zombie);
                         zombie.addPotionEffect(speed);
                         zombie.setBaby(true);
@@ -387,6 +370,8 @@ public final class MorphsListener implements Listener {
                         }
                     }.runTaskLater(this.module.getParent(), 20 * morph.getAbilityDuration());
                     break;
+                default:
+                    // NOP
             }
             p.updateInventory();
         }

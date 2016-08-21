@@ -1,13 +1,13 @@
 package com.j0ach1mmall3.ultimatecosmetics.api;
 
-import com.j0ach1mmall3.ultimatecosmetics.Main;
-import org.bukkit.entity.Player;
-
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+
+import com.j0ach1mmall3.ultimatecosmetics.Main;
+import org.bukkit.entity.Player;
 
 /**
  * @author j0ach1mmall3 (business.j0ach1mmall3@gmail.com)

@@ -1,9 +1,10 @@
 package com.j0ach1mmall3.ultimatecosmetics.modules.bannercapes;
 
-import org.bukkit.Bukkit;
+import com.j0ach1mmall3.jlib.Main;
 import org.bukkit.Material;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.concurrent.TimeUnit;
@@ -24,10 +25,10 @@ public final class BannerCapesRunnable extends BukkitRunnable {
         for (BannerCape cosmetic : this.module.getParent().getApi().getAllCosmetics(BannerCape.class)) {
             ArmorStand armorStand = cosmetic.getArmorStand();
             Player p = cosmetic.getPlayer();
-            long lastWalked = ((com.j0ach1mmall3.jlib.Main) Bukkit.getPluginManager().getPlugin("JLib")).getJoinListener().getLastWalked(p);
+            long lastWalked = JavaPlugin.getPlugin(Main.class).getPlayerListener().getLastWalked(p);
             if(lastWalked != 0 && TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis() - lastWalked) < this.module.getConfig().getGiveDelay()) armorStand.setHelmet(null);
             else if(armorStand.getHelmet().getType() == Material.AIR) armorStand.setHelmet(cosmetic.getCosmeticStorage().getGuiItem().getItem());
-            armorStand.teleport(p.getEyeLocation().add(0, 100, 0));
+            armorStand.teleport(p.getEyeLocation().subtract(0, 1, 0));
         }
     }
 }

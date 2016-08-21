@@ -30,7 +30,7 @@ public final class TrailsRunnable extends BukkitRunnable {
             ItemMeta im = ci.getItemMeta();
             im.setDisplayName(String.valueOf(Random.getInt(100)));
             ci.setItemMeta(im);
-            final Item i = p.getWorld().dropItem(p.getLocation(), ci);
+            Item i = p.getWorld().dropItem(p.getLocation(), ci);
             i.setPickupDelay(Integer.MAX_VALUE);
             this.module.getParent().queueEntity(i);
             items.add(i);

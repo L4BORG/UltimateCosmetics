@@ -11,7 +11,7 @@ public abstract class UniqueCosmeticStorage {
     protected final String identifier;
     protected final String permission;
 
-    public UniqueCosmeticStorage(Main plugin, String identifier, String permission) {
+    protected UniqueCosmeticStorage(Main plugin, String identifier, String permission) {
         this.plugin = plugin;
         this.identifier = identifier;
         this.permission = permission;

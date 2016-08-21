@@ -1,9 +1,10 @@
 package com.j0ach1mmall3.ultimatecosmetics.modules.cloaks;
 
+import com.j0ach1mmall3.jlib.Main;
 import com.j0ach1mmall3.jlib.effectsapi.HaloEffect;
 import com.j0ach1mmall3.ultimatecosmetics.api.storage.ParticleCosmeticStorage;
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.concurrent.TimeUnit;
@@ -23,7 +24,7 @@ public final class CloaksRunnable extends BukkitRunnable {
     public void run() {
         for (Cloak cosmetic : this.module.getParent().getApi().getAllCosmetics(Cloak.class)) {
             Player p = cosmetic.getPlayer();
-            long lastWalked = ((com.j0ach1mmall3.jlib.Main) Bukkit.getPluginManager().getPlugin("JLib")).getJoinListener().getLastWalked(p);
+            long lastWalked = JavaPlugin.getPlugin(Main.class).getPlayerListener().getLastWalked(p);
             if (lastWalked != 0 && TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis() - lastWalked) < this.module.getConfig().getGiveDelay())
                 return;
             ParticleCosmeticStorage pcs = cosmetic.getCosmeticStorage();
@@ -31,6 +32,8 @@ public final class CloaksRunnable extends BukkitRunnable {
                 case HALO:
                     new HaloEffect(p.getLocation().add(0, 2, 0), pcs.getParticle(), pcs.getId(), pcs.getData(), pcs.getSpeed(), this.module.getConfig().getViewDistance(), 0.5, 16).play(this.module.getParent());
                     break;
+                default:
+                    // NOP
             }
         }
     }

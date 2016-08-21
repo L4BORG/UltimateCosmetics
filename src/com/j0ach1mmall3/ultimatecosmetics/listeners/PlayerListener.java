@@ -6,6 +6,7 @@ import com.j0ach1mmall3.jlib.integration.updatechecker.UpdateCheckerResult;
 import com.j0ach1mmall3.jlib.methods.General;
 import com.j0ach1mmall3.jlib.methods.ReflectionAPI;
 import com.j0ach1mmall3.jlib.methods.Sounds;
+import com.j0ach1mmall3.jlib.player.JLibPlayer;
 import com.j0ach1mmall3.jlib.storage.database.CallbackHandler;
 import com.j0ach1mmall3.ultimatecosmetics.Main;
 import com.j0ach1mmall3.ultimatecosmetics.Methods;
@@ -30,14 +31,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.event.player.PlayerChangedWorldEvent;
-import org.bukkit.event.player.PlayerInteractEntityEvent;
-import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.player.PlayerKickEvent;
-import org.bukkit.event.player.PlayerMoveEvent;
-import org.bukkit.event.player.PlayerQuitEvent;
-import org.bukkit.event.player.PlayerToggleFlightEvent;
+import org.bukkit.event.player.*;
 import org.bukkit.scheduler.BukkitRunnable;
 
 /**
@@ -57,7 +51,7 @@ public final class PlayerListener implements Listener {
         if (this.plugin.getMisc().isDoubleJumpEnabled()) {
             Player p = e.getPlayer();
             for (DoubleJumpStorage group : this.plugin.getMisc().getDoubleJumpGroups()) {
-                if (General.hasCustomPermission(p, group.getPermission()) && p.getGameMode() != GameMode.CREATIVE && p.getVehicle() == null && p.getPassenger() == null) {
+                if (new JLibPlayer(p).hasCustomPermission(group.getPermission()) && p.getGameMode() != GameMode.CREATIVE && p.getVehicle() == null && p.getPassenger() == null) {
                     e.setCancelled(true);
                     p.setAllowFlight(false);
                     p.setFlying(false);
@@ -75,7 +69,7 @@ public final class PlayerListener implements Listener {
         if (this.plugin.getMisc().isDoubleJumpEnabled()) {
             Player p = e.getPlayer();
             for (DoubleJumpStorage group : this.plugin.getMisc().getDoubleJumpGroups()) {
-                if (General.hasCustomPermission(p, group.getPermission()) && p.getGameMode() != GameMode.CREATIVE && p.getLocation().getBlock().getRelative(BlockFace.DOWN).getType() != Material.AIR && p.getVehicle() == null && p.getPassenger() == null) {
+                if (new JLibPlayer(p).hasCustomPermission(group.getPermission()) && p.getGameMode() != GameMode.CREATIVE && p.getLocation().getBlock().getRelative(BlockFace.DOWN).getType() != Material.AIR && p.getVehicle() == null && p.getPassenger() == null) {
                     p.setAllowFlight(true);
                     return;
                 }
@@ -90,7 +84,7 @@ public final class PlayerListener implements Listener {
             this.plugin.getDataLoader().getStacker(p, new CallbackHandler<Boolean>() {
                 @Override
                 public void callback(Boolean o) {
-                    if(o && General.hasCustomPermission(p, PlayerListener.this.plugin.getMisc().getStackerPermission())) {
+                    if(o && new JLibPlayer(p).hasCustomPermission(PlayerListener.this.plugin.getMisc().getStackerPermission())) {
                         if (e.getRightClicked() instanceof Player) {
                             final Player clicked = (Player) e.getRightClicked();
                             PlayerListener.this.plugin.getDataLoader().getStacker(clicked, new CallbackHandler<Boolean>() {
@@ -148,7 +142,7 @@ public final class PlayerListener implements Listener {
     public void onJoin(PlayerJoinEvent e) {
         final Player p = e.getPlayer();
         final DataLoader loader = this.plugin.getDataLoader();
-        final Config config = this.plugin.getBabies();
+        Config config = this.plugin.getBabies();
         new BukkitRunnable() {
             @Override
             public void run() {

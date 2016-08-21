@@ -1,12 +1,5 @@
 package com.j0ach1mmall3.ultimatecosmetics;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.logging.Filter;
-import java.util.logging.LogRecord;
-
 import com.j0ach1mmall3.jlib.commands.Command;
 import com.j0ach1mmall3.jlib.inventory.CustomEnchantment;
 import com.j0ach1mmall3.jlib.logging.DebugInfo;
@@ -19,27 +12,13 @@ import com.j0ach1mmall3.jlib.storage.file.yaml.ConfigLoader;
 import com.j0ach1mmall3.jlib.storage.file.yaml.StorageConfigLoader;
 import com.j0ach1mmall3.ultimatecosmetics.api.Cosmetic;
 import com.j0ach1mmall3.ultimatecosmetics.api.CosmeticsAPI;
-import com.j0ach1mmall3.ultimatecosmetics.commands.GiveAmmoCommandHandler;
-import com.j0ach1mmall3.ultimatecosmetics.commands.GiveCosmeticCommandHandler;
-import com.j0ach1mmall3.ultimatecosmetics.commands.RemoveAllCosmeticsCommandHandler;
-import com.j0ach1mmall3.ultimatecosmetics.commands.RemoveAmmoCommandHandler;
-import com.j0ach1mmall3.ultimatecosmetics.commands.RemoveCosmeticCommandHandler;
-import com.j0ach1mmall3.ultimatecosmetics.commands.StackerCommandHandler;
-import com.j0ach1mmall3.ultimatecosmetics.commands.UltimateCosmeticsCommandHandler;
+import com.j0ach1mmall3.ultimatecosmetics.commands.*;
 import com.j0ach1mmall3.ultimatecosmetics.config.Config;
 import com.j0ach1mmall3.ultimatecosmetics.config.CosmeticConfig;
 import com.j0ach1mmall3.ultimatecosmetics.config.Lang;
 import com.j0ach1mmall3.ultimatecosmetics.config.Misc;
-import com.j0ach1mmall3.ultimatecosmetics.data.DataLoader;
-import com.j0ach1mmall3.ultimatecosmetics.data.FileDataLoader;
-import com.j0ach1mmall3.ultimatecosmetics.data.MongoDBDataLoader;
-import com.j0ach1mmall3.ultimatecosmetics.data.MySQLDataLoader;
-import com.j0ach1mmall3.ultimatecosmetics.data.SQLiteDataLoader;
-import com.j0ach1mmall3.ultimatecosmetics.listeners.CommandsListener;
-import com.j0ach1mmall3.ultimatecosmetics.listeners.EntityListener;
-import com.j0ach1mmall3.ultimatecosmetics.listeners.PlayerListener;
-import com.j0ach1mmall3.ultimatecosmetics.listeners.ProtocolLibListener;
-import com.j0ach1mmall3.ultimatecosmetics.listeners.ProtocolListener;
+import com.j0ach1mmall3.ultimatecosmetics.data.*;
+import com.j0ach1mmall3.ultimatecosmetics.listeners.*;
 import com.j0ach1mmall3.ultimatecosmetics.modules.auras.AurasModule;
 import com.j0ach1mmall3.ultimatecosmetics.modules.balloons.BalloonsModule;
 import com.j0ach1mmall3.ultimatecosmetics.modules.bannercapes.BannerCapesModule;
@@ -65,6 +44,13 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
 import org.yaml.snakeyaml.error.YAMLException;
+
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.logging.Filter;
+import java.util.logging.LogRecord;
 
 /**
  * @author j0ach1mmall3
@@ -107,10 +93,11 @@ public final class Main extends ModularizedPlugin<Config> {
 
         if (this.config.isUpdateChecker()) this.checkUpdate(5885);
 
-        if (this.getServer().getPluginManager().getPlugin("ProtocolLib") != null) {
+        if (this.getServer().getPluginManager().getPlugin("ProtocolLib") == null) this.jLogger.log(ChatColor.GOLD + "ProtocolLib not found, falling back to TinyProtocol", JLogger.LogLevel.NORMAL);
+        else {
             this.protocolLib = true;
             this.jLogger.log(ChatColor.GREEN + "Switching over to ProtocolLib", JLogger.LogLevel.NORMAL);
-        } else this.jLogger.log(ChatColor.GOLD + "ProtocolLib not found, falling back to TinyProtocol", JLogger.LogLevel.NORMAL);
+        }
 
         this.misc = new Misc(this);
 
@@ -147,11 +134,21 @@ public final class Main extends ModularizedPlugin<Config> {
 
         this.loadModules();
 
+        List<ConfigLoader> configs = new ArrayList<>();
+        configs.add(this.config);
+        configs.add(this.lang);
+        configs.add(this.misc);
+        for(PluginModule module : this.modules) {
+            configs.add(module.getConfig());
+        }
+
+        this.registerDebugInfo(new DebugInfo((StorageLoader) this.dataLoader, configs.toArray(new ConfigLoader[configs.size()])));
+
         this.jLogger.log(ChatColor.GREEN + "Registering Listeners...", JLogger.LogLevel.NORMAL);
+
         new CommandsListener(this);
         new PlayerListener(this);
         new EntityListener(this);
-
         this.guiHandler = new GuiHandler(this);
 
         if (this.protocolLib) {
@@ -225,7 +222,7 @@ public final class Main extends ModularizedPlugin<Config> {
         new CommandsListener(this);
         new PlayerListener(this);
         new EntityListener(this);
-        new GuiHandler(this);
+        this.guiHandler = new GuiHandler(this);
     }
 
     public void queueEntity(Entity entity) {

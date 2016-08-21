@@ -13,7 +13,7 @@ public abstract class CosmeticEvent extends Event implements Cancellable {
     private Cosmetic cosmetic;
     private boolean cancelled;
 
-    public CosmeticEvent(Cosmetic cosmetic) {
+    protected CosmeticEvent(Cosmetic cosmetic) {
         this.cosmetic = cosmetic;
     }
 

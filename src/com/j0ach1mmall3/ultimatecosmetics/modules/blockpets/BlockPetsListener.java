@@ -7,13 +7,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import org.bukkit.event.entity.EntityChangeBlockEvent;
-import org.bukkit.event.entity.EntityCombustEvent;
-import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.event.entity.EntityPortalEvent;
-import org.bukkit.event.entity.EntityTameEvent;
-import org.bukkit.event.entity.EntityTargetEvent;
-import org.bukkit.event.entity.EntityTeleportEvent;
+import org.bukkit.event.entity.*;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerKickEvent;
@@ -35,6 +29,13 @@ public final class BlockPetsListener implements Listener {
     public BlockPetsListener(BlockPetsModule module) {
         this.module = module;
         module.getParent().getServer().getPluginManager().registerEvents(this, module.getParent());
+    }
+
+    @EventHandler
+    public void onItemSpawn(ItemSpawnEvent e) {
+        for(Entity entity : e.getEntity().getNearbyEntities(1, 1, 1)) {
+            if(entity.hasMetadata("BlockPet")) e.setCancelled(true);
+        }
     }
 
     @EventHandler
