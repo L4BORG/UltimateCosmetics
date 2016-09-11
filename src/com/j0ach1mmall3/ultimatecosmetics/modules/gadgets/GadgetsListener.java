@@ -499,7 +499,10 @@ public final class GadgetsListener implements Listener {
     @EventHandler
     public void onPlayerInteractEntity(PlayerInteractEntityEvent e) {
         Entity ent = e.getRightClicked();
-        if((ent instanceof Painting || ent instanceof ItemFrame) && this.module.getParent().getApi().hasCosmetics(e.getPlayer(), Gadget.class)) e.setCancelled(true);
+        if((ent instanceof Painting || ent instanceof ItemFrame) && this.module.getParent().getApi().hasCosmetics(e.getPlayer(), Gadget.class)) {
+            e.setCancelled(true);
+            e.getPlayer().updateInventory();
+        }
     }
 
     @EventHandler

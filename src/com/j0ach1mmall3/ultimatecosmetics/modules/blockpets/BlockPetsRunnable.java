@@ -1,6 +1,6 @@
 package com.j0ach1mmall3.ultimatecosmetics.modules.blockpets;
 
-import org.bukkit.entity.Ocelot;
+import org.bukkit.entity.Creature;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -18,9 +18,9 @@ public final class BlockPetsRunnable extends BukkitRunnable {
     @Override
     public void run() {
         for (BlockPet cosmetic : this.module.getParent().getApi().getAllCosmetics(BlockPet.class)) {
-            Ocelot ocelot = cosmetic.getOcelot();
+            Creature creature = cosmetic.getCreature();
             Player p = cosmetic.getPlayer();
-            if (!ocelot.getWorld().getName().equalsIgnoreCase(p.getWorld().getName()) || ocelot.getLocation().distance(p.getLocation()) >= this.module.getConfig().getTeleportDistance()) cosmetic.give();
+            if (!creature.getWorld().getName().equalsIgnoreCase(p.getWorld().getName()) || creature.getLocation().distance(p.getLocation()) >= this.module.getConfig().getTeleportDistance()) cosmetic.give();
         }
     }
 }

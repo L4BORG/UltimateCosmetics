@@ -118,6 +118,7 @@ public final class BlockPetsListener implements Listener {
         Player p = e.getPlayer();
         for(BlockPet cosmetic : this.module.getParent().getApi().getCosmetics(p, BlockPet.class)) {
             e.setCancelled(true);
+            p.updateInventory();
             if (e.getRightClicked().getUniqueId().equals(cosmetic.getBlock().getUniqueId()) && p.hasPermission("uc.renamepet") && !this.renamingPlayers.contains(p)) {
                 String renamePet = this.module.getParent().getLang().getRenamePet();
                 if(!renamePet.isEmpty()) p.sendMessage(Placeholders.parse(renamePet, p));
@@ -155,7 +156,7 @@ public final class BlockPetsListener implements Listener {
     public void onPlayerTeleport(PlayerTeleportEvent e) {
         Player p = e.getPlayer();
         for(BlockPet cosmetic : this.module.getParent().getApi().getCosmetics(p, BlockPet.class)) {
-            cosmetic.getOcelot().teleport(p);
+            cosmetic.getCreature().teleport(p);
         }
     }
 

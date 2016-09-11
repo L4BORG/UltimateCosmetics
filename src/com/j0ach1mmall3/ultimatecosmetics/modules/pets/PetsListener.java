@@ -98,6 +98,7 @@ public final class PetsListener implements Listener {
         Player p = e.getPlayer();
         for(Pet cosmetic : this.module.getParent().getApi().getCosmetics(p, Pet.class)) {
             e.setCancelled(true);
+            p.updateInventory();
             if (e.getRightClicked().getUniqueId().equals(cosmetic.getEntity().getUniqueId()) && p.hasPermission("uc.renamepet") && !this.renamingPlayers.contains(p)) {
                 String renamePet = this.module.getParent().getLang().getRenamePet();
                 if(!renamePet.isEmpty()) p.sendMessage(Placeholders.parse(renamePet, p));
