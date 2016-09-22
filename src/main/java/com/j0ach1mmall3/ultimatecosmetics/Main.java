@@ -169,6 +169,7 @@ public final class Main extends ModularizedPlugin<Config> {
     }
 
     public CosmeticsAPI getApi() {
+        if(this.api == null) this.api = new CosmeticsAPI();
         return this.api;
     }
 
