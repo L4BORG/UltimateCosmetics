@@ -1,0 +1,66 @@
+# ######################################################################################## #
+# UltimateCosmetics version 4.X.X configuration                                            #
+# Any help with this configuration should be requested here:                               #
+# https://www.spigotmc.org/threads/ultimatecosmetics.60528/                                #
+# (c) 2016 j0ach1mmall3 - All rights reserved                                              #
+# ######################################################################################## #
+
+# The worlds in which Pets will not work
+# Make sure RemoveCosmeticsOnWorldChange is set to true for this to work correctly
+WorldsBlacklist:
+- someworld
+- someotherworld
+# The command to open the GUI
+Command: /pets
+# The message to show when a player doesn't have permission to use a Pet
+NoPermissionMessage: '&4You are not allowed to use this Pet!'
+# The Sound to be played when a player is given a Pet
+GiveSound: ENTITY_EXPERIENCE_ORB_PICKUP
+# The Sound to be played when a player's Pet is removed
+RemoveSound: ENTITY_ENDERDRAGON_FLAP
+# The interval in seconds between the checks to teleport the Pet
+TeleportInterval: 1
+# The distance at which the Pet will be teleported back to the owner
+TeleportDistance: 8
+# The inventory name of the GUI
+GUIName: '&3&lPets'
+# The size of the GUI
+GUISize: 45
+NoPermissionItem:
+    # Should every Pet that a player doesn't have access to be replaced by this item?
+    Enabled: true
+    # The item format of the item
+    Item: '351:8 name:%cosmeticsname% lore:&4&oYou_are_not_allowed_to_use_this_Pet'
+RemoveItem:
+    # The item format of the item
+    Item: '30 name:&c&l>_&4Remove_your_Pet_&c&l< lore:&c&oClick_here_to_remove_your_current_Pet'
+    # The position in the GUI of this item (starts at 0)
+    Position: 4
+HomeItem:
+    # The item format of the 'Home' item
+    Item: '355 name:&c&lMain_menu lore:&8&oClick_to_go_back_to_the_main_menu!'
+    # The position in the GUI of this item (starts at 0)
+    Position: 40
+PreviousItem:
+    # The item format of the 'Previous' item
+    Item: '262 name:&6<_Previous lore:&8&oClick_to_go_to_the_previous_page!'
+    # The position in the GUI of this item (starts at 0)
+    Position: 39
+NextItem:
+    # The item format of the 'Next' item
+    Item: '262 name:&6Next_> lore:&8&oClick_to_go_to_the_next_page!'
+    # The position in the GUI of this item (starts at 0)
+    Position: 41
+Pets:
+    ExamplePet:
+        # The item format of the item
+        Item: '383 name:&3Example_Pet lore:&7&oThis_is_an_Example_Pet entitytype:creeper'
+        # The position in the GUI of this item (starts at 0)
+        Position: 10
+        # The permission to use this Pet
+        Permission: ultimatecosmetics.pets.example
+        # The PetType of this Pet (Valid PetTypes can be found here: https://github.com/j0ach1mmall3/UltimateCosmetics/wiki/EntityTypes-&-EntityData)
+        PetType: CREEPER
+        # The PetData of this Pet (Valid PetData can be found here: https://github.com/j0ach1mmall3/UltimateCosmetics/wiki/EntityTypes-&-EntityData)
+        PetData: []
+DoNotChange: 4.0.0

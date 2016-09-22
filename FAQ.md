@@ -1,9 +1,5 @@
 # Frequently asked questions
 
-## What, this plugin is opensource and premium?
-Yes, you can compile the source for yourself, or buy the plugin and get access to the binaries, and support.
-Keep in mind that buying the plugin supports the author of it!
-
 ## I get an error upon startup!
 Use the config files in the jar under the folder of the MC version you're running. For example, if you're running 1.8, use the config_1.8 files in the jar file.
 
