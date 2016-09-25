@@ -197,8 +197,10 @@ public abstract class CosmeticConfig<C extends CosmeticStorage> extends ConfigLo
                     Player p = o.getPlayer();
                     C cosmeticStorage = CosmeticConfig.this.getByPosition(o.getGuiPage(), o.getInventoryClickEvent().getSlot());
                     if(cosmeticStorage != null) {
-                        CosmeticConfig.this.getCosmetic(cosmeticStorage, p).give(plugin);
-                        if(CosmeticConfig.this.giveSound != null) new JLibPlayer(p).playSound(CosmeticConfig.this.giveSound);
+                        if(new JLibPlayer(p).hasCustomPermission(cosmeticStorage.getPermission())) {
+                            CosmeticConfig.this.getCosmetic(cosmeticStorage, p).give(plugin);
+                            if(CosmeticConfig.this.giveSound != null) new JLibPlayer(p).playSound(CosmeticConfig.this.giveSound);
+                        } else Methods.informPlayerNoPermission(o.getPlayer(), CosmeticConfig.this.noPermissionMessage);
                     }
                 }
             });
