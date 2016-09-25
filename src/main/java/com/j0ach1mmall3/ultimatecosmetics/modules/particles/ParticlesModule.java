@@ -32,7 +32,7 @@ public final class ParticlesModule extends PluginModule<Main, Particles> {
                     Player p = cosmetic.getPlayer();
                     long lastWalked = JavaPlugin.getPlugin(com.j0ach1mmall3.jlib.Main.class).getPlayerListener().getLastWalked(p);
                     ParticleCosmeticStorage pcs = cosmetic.getCosmeticStorage();
-                    if(pcs.getShape() != ParticleCosmeticStorage.Shape.RANDOM && pcs.getShape() != ParticleCosmeticStorage.Shape.TRAIL && lastWalked != 0 && TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis() - lastWalked) < 0.1) return;
+                    if(pcs == null || (pcs.getShape() != ParticleCosmeticStorage.Shape.RANDOM && pcs.getShape() != ParticleCosmeticStorage.Shape.TRAIL && lastWalked != 0 && TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis() - lastWalked) < 0.1)) return;
                     int viewDistance = ParticlesModule.this.config.getViewDistance();
                     switch (pcs.getShape()) {
                         case CROSS:
