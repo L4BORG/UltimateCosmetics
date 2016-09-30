@@ -30,8 +30,8 @@ public final class CloaksModule extends PluginModule<Main, Cloaks> {
                 for (Cloak cosmetic : CloaksModule.this.parent.getApi().getAllCosmetics(Cloak.class)) {
                     Player p = cosmetic.getPlayer();
                     long lastWalked = JavaPlugin.getPlugin(com.j0ach1mmall3.jlib.Main.class).getPlayerListener().getLastWalked(p);
-                    if (lastWalked != 0 && TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis() - lastWalked) < 0.1) return;
                     CloakStorage pcs = cosmetic.getCosmeticStorage();
+                    if (pcs == null || (lastWalked != 0 && TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis() - lastWalked) < 0.1)) return;
                     switch (pcs.getShape()) {
                         case HALO:
                             new HaloEffect(p.getLocation().add(0, 2, 0), pcs.getParticle(), pcs.getId(), pcs.getData(), pcs.getSpeed(), CloaksModule.this.config.getViewDistance(), 0.5, 16).play(CloaksModule.this.parent);
