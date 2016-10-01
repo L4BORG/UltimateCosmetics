@@ -58,7 +58,7 @@ public final class MorphsListener implements Listener {
                 return;
             }
         }
-        if (e.getEntity() instanceof LivingEntity && this.isEntity(e.getEntity())) e.setCancelled(true);
+        if (e.getEntity() instanceof LivingEntity && !(e.getEntity() instanceof ArmorStand) && this.isEntity(e.getEntity())) e.setCancelled(true);
     }
 
     @EventHandler

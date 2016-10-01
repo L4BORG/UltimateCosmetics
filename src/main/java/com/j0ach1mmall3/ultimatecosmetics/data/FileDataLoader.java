@@ -53,7 +53,7 @@ public final class FileDataLoader extends ConfigLoader<Main> implements DataLoad
 
     @Override
     public void disconnectLoader() {
-        // NOP
+        this.disconnect();
     }
 
     @Override
