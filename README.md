@@ -6,4 +6,4 @@
 # UltimateCosmetics
 Featuring over 20 different Cosmetic types, endless possibilities!
 
-API documentation will be released soon(TM)
+API documentation will be released soon™
